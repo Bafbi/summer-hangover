@@ -1,3 +1,4 @@
+/* src/styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,4 +30,3 @@ img, video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
   background-color: rgb(233, 151, 0);
 }
-

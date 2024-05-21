@@ -5,22 +5,47 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f5f5f5;
-}
-
-.customSigninForm {
-  background: white;
+  background-color: rgb(255 165 62 / 47%); /* Fond orange */
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.customSigninButton {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #0070f3;
+.customFormContainer {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px; /* Taille maximale définie */
+}
+
+.customFormButton {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #1E5552; /* Couleur verte */
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  width: 100%;
+  font-size: 12px; /* Taille de la police plus petite */
+}
+
+.customInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 11px; /* Taille de la police plus petite */
+}
+
+.customFileInput {
+  margin-bottom: 8px;
+}
+
+@media (min-width: 640px) {
+  .customSigninContainer {
+    padding: 20px;
+  }
 }
