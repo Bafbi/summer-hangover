@@ -13,7 +13,20 @@ img, video {
   height: auto;
 }
 
+@media (min-width: 1024px) {
+  img, video {
+    max-width: 25%;
+  }
+}
+
 .bg-\[\#1E5552\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 165 62 / 47%);
 }
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+  background-color: rgb(233, 151, 0);
+}
+
