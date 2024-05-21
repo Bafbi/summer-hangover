@@ -96,6 +96,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.5.11
         version: 0.5.14(prettier@3.2.5)
+      tailwind-material-colors:
+        specifier: ^3.0.0
+        version: 3.0.0(tailwindcss@3.4.3)
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.3
@@ -506,6 +509,9 @@ packages:
     resolution: {integrity: sha512-9EEIHz+e8tTbx9TMkb8ByZnzxc0pYFirK1nSbqC6cFEST95fiY0NCfQ/zAzJxe90KckbjifX6BbO69eWIi3TAg==}
     cpu: [x64]
     os: [win32]
+
+  '@material/material-color-utilities@0.2.7':
+    resolution: {integrity: sha512-0FCeqG6WvK4/Cc06F/xXMd/pv4FeisI0c1tUpBbfhA2n9Y8eZEv4Karjbmf2ZqQCPUWMrGp8A571tCjizxoTiQ==}
 
   '@neon-rs/load@0.0.4':
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
@@ -920,6 +926,13 @@ packages:
 
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  color-string@1.9.1:
+    resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==}
+
+  color@4.2.3:
+    resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
+    engines: {node: '>=12.5.0'}
 
   commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -1499,6 +1512,9 @@ packages:
   is-array-buffer@3.0.4:
     resolution: {integrity: sha512-wcjaerHw0ydZwfhiKbXJWLDY8A7yV7KhjQOpb83hGgGfId/aQa4TOvwyzn2PuswW2gPCYEL/nEAiSVpdOj1lXw==}
     engines: {node: '>= 0.4'}
+
+  is-arrayish@0.3.2:
+    resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==}
 
   is-async-function@2.0.0:
     resolution: {integrity: sha512-Y1JXKrfykRJGdlDwdKlLpLyMIiWqWvuSd17TvZk68PLAOGOoF4Xyav1z0Xhoi+gCYjZVeC5SI+hYFOfvXmGRCA==}
@@ -2169,6 +2185,9 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  simple-swizzle@0.2.2:
+    resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
+
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -2259,6 +2278,26 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  tailwind-material-colors@3.0.0:
+    resolution: {integrity: sha512-COv9mJ4wPBlXiz6kYOPBCx2HR/M9p0hNWq6dReR8m3JTwt5Kp8HXgrBj4vJxD/Q6jPye81cPZ7LIw5ey9if2vw==}
+    peerDependencies:
+      tailwindcss: ^3.0.0
+
+  tailwind-material-surfaces@3.0.2:
+    resolution: {integrity: sha512-ZElG3IPbSrFr2nzxQ++JvNYtJ2ffDfCc/9idAezXYznHrf9vpO0rV9gH1dPUVmXVSkhHerL34Boz14FGZ2H8uw==}
+    peerDependencies:
+      tailwindcss: ^3.0.0
+
+  tailwind-mode-aware-colors@1.4.2:
+    resolution: {integrity: sha512-9PbWN/glpWZypyJvtTgerfDI8XS300hgNTFLheoFFm51ZLNly/tFE2oCtMFm9DkIVGwS3tBn3STTUXdRQYX1SA==}
+    peerDependencies:
+      tailwindcss: ^3.1.0
+
+  tailwindcss-color-mix@0.0.8:
+    resolution: {integrity: sha512-agTN7BAA9eny2WABRX6jpHciQoBoSYGkZfLM1PpHAyNBPErQKFWUm1o1HjwNsZkilJL3hhUi2+H9MoCg+HT89A==}
+    peerDependencies:
+      tailwindcss: ^3.0.0
 
   tailwindcss@3.4.3:
     resolution: {integrity: sha512-U7sxQk/n397Bmx4JHbJx/iSOOv5G+II3f1kpLpY2QeUv5DcPdcTsYLlusZfq1NthHS1c1cZoyFmmkex1rzke0A==}
@@ -2705,6 +2744,8 @@ snapshots:
   '@libsql/win32-x64-msvc@0.3.18':
     optional: true
 
+  '@material/material-color-utilities@0.2.7': {}
+
   '@neon-rs/load@0.0.4': {}
 
   '@next/env@14.2.3': {}
@@ -3148,6 +3189,16 @@ snapshots:
       color-name: 1.1.4
 
   color-name@1.1.4: {}
+
+  color-string@1.9.1:
+    dependencies:
+      color-name: 1.1.4
+      simple-swizzle: 0.2.2
+
+  color@4.2.3:
+    dependencies:
+      color-convert: 2.0.1
+      color-string: 1.9.1
 
   commander@4.1.1: {}
 
@@ -3901,6 +3952,8 @@ snapshots:
       call-bind: 1.0.7
       get-intrinsic: 1.2.4
 
+  is-arrayish@0.3.2: {}
+
   is-async-function@2.0.0:
     dependencies:
       has-tostringtag: 1.0.2
@@ -4520,6 +4573,10 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
+  simple-swizzle@0.2.2:
+    dependencies:
+      is-arrayish: 0.3.2
+
   sisteransi@1.0.5: {}
 
   slash@3.0.0: {}
@@ -4617,6 +4674,27 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  tailwind-material-colors@3.0.0(tailwindcss@3.4.3):
+    dependencies:
+      '@material/material-color-utilities': 0.2.7
+      tailwind-material-surfaces: 3.0.2(tailwindcss@3.4.3)
+      tailwind-mode-aware-colors: 1.4.2(tailwindcss@3.4.3)
+      tailwindcss: 3.4.3
+
+  tailwind-material-surfaces@3.0.2(tailwindcss@3.4.3):
+    dependencies:
+      tailwindcss: 3.4.3
+      tailwindcss-color-mix: 0.0.8(tailwindcss@3.4.3)
+
+  tailwind-mode-aware-colors@1.4.2(tailwindcss@3.4.3):
+    dependencies:
+      color: 4.2.3
+      tailwindcss: 3.4.3
+
+  tailwindcss-color-mix@0.0.8(tailwindcss@3.4.3):
+    dependencies:
+      tailwindcss: 3.4.3
 
   tailwindcss@3.4.3:
     dependencies:
