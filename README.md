@@ -1,29 +1,40 @@
-# Create T3 App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Technologies Used
 
-## What's next? How do I make an app with this?
+- [TypeScript](https://www.typescriptlang.org/)
+- [Nextjs](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Trpc](https://trpc.io/)
+- [Prisma](https://www.prisma.io/)
+- [MySQL](https://www.mysql.com/)
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Services Used
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- [Google Places API](https://developers.google.com/places/web-service/overview)
+- [Google Geocode API](https://developers.google.com/maps/documentation/geocoding/overview)
+- [Pusher Channels](https://pusher.com/channels)
+- [Vercel](https://vercel.com/)
+- [PlanetScale](https://planetscale.com/)
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Getting Started
 
-## Learn More
+To get started with Summer-Trip, follow these steps:
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+1. Clone the repository to your local machine
+2. Install the dependencies using `npm install`
+3. Start the development server using `npm run dev`
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## Contributing
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+If you'd like to contribute to Summer-Trip, please follow these steps:
 
-## How do I deploy this?
+1. Fork the repository
+2. Create a new branch for your feature or bug fix
+3. Make your changes and commit them with descriptive commit messages
+4. Push your changes to your fork
+5. Submit a pull request to the main repository
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## License
+
+Summer-Trip is licensed under the GPLv3 license, see [LICENSE](/LICENCE) for more information.
