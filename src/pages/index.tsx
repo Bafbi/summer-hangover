@@ -22,7 +22,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Summer Trip</title>
+        <title>Summer Hangover</title>
         <meta name="description" content="Summer TRIP" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-[#1E5552]">
