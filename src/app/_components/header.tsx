@@ -13,11 +13,11 @@ export const AppHeader = () => {
   return (
     <>
       {/* Header */}
-      <header className="bg-surface-variant">
+      <header className="z-10 bg-surface sticky top-0 w-screen border-b-2">
         <div className="flex h-16 items-center justify-between  px-4 ">
 
             <button
-              className=" hover:text-gray-300 focus:outline-none" >
+              className=" focus:outline-none" >
               <span className="material-icons">home</span>
             </button>
 
