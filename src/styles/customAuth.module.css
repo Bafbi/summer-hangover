@@ -6,8 +6,9 @@
   justify-content: center;
   height: 100vh;
   background-color: rgb(255 165 62 / 47%); /* Fond orange */
-  padding: 20px;
+  padding: 10px;
 }
+
 
 .customFormContainer {
   background: white;
@@ -16,7 +17,7 @@
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   margin-bottom: 15px;
   width: 100%;
-  max-width: 300px; /* Taille maximale définie */
+  max-width: 320px; /* Taille maximale définie */
 }
 
 .customFormButton {
@@ -28,7 +29,12 @@
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
-  font-size: 12px; /* Taille de la police plus petite */
+  font-size: 13px; /* Taille de la police plus petite */
+  transition: background-color 0.3s;
+}
+
+.customFormButton:hover {
+  background-color: #174a45; /* Couleur verte foncée au survol */
 }
 
 .customInput {
@@ -37,15 +43,38 @@
   margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 11px; /* Taille de la police plus petite */
+  font-size: 13px; /* Taille de la police plus petite */
 }
 
 .customFileInput {
   margin-bottom: 8px;
 }
 
+.customHeader {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.customLinkButton {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: transparent;
+  color: #1E5552;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.customLinkButton:hover {
+  color: #174a45;
+}
+
 @media (min-width: 640px) {
   .customSigninContainer {
-    padding: 20px;
+    padding: 15px;
   }
 }
