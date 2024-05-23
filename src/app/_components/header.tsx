@@ -13,7 +13,7 @@ export const AppHeader = () => {
               <span className="material-icons text-primary">home</span>
             </button>
 
-          <h1 className="text-xl font-bold text-primary">Groupe Name</h1>
+          <h1 className="text-xl font-bold text-primary">Sortie du 19/05</h1>
           <button
             className="">
            
