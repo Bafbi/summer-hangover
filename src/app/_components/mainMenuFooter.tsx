@@ -1,42 +1,44 @@
 import * as React from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { Icon } from "@mui/material";
 
-export default function MainMenuFooter() {
-  const router = useRouter();
-  const { pathname } = router;
+interface MainMenuFooterProps {
+  pathname: string;
+}
 
+export default function MainMenuFooter({
+  pathname,
+}: Readonly<MainMenuFooterProps>) {
   return (
-    <footer className="bg-[#1E5552] pt-0 text-[#5147d8]">
-      <div className="flex items-center justify-between px-4 py-2">
+    <footer className="bg-surface-variant flex h-16 pt-0 text-on-surface-variant">
+      <div className="flex h-full w-full items-center justify-between px-4">
         <Link href="/menu" passHref>
           <div
             className={`${
-              pathname === "/menu" ? "bg-[#E49A0A] text-[#1E5552]" : ""
-            } cursor-pointer rounded-full px-4 py-2`}
+              pathname === "menu" ? "bg-[#E49A0A] text-inverse-primary" : ""
+            } flex cursor-pointer items-center justify-center rounded-full p-2 pl-7`}
           >
-            <Icon className="h-12 w-12">home</Icon>
+            <Icon style={{ fontSize: 34 }}>home</Icon>
           </div>
         </Link>
-        <span className="bg-[#E49A0A] mx-2 h-12 w-0.5"></span>
+        <span className="mx-2 h-10 w-0.5 rounded-md bg-outline-variant"></span>
         <Link href="/friends" passHref>
           <div
             className={`${
-              pathname === "/friends" ? "bg-[#E49A0A] text-[#1E5552]" : ""
-            } cursor-pointer rounded-full px-4 py-2`}
+              pathname === "friends" ? "bg-[#E49A0A] text-inverse-primary" : ""
+            } flex cursor-pointer items-center justify-center rounded-full p-2`}
           >
-            <span className="material-icons">diversity_3</span>
+            <Icon style={{ fontSize: 34 }}>group</Icon>
           </div>
         </Link>
-        <span className="bg-[#E49A0A] mx-2 h-12 w-0.5"></span>
+        <span className="mx-2 h-10 w-0.5 rounded-md bg-outline-variant"></span>
         <Link href="/profile" passHref>
           <div
             className={`${
-              pathname === "/profile" ? "bg-[#E49A0A] text-[#1E5552]" : ""
-            } cursor-pointer rounded-full px-4 py-2`}
+              pathname === "profile" ? "bg-[#E49A0A] text-inverse-primary" : ""
+            } flex cursor-pointer items-center justify-center rounded-full p-2 pr-7`}
           >
-            <Icon className="h-12 w-12">account_circle</Icon>
+            <Icon style={{ fontSize: 34 }}>account_circle</Icon>
           </div>
         </Link>
       </div>
