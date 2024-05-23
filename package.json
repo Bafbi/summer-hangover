@@ -16,7 +16,6 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@libsql/client": "^0.6.0",
-    "@mui/material": "^5.15.18",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.25.0",
     "@trpc/client": "next",
@@ -30,6 +29,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "^0.0.1",
+    "styled-components": "^6.1.11",
     "superjson": "^2.2.1",
     "zod": "^3.23.3"
   },
