@@ -9,9 +9,18 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
       },
+      backdropFilter: {
+        'none': 'none',
+        'blur': 'blur(20px)',
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('tailwind-scrollbar'),
+    require('@tailwindcss/typography'),
+    require('tailwindcss-filters'), // This plugin is needed for the filter utilities
+  ],
 } satisfies Config;
 
 module.exports = withMaterialColors(
@@ -29,3 +38,4 @@ module.exports = withMaterialColors(
     extend: false,
   },
 );
+// tailwind.config.js
