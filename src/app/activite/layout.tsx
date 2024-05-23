@@ -16,7 +16,7 @@ export default function ActiviteLayout({
     <div className="bg-surface flex min-h-screen flex-col">
         <AppHeader></AppHeader>
         {children}
-        <footer className="bg-surface pt-0 sticky bottom-0 w-screen border-t-2 ">
+        <footer className="bg-surface pt-0 sticky bottom-0 w-screen border-t ">
           <div className="flex items-center justify-between px-4 py-2">
             <button>
               <Link href="/activite/choix">

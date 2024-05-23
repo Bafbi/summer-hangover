@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="overflow-hidden m-2 left-1 right-1 top-1 cursor-pointer p-4 text-center shadow-md rounded-xl border-2 border-current  bg-primary-container transition-transform duration-200 ease-in-out hover:scale-105 hover:border-transparent">
+      <div className="overflow-hidden m-2 left-1 right-1 top-1 cursor-pointer p-4 text-center  rounded-xl   bg-primary-container transition-transform duration-200 ease-in-out hover:scale-105 hover:border-transparent">
         <Link href="/create-new" passHref>  
           <div className="">Proposer une activité</div>
         </Link>
@@ -27,7 +27,7 @@ export default function Home() {
             key={index}
             href={event.href}
             passHref
-            className="relative overflow-hidden bg-secondary-container flex h-60 w-full cursor-pointer items-center justify-center p-2 text-center rounded-xl font-thin border-2 border-current transition-transform duration-200 ease-in-out hover:scale-105 hover:border-transparent"
+            className="relative overflow-hidden bg-secondary-container flex h-60 w-full cursor-pointer items-center justify-center p-2 text-center rounded-xl font-thin border-th border-current transition-transform duration-200 ease-in-out hover:scale-105 hover:border-transparent"
           >
             <div className="">{event.name}</div>
             <div className="absolute inset-0 bg-secondary rounded-xl transform -translate-x-full rotate-10 origin-top-left transition-transform duration-200 ease-out hover:translate-x-0"></div>
