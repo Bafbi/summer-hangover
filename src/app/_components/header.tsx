@@ -1,11 +1,3 @@
-import { useState } from "react";
-import Link from "next/link";
-import { AppDropMenu } from "~/app/_components/dropMenu";
-import {GroupDropMenu} from "~/app/_components/dropMenu";
-import {useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-
-
 
 
 export const AppHeader = () => {
