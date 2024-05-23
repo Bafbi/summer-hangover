@@ -17,12 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <head>        <link
+      <head>
+        <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.0/dist/cdn.min.js"></script>
-        </head>
+      </head>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
