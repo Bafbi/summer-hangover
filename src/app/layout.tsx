@@ -23,7 +23,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </head>
-      <body>
+
+      <body className="bg-surface">
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
