@@ -1,0 +1,54 @@
+.card-container {
+  margin-bottom: 0px; /* Suppression de la marge inférieure */
+}
+
+.card {
+  width: 140px;
+  height: 200px; /* Augmentation de la hauteur pour inclure la section réponse */
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  cursor: pointer;
+  margin-bottom: 0; /* Suppression de la marge par défaut */
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card .front, .card .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  backface-visibility: hidden;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card .back {
+  transform: rotateY(180deg);
+}
+
+.card .front .answer-section{
+  margin-top: auto; /* Pousse la section réponse vers le bas */
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.card .front .award-section {
+  width: 100%;
+  padding: 4px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.answer-title {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
