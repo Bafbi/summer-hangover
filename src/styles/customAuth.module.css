@@ -1,80 +1,93 @@
 /* src/styles/customAuth.module.css */
 .customSigninContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: rgb(255 165 62 / 47%); /* Fond orange */
-  padding: 10px;
+  @apply flex flex-col items-center justify-center min-h-screen p-5 bg-surface;
 }
 
+.logoContainer {
+  @apply mb-5 text-center w-full flex justify-center items-center flex-col;
+}
+
+.logoImage {
+  @apply max-w-[30%] md:max-w-[13%] h-auto;
+}
+
+.logoSeparator {
+  @apply border-b-2 my-5 w-[80%] md:w-full; /* Suppression de border-gray */
+}
 
 .customFormContainer {
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
-  width: 100%;
-  max-width: 320px; /* Taille maximale définie */
+  @apply p-5 rounded-lg shadow-lg mb-5 w-full max-w-md text-center bg-surface-variant;
 }
 
 .customFormButton {
-  margin-top: 8px;
-  padding: 8px;
-  background-color: #1E5552; /* Couleur verte */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 13px; /* Taille de la police plus petite */
-  transition: background-color 0.3s;
+  @apply mt-2 p-2 bg-button-bg text-white border-none rounded cursor-pointer w-full text-lg font-semibold transition duration-300;
 }
 
 .customFormButton:hover {
-  background-color: #174a45; /* Couleur verte foncée au survol */
+  @apply bg-button-bg-hover;
 }
 
 .customInput {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 13px; /* Taille de la police plus petite */
+  @apply w-full p-2 mb-2 border border-primary rounded text-base;
 }
 
 .customFileInput {
-  margin-bottom: 8px;
+  @apply mb-2 text-sm font-bold;
+  font-size: 0.64rem
 }
 
 .customHeader {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 12px;
+  @apply text-lg font-bold mb-4 text-primary;
 }
 
 .customLinkButton {
-  margin-top: 8px;
-  padding: 8px;
-  background-color: transparent;
-  color: #1E5552;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 13px;
-  text-decoration: underline;
+  @apply mt-2 p-2 bg-transparent text-primary border-none rounded cursor-pointer w-full text-base underline;
 }
 
 .customLinkButton:hover {
-  color: #174a45;
+  @apply text-primary-dark;
+}
+
+.providerButton {
+  @apply mt-2 p-2 bg-button-bg text-white border-none rounded cursor-pointer w-full text-lg font-semibold transition duration-300;
+}
+
+.providerButton:hover {
+  @apply bg-button-bg-hover;
 }
 
 @media (min-width: 640px) {
   .customSigninContainer {
-    padding: 15px;
+    @apply p-5 items-center;
+  }
+
+  .customFormContainer, .providerButton {
+    @apply text-center;
+  }
+
+  .logoImage {
+    @apply max-w-[13%];
+  }
+
+  .logoSeparator {
+    @apply w-full;
+  }
+}
+
+@media (max-width: 639px) {
+  .customSigninContainer {
+    @apply p-5 items-start;
+  }
+
+  .customFormContainer {
+    @apply text-left self-start;
+  }
+
+  .providerButton {
+    @apply text-center self-center;
+  }
+
+  .logoImage {
+    @apply max-w-[50%];
   }
 }

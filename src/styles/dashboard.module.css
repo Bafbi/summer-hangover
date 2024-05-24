@@ -1,0 +1,57 @@
+/* src/styles/dashboard.module.css */
+.dashboardContainer {
+  @apply flex flex-col items-center justify-center min-h-screen p-5 bg-surface text-white font-sans;
+}
+
+.dashboardWrapper {
+  @apply bg-surface-variant p-5 rounded-lg shadow-lg text-center w-full max-w-screen-xl overflow-hidden;
+}
+
+.dashboardTitle {
+  @apply text-2xl font-bold mb-5 text-white text-center;
+}
+
+.cardContainer, .chartsRow {
+  @apply flex flex-wrap justify-around mb-5;
+}
+
+.card {
+  @apply bg-block-bg p-5 rounded-lg shadow-lg m-2 flex-1 text-center transition-transform duration-300;
+  max-width: calc(33.333% - 20px); /* Empêche les débordements */
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card h2 {
+  @apply text-lg mb-2 text-white;
+}
+
+.card p {
+  @apply text-xl font-bold text-white;
+}
+
+.chartContainer {
+  @apply bg-block-bg p-5 rounded-lg shadow-lg m-2 flex-1 text-center;
+  max-width: calc(50% - 20px); /* Empêche les débordements */
+}
+
+.chartContainer h2 {
+  @apply text-lg mb-2 text-white;
+}
+
+@media (max-width: 768px) {
+  .card, .chartContainer {
+    @apply flex-1;
+    max-width: 100%; /* Pleine largeur sur petits écrans */
+  }
+
+  .dashboardContainer {
+    @apply p-2;
+  }
+
+  .dashboardWrapper {
+    @apply p-1;
+  }
+}

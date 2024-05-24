@@ -10,23 +10,22 @@
 }
 
 img, video {
-  max-width: 70%;
-  height: auto;
+  @apply max-w-[70%] h-auto;
 }
 
 @media (min-width: 1024px) {
   img, video {
-    max-width: 25%;
+    @apply max-w-[25%];
   }
 }
 
 .bg-\[\#1E5552\] {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 165 62 / 47%);
+  background-color: rgba(255, 165, 62, 0.47); /* Utilisation de la couleur définie */
 }
 
 .text-white {
   --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-  background-color: rgb(233, 151, 0);
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  background-color: rgb(233, 151, 0); /* Assurez-vous que cette couleur correspond à vos besoins */
 }
