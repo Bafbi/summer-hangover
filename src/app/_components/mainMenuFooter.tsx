@@ -1,6 +1,5 @@
 import * as React from "react";
 import Link from "next/link";
-import { Icon } from "@mui/material";
 
 interface MainMenuFooterProps {
   pathname: string;
@@ -18,7 +17,7 @@ export default function MainMenuFooter({
               pathname === "menu" ? "bg-[#E49A0A] text-inverse-primary" : ""
             } flex cursor-pointer items-center justify-center rounded-full p-2 pl-7`}
           >
-            <Icon style={{ fontSize: 34 }}>home</Icon>
+            <span className="material-icons">home</span>
           </div>
         </Link>
         <span className="mx-2 h-10 w-0.5 rounded-md bg-outline-variant"></span>
@@ -28,7 +27,7 @@ export default function MainMenuFooter({
               pathname === "friends" ? "bg-[#E49A0A] text-inverse-primary" : ""
             } flex cursor-pointer items-center justify-center rounded-full p-2`}
           >
-            <Icon style={{ fontSize: 34 }}>group</Icon>
+            <span className="material-icons">group</span>
           </div>
         </Link>
         <span className="mx-2 h-10 w-0.5 rounded-md bg-outline-variant"></span>
@@ -38,7 +37,7 @@ export default function MainMenuFooter({
               pathname === "profile" ? "bg-[#E49A0A] text-inverse-primary" : ""
             } flex cursor-pointer items-center justify-center rounded-full p-2 pr-7`}
           >
-            <Icon style={{ fontSize: 34 }}>account_circle</Icon>
+            <span className="material-icons">account_circle</span>
           </div>
         </Link>
       </div>
