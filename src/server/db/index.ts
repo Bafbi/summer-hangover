@@ -1,7 +1,7 @@
 import { createClient, type Client } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/libsql"; // Assurez-vous que ce chemin est correct
 
-import { env } from "~/env";
+import { env } from "~/env.mjs";
 import * as schema from "./schema";
 
 /**
