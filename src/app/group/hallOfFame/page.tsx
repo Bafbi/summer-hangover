@@ -30,12 +30,12 @@ export default function Home() {
 
   return (
     <>
-    <div className="max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer shadow-md rounded-lg transition flex justify-center items-center">
+    <div className="max-w-80 mx-auto p-2  bg-surface-dim text-center cursor-pointer shadow-md rounded-b-lg transition flex justify-center items-center">
      <span className="material-icons text-primary">emoji_events</span><div className="text-lg font-bold mx-4">Hall Of Fame</div><span className="material-icons text-primary">emoji_events</span>
     </div>
-    <main className="grid grid-cols-2 gap-4 p-4 bg-surface">
+    <main className="grid grid-cols-2 gap-4 py-4 px-8 bg-surface">
       {cards.map(card => (
-        <div key={card.id} className="card-container mx-4" onClick={() => handleFlip(card.id)}>
+        <div key={card.id} className="card-container transition flex justify-center items-center" onClick={() => handleFlip(card.id)}>
           <div className={`card ${card.isFlipped ? 'flipped' : ''}`}>
             <div className="front bg-surface-variant rounded-lg max-w-lg w-full">
             <div className="award-section bg-secondary-container font-semibold">

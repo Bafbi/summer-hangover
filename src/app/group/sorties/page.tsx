@@ -1,88 +1,70 @@
   import Link from "next/link";
-  import { useState } from "react";
-  import { getServerAuthSession } from "~/server/auth";
-  import { AppHeader } from "../../_components/header";
 
   export default function Home() {
-
     return (
       <>
-        <div className="max-w-xs mx-auto m-2 p-4 bg-primary-container text-center cursor-pointer shadow-md rounded-lg transition">
-          <Link href="/create-sortie" passHref>
-            <div className="text-lg font-bold">Proposer une activité</div>
+        <main className="bg-surface grid grid-cols-1 gap">
+
+
+          <div className="sortie flex justify-between items-center w-full">
+            <Link href="/other-content-1" className="bg-surface-variant max-w-60 my-4 flex-grow flex w-full cursor-pointer items-center justify-start space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px' }} passHref>
+              <div>
+                Barbecue chez la mère à polo
+              </div>
+            </Link>
+            <div className="bg-surface-variant my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Date
+            </div>
+          </div>
+
+          <div className="sortie flex justify-between items-center w-full">
+            <Link href="/other-content-1" className="bg-surface-variant max-w-60 my-4 flex-grow flex w-full cursor-pointer items-center justify-start space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px' }} passHref>
+              <div>
+                Barbecue chez la mère à polo
+              </div>
+            </Link>
+            <div className="bg-surface-variant my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Date
+            </div>
+          </div>
+
+          <div className="sortie flex justify-between items-center w-full">
+            <Link href="/other-content-1" className="bg-surface-variant max-w-60 my-4 flex-grow flex w-full cursor-pointer items-center justify-start space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px' }} passHref>
+              <div>
+                Barbecue chez la mère à polo
+              </div>
+            </Link>
+            <div className="bg-surface-variant my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Date
+            </div>
+          </div>
+
+          <div className="sortie flex justify-between items-center w-full">
+            <Link href="/other-content-1" className="bg-surface-variant max-w-60 my-4 flex-grow flex w-full cursor-pointer items-center justify-start space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px' }} passHref>
+              <div>
+                Barbecue chez la mère à polo
+              </div>
+            </Link>
+            <div className="bg-surface-variant my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Date
+            </div>
+          </div>
+
+          <div className="sortie flex justify-between items-center w-full">
+          <Link href="/other-content-2" className="bg-secondary-container my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="material-icons">add_circle</span>
+          </Link>
+          <Link href="/other-content-2" className="bg-secondary-container max-w-60 my-4 flex-grow flex w-full cursor-pointer items-center justify-center space-x-reverse space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105" style={{ minHeight: '60px' }} passHref>
+            <div>
+              Proposer une soirée
+            </div>
           </Link>
         </div>
-        <main className="bg-surface grid grid-cols-1 gap-2 p-4 ml-12 mr-12">
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link><Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
-          <Link href="/other-content-1" className=" max-w-xs mx-auto p-4 bg-secondary-container text-center cursor-pointer h-20 w-full flex items-center justify-center rounded-lg transition" passHref>
-            <div>
-              Soirée du 8/10
-            </div>
-          </Link>
         </main>
       </>
     );
   }
+  
+  
+  
+  
