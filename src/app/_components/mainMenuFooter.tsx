@@ -18,7 +18,7 @@ export default function MainMenuFooter({
               pathname === "menu" ? "bg-[#E49A0A] text-inverse-primary" : ""
             } flex cursor-pointer items-center justify-center rounded-full p-2 pl-7`}
           >
-            <Icon style={{ fontSize: 34 }}>home</Icon>
+            <Icon style={{ fontSize: 28 }}>home</Icon>
           </div>
         </Link>
         <span className="mx-2 h-10 w-0.5 rounded-md bg-outline-variant"></span>
@@ -28,7 +28,7 @@ export default function MainMenuFooter({
               pathname === "friends" ? "bg-[#E49A0A] text-inverse-primary" : ""
             } flex cursor-pointer items-center justify-center rounded-full p-2`}
           >
-            <Icon style={{ fontSize: 34 }}>group</Icon>
+            <Icon style={{ fontSize: 28 }}>group</Icon>
           </div>
         </Link>
         <span className="mx-2 h-10 w-0.5 rounded-md bg-outline-variant"></span>
@@ -38,7 +38,7 @@ export default function MainMenuFooter({
               pathname === "profile" ? "bg-[#E49A0A] text-inverse-primary" : ""
             } flex cursor-pointer items-center justify-center rounded-full p-2 pr-7`}
           >
-            <Icon style={{ fontSize: 34 }}>account_circle</Icon>
+            <Icon style={{ fontSize: 28 }}>account_circle</Icon>
           </div>
         </Link>
       </div>
