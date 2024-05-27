@@ -1,6 +1,6 @@
-import { AppHeader } from "~/app/_components/header";
+import { EventHeader } from "./_components/header";
 import type { Metadata } from "next/types";
-import { GroupFooter } from "./_components/footer";
+import { EventFooter } from "./_components/footer";
 
 export async function generateMetadata({
   params,
@@ -19,15 +19,13 @@ export default function ActiviteLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { groupId: string };
+  params: { groupId: string; eventId: string };
 }) {
   return (
     <div className="bg-surface flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 w-full ">
-        <AppHeader />
-      </header>
+      <EventHeader />
       <main className="flex-grow">{children}</main>
-      <GroupFooter basePath={`/app/g/${params.groupId}/`} />
+      <EventFooter basePath={`/app/g/${params.groupId}/e/${params.groupId}`} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { AppHeader } from "~/app/_components/header";
+import { GroupHeader } from "./_components/header";
 import type { Metadata } from "next/types";
 import { GroupFooter } from "./_components/footer";
 
@@ -23,9 +23,8 @@ export default function ActiviteLayout({
 }) {
   return (
     <div className="bg-surface flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 w-full ">
-        <AppHeader />
-      </header>
+      <GroupHeader />
+
       <main className="flex-grow">{children}</main>
       <GroupFooter basePath={`/app/g/${params.groupId}/`} />
     </div>

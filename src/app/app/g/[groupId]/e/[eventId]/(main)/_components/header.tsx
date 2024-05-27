@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export function GroupHeader() {
+export function EventHeader() {
   return (
     <>
       <header className="bg-surface sticky top-0 z-10 mx-2 flex h-16 items-center justify-between border-b border-inverse-surface  px-4">
