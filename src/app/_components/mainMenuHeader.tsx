@@ -15,7 +15,7 @@ export default function MainMenuHeader() {
           <Link href="/notifications">
             <span
               style={{ fontSize: 36 }}
-              className="material-icons animate-shake relative mr-2 mt-2 animate-ping cursor-pointer text-[#FF3040]"
+              className="material-icons animate-shake relative ml-4 mt-2 animate-ping cursor-pointer text-[#FF3040]"
             >
               notifications
             </span>
