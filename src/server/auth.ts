@@ -7,7 +7,7 @@ import {
 import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
-import { env } from "~/env.mjs";
+import { env } from "~/env.js";
 import { db } from "~/server/db";
 import { DrizzleAdapter } from "@next-auth/drizzle-adapter";
 import { users } from "~/server/db/schema";
