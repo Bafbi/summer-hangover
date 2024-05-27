@@ -217,7 +217,7 @@ export const groupsMembersRelations = relations(groupsMembers, ({ one }) => ({
 export const events = createTable(
   "event",
   {
-    id: int("id", { mode: "number" }),
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     groupId: int("groupId", { mode: "number" })
       .notNull()
       .references(() => groups.id),
@@ -296,9 +296,13 @@ export const messagesRelations = relations(messages, ({ one }) => ({
 export const activities = createTable(
   "activity",
   {
-    id: int("id", { mode: "number" }),
-    eventId: int("eventId", { mode: "number" }),
-    groupId: int("groupId", { mode: "number" }),
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    eventId: int("eventId", { mode: "number" })
+      .notNull()
+      .references(() => events.id),
+    groupId: int("groupId", { mode: "number" })
+      .notNull()
+      .references(() => groups.id),
     createdBy: text("createdBy", { length: 255 })
       .notNull()
       .references(() => users.id),
