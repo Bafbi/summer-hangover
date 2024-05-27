@@ -29,18 +29,18 @@ async function CrudShowcase() {
   const session = await getServerAuthSession();
   if (!session?.user) return null;
 
-  const friends = await api.friend.getFriends();
+  const groups = await api.group.getGroups();
 
-  console.log(friends);
+  console.log(groups);
 
   return (
     <div className="w-full max-w-xs">
       <h2 className="text-2xl font-bold">Friends</h2>
       <ul>
-        {friends.map((friend) => (
-          <li key={friend.friendId} className="flex items-center space-x-2">
+        {groups && groups.groups.map(({group}) => (
+          <li key={group.id} className="flex items-center space-x-2">
             <span className="material-icons">person</span>
-            <span>{friend.friendId}</span>
+            <span>{group.name}</span>
           </li>
         ))}
       </ul>
