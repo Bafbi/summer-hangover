@@ -5,7 +5,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
-import { DrizzleAdapter } from "@next-auth/drizzle-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 
 export default NextAuth({
   providers: [
