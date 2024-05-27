@@ -115,6 +115,7 @@ const Menu = () => {
       </Head>
       <MainMenuHeader />
       <div className="flex h-screen flex-col ">
+        {/* Partie qui sert à créer le nouveau groupe */}
         {isCreatingGroup ? (
           <main className="bg-surface mt-16 flex-grow p-4 text-on-surface-variant">
             <div className="mb-4 flex justify-center">
@@ -173,7 +174,7 @@ const Menu = () => {
                       type="checkbox"
                       checked={selectedContacts.includes(contact.id)}
                       onChange={() => handleCheckboxChange(contact.id)}
-                      className="text-indigo-600 border-gray-300 focus:ring-indigo-500 h-4 w-4 rounded"
+                      className="border-gray-300 mb-2 h-5 w-5 rounded"
                     />
                   </div>
                 ))}
@@ -196,6 +197,17 @@ const Menu = () => {
           </main>
         ) : (
           <main className="bg-surface mt-16 grid flex-grow auto-rows-min grid-cols-2 gap-4 overflow-y-auto p-4">
+            {/* Case pour ajouter un nouveau groupe */}
+            <div
+              onClick={handleAddGroupClick}
+              className="border-th bg-primary-container relative flex h-40 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-current p-2 text-left"
+            >
+              <span className="material-icons">add</span>
+
+              <p className="text-center">Ajouter un nouveau groupe</p>
+            </div>
+
+            {/* Affiche tout les groupes auquel l'user appartient déjà */}
             {groups.map((group, index) => (
               <Link
                 key={index}
@@ -208,15 +220,6 @@ const Menu = () => {
                 </div>
               </Link>
             ))}
-            {/* Case pour ajouter un nouveau groupe */}
-            <div
-              onClick={handleAddGroupClick}
-              className="border-th bg-primary-container relative flex h-40 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-current p-2 text-left"
-            >
-              <span className="material-icons">add</span>
-
-              <p className="text-center">Ajouter un nouveau groupe</p>
-            </div>
           </main>
         )}
       </div>

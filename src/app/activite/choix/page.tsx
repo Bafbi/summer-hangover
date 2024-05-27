@@ -70,7 +70,7 @@ export default function Home() {
           {events.map((event) => (
             <div
               key={event.id}
-              className={`aspect-card bg-surface-variant block flex min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl  outline-tertiary ${favorite === event.id ? "outline" : ""}`}
+              className={`aspect-card bg-surface-variant flex min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl  outline-tertiary ${favorite === event.id ? "outline" : ""}`}
               onTouchStart={() => {
                 setSelectedEvent(event);
                 timeout.current = setTimeout(() => {
