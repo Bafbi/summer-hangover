@@ -2,15 +2,11 @@
 import React from "react";
 import MainMenuFooter from "~/app/_components/mainMenuFooter";
 import Head from "next/head";
-import { Main } from "next/document";
-import MainMenuHeader from "../_components/mainMenuHeader";
+import MainMenuHeader from "~/app/_components/mainMenuHeader";
 
 const Profile = () => {
   return (
     <>
-      <Head>
-        <title>{`Summer hangover`}</title>
-      </Head>
       <div className="flex h-screen flex-col">
         <MainMenuHeader />
 
