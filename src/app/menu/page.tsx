@@ -54,29 +54,29 @@ const Menu = () => {
     },
     {
       id: 3,
-      name: "Groupe 3",
-      creator: "Alice Johnson",
+      name: "Anniv Nolan",
+      creator: "Nolan Cacheux",
       href: "/other-content-3",
       imageUrl: "/images/group3.jpg",
     },
     {
       id: 4,
-      name: "Groupe 4",
-      creator: "Bob Brown",
+      name: "Fin de projet",
+      creator: "Enzo Leroux",
       href: "/other-content-4",
       imageUrl: "/images/group4.jpg",
     },
     {
       id: 5,
-      name: "Groupe 5",
-      creator: "Carol White",
+      name: "Chicha kalud",
+      creator: "Matthieu Baum",
       href: "/other-content-5",
       imageUrl: "/images/group5.jpg",
     },
     {
       id: 6,
-      name: "Groupe 6",
-      creator: "Jean Marqc",
+      name: "The Room",
+      creator: "David Denoyelle",
       href: "/other-content-5",
       imageUrl: "/images/group5.jpg",
     },
@@ -196,31 +196,62 @@ const Menu = () => {
             </div>
           </main>
         ) : (
-          <main className="bg-surface mt-16 grid flex-grow auto-rows-min grid-cols-2 gap-4 overflow-y-auto p-4">
+          <>
+            <main className="bg-surface mb-24 mt-16 flex-grow overflow-y-auto p-4">
+              {/* Affiche tout les groupes auquel l'user appartient déjà */}
+              {groups.map((group, index) => (
+                <Link
+                  key={index}
+                  href={group.href}
+                  className="bg-surface-variant mb-4 flex h-28 flex-col overflow-hidden rounded-md"
+                >
+                  <div className="flex items-center justify-between border-b border-outline-variant px-1 pb-1 pt-2">
+                    <span className="text-xl font-semibold">{group.name}</span>
+                    <span className="text-right">
+                      Par <span className="font-semibold">{group.creator}</span>
+                    </span>
+                  </div>
+                  <div>
+                    {/* Affiche les membres du groupes sous la forme :
+                    Nom1 Prénom1, Nom2 Prénom2, Nom3 Prénom3, et n autres personnes */}
+                    <div className="px-1 py-1">
+                      <span
+                        style={{ fontSize: 18 }}
+                        className="material-icons pl-1 pr-2 pt-2"
+                      >
+                        people
+                      </span>
+                      <span className="text-left text-sm text-on-surface-variant">
+                        {contacts
+                          .filter((contact) => group.id % contact.id === 0)
+                          .map(
+                            (contact) =>
+                              `${contact.firstName} ${contact.lastName}`,
+                          )
+                          .join(", ")}
+                        {contacts.length > 3
+                          ? `, et ${contacts.length - 3} autres personnes`
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              <div className="pointer-events-none fixed bottom-24 left-0 right-0 h-16 bg-gradient-to-t from-surface to-transparent"></div>
+            </main>
             {/* Case pour ajouter un nouveau groupe */}
             <div
               onClick={handleAddGroupClick}
-              className="border-th bg-primary-container relative flex h-40 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-current p-2 text-left"
+              className="border-th bg-primary-container fixed bottom-2 left-4 right-4 flex h-24 
+              cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md border-current px-4 text-left"
             >
-              <span className="material-icons">add</span>
+              <span style={{ fontSize: 40 }} className="material-icons">
+                add
+              </span>
 
               <p className="text-center">Ajouter un nouveau groupe</p>
             </div>
-
-            {/* Affiche tout les groupes auquel l'user appartient déjà */}
-            {groups.map((group, index) => (
-              <Link
-                key={index}
-                href={group.href}
-                className="bg-surface-variant flex h-40 flex-col overflow-hidden rounded-xl"
-              >
-                <div className="flex flex-col p-2">
-                  <span className="font-semibold">{group.name}</span>
-                  <span className="text-xs">Par {group.creator}</span>
-                </div>
-              </Link>
-            ))}
-          </main>
+          </>
         )}
       </div>
     </>
