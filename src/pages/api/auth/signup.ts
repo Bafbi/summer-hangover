@@ -1,3 +1,4 @@
+// src/pages/api/auth/signup.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
 import { db } from '~/server/db';

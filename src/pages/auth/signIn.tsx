@@ -1,9 +1,10 @@
+// src/pages/auth/signIn.tsx
 import { GetServerSideProps } from 'next';
 import { getProviders, signIn } from 'next-auth/react';
 import { useState, FormEvent } from 'react';
 import Image from 'next/image';
-import styles from '../../styles/customAuth.module.css';
 import axios from 'axios';
+import styles from '../../styles/customAuth.module.css';
 
 interface Provider {
   id: string;

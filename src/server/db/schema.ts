@@ -8,15 +8,39 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
+/**
+ * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
+ * database instance for multiple projects.
+ *
+ * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
+ */
 export const createTable = sqliteTableCreator(
   (name) => `summer-hangover_${name}`,
+);
+
+export const posts = createTable(
+  "post",
+  {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    name: text("name", { length: 256 }),
+    createdById: text("createdById", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: int("created_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: int("updatedAt", { mode: "timestamp" }),
+  },
+  (example) => ({
+    createdByIdIdx: index("createdById_idx").on(example.createdById),
+    nameIndex: index("name_idx").on(example.name),
+  }),
 );
 
 export const users = createTable("user", {
   id: text("id", { length: 255 }).notNull().primaryKey(),
   name: text("name", { length: 255 }),
   email: text("email", { length: 255 }).notNull(),
-  password: text("password", { length: 255 }).notNull(), // Assurez-vous que ce champ est présent
   emailVerified: int("emailVerified", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
@@ -34,7 +58,6 @@ export const usersRelations = relations(users, ({ many }) => ({
   eventsCreated: many(events, { relationName: "createdBy" }),
   activitiesCreated: many(activities, { relationName: "createdBy" }),
 }));
-
 
 enum FriendStatus {
   ACCEPTED = "ACCEPTED",
@@ -194,7 +217,7 @@ export const groupsMembersRelations = relations(groupsMembers, ({ one }) => ({
 export const events = createTable(
   "event",
   {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    id: int("id", { mode: "number" }),
     groupId: int("groupId", { mode: "number" })
       .notNull()
       .references(() => groups.id),
@@ -273,9 +296,9 @@ export const messagesRelations = relations(messages, ({ one }) => ({
 export const activities = createTable(
   "activity",
   {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    eventId: int("eventId", { mode: "number" }).notNull().references(() => events.id),
-    groupId: int("groupId", { mode: "number" }).notNull().references(() => groups.id),
+    id: int("id", { mode: "number" }),
+    eventId: int("eventId", { mode: "number" }),
+    groupId: int("groupId", { mode: "number" }),
     createdBy: text("createdBy", { length: 255 })
       .notNull()
       .references(() => users.id),
