@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function MainMenuHeader() {
   return (
@@ -10,12 +12,19 @@ export default function MainMenuHeader() {
       </div>
       <div className="flex justify-around space-x-7 pr-1 text-on-surface-variant">
         <div className="relative flex items-center justify-center ">
-          <span className="material-icons animate-shake relative animate-ping text-error">
-            notifications
-          </span>
+          <Link href="/notifications">
+            <span
+              style={{ fontSize: 36 }}
+              className="material-icons animate-shake relative mr-2 mt-2 animate-ping cursor-pointer text-[#FF3040]"
+            >
+              notifications
+            </span>
+          </Link>
         </div>
 
-        <span className="material-icons">account_circle</span>
+        <span style={{ fontSize: 36 }} className=" material-icons mt-2">
+          account_circle
+        </span>
       </div>
     </div>
   );
