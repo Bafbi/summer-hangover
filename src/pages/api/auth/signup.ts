@@ -1,4 +1,3 @@
-// src/pages/api/auth/signup.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
 import { db } from '~/server/db';
@@ -6,13 +5,16 @@ import { users } from '~/server/db/schema';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { name, email, password } = req.body;
+    const { firstName, lastName, age, description, email, password } = req.body;
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = {
         id: crypto.randomUUID(),
-        name,
+        firstName,
+        lastName,
+        age: parseInt(age, 10), // Convert age to integer
+        description,
         email,
         password: hashedPassword,
       };

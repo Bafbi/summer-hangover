@@ -1,10 +1,10 @@
-// src/pages/auth/signIn.tsx
 import { GetServerSideProps } from 'next';
 import { getProviders, signIn } from 'next-auth/react';
 import { useState, FormEvent } from 'react';
 import Image from 'next/image';
-import axios from 'axios';
+import { useRouter } from 'next/router';
 import styles from '../../styles/customAuth.module.css';
+import axios from 'axios';
 
 interface Provider {
   id: string;
@@ -18,39 +18,36 @@ interface SignInProps {
 export default function SignIn({ providers }: SignInProps) {
   const [showSignUp, setShowSignUp] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+    firstName: '',
+    lastName: '',
     age: '',
     description: '',
-    file: null
+    email: '',
+    password: '',
   });
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      setFormData({
-        ...formData,
-        [name]: files[0]
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleSignUp = async (event: FormEvent) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('/api/auth/signup', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
+      await axios.post('/api/auth/signup', formData);
+      router.push({
+        pathname: '/',
+        query: {
+          showPopup: 'true',
+          message: 'Vous êtes bien inscrit',
+          type: 'success',
+        },
       });
-      console.log('User registered successfully', response.data);
     } catch (error) {
       console.error('Error registering user', error);
     }
@@ -60,12 +57,18 @@ export default function SignIn({ providers }: SignInProps) {
     event.preventDefault();
 
     try {
-      const response = await axios.post('/api/auth/signin', {
+      const result = await signIn("credentials", {
+        redirect: false,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
-      const { token } = response.data;
-      console.log('User logged in successfully', token);
+
+      if (result?.error) {
+        console.error('Error logging in user', result.error);
+      } else {
+        console.log('User logged in successfully');
+        // Redirect to a page if needed
+      }
     } catch (error) {
       console.error('Error logging in user', error);
     }
@@ -87,11 +90,10 @@ export default function SignIn({ providers }: SignInProps) {
         <div className={styles.customFormContainer}>
           <form onSubmit={handleSignUp}>
             <h2 className={styles.customHeader}>Inscription avec Summer</h2>
-            <input type="text" name="name" placeholder="Prénom" required className={styles.customInput} onChange={handleChange} />
-            <input type="text" name="name" placeholder="Nom" required className={styles.customInput} onChange={handleChange} />
+            <input type="text" name="firstName" placeholder="Prénom" required className={styles.customInput} onChange={handleChange} />
+            <input type="text" name="lastName" placeholder="Nom" required className={styles.customInput} onChange={handleChange} />
             <input type="number" name="age" placeholder="Âge" required className={styles.customInput} onChange={handleChange} />
             <textarea name="description" placeholder="Description" required className={styles.customInput} onChange={handleChange} />
-            <input type="file" name="file" required className={styles.customFileInput} onChange={handleChange} />
             <input type="email" name="email" placeholder="Email" required className={styles.customInput} onChange={handleChange} />
             <input type="password" name="password" placeholder="Mot de passe" required className={styles.customInput} onChange={handleChange} />
             <button type="submit" className={styles.customFormButton}>S'inscrire avec Summer</button>
@@ -109,16 +111,19 @@ export default function SignIn({ providers }: SignInProps) {
               <button type="button" className={styles.customLinkButton} onClick={() => setShowSignUp(true)}>Pas de compte? S'inscrire</button>
             </form>
           </div>
-          {Object.values(providers).map((provider) => (
-            <button
-              key={provider.name}
-              className={styles.providerButton}
-              style={{ maxWidth: '320px' }} // Même largeur que le conteneur de formulaire
-              onClick={() => signIn(provider.id)}
-            >
-              {`Se connecter avec ${provider.name}`}
-            </button>
-          ))}
+          {Object.values(providers).map((provider) => {
+            if (provider.id === 'credentials') return null; // Exclude credentials provider from rendering as a button
+            return (
+              <button
+                key={provider.name}
+                className={styles.providerButton}
+                style={{ maxWidth: '320px' }} // Same width as the form container
+                onClick={() => signIn(provider.id)}
+              >
+                {`Se connecter avec ${provider.name}`}
+              </button>
+            );
+          })}
         </>
       )}
     </div>

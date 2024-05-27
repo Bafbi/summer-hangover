@@ -39,13 +39,18 @@ export const posts = createTable(
 
 export const users = createTable("user", {
   id: text("id", { length: 255 }).notNull().primaryKey(),
-  name: text("name", { length: 255 }),
+  firstName: text("firstName", { length: 255 }).notNull(),
+  lastName: text("lastName", { length: 255 }).notNull(),
+  age: int("age").notNull(),
+  description: text("description", { length: 255 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
+  password: text("password", { length: 255 }).notNull(),
   emailVerified: int("emailVerified", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
   image: text("image", { length: 255 }),
 });
+
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
