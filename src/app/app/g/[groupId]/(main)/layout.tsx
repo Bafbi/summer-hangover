@@ -24,7 +24,6 @@ export default function ActiviteLayout({
   return (
     <div className="bg-surface flex min-h-screen flex-col">
       <GroupHeader />
-
       <main className="flex-grow">{children}</main>
       <GroupFooter basePath={`/app/g/${params.groupId}/`} />
     </div>

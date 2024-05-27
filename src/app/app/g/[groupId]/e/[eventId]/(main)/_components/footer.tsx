@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export enum EventSection {
   CHAT = "",
@@ -16,7 +16,7 @@ export function EventFooter({ basePath }: { basePath: string }) {
     <footer className="bg-surface sticky bottom-0 mx-2 flex h-16 flex-row items-center justify-around border-t border-inverse-surface">
       <Link href={`${basePath}/${EventSection.BUDGETS}`}>
         <span
-          className={`material-icons ${pathname.endsWith(EventSection.BUDGETS) ? "text-primary" : ""}`}
+          className={`material-icons ${pathname.includes(EventSection.BUDGETS) ? "text-primary" : ""}`}
         >
           account_balance_wallet
         </span>
@@ -24,7 +24,7 @@ export function EventFooter({ basePath }: { basePath: string }) {
 
       <Link href={`${basePath}/`}>
         <span
-          className={`material-icons ${!pathname.endsWith(EventSection.ACTIVITIES) && !pathname.endsWith(EventSection.BUDGETS) && "text-primary"}`}
+          className={`material-icons ${!pathname.includes(EventSection.ACTIVITIES) && !pathname.includes(EventSection.BUDGETS) && "text-primary"}`}
         >
           chat
         </span>
@@ -32,7 +32,7 @@ export function EventFooter({ basePath }: { basePath: string }) {
 
       <Link href={`${basePath}/${EventSection.ACTIVITIES}`}>
         <span
-          className={`material-icons ${pathname.endsWith(EventSection.ACTIVITIES) ? "text-primary" : ""}`}
+          className={`material-icons ${pathname.includes(EventSection.ACTIVITIES) ? "text-primary" : ""}`}
         >
           celebration
         </span>

@@ -18,7 +18,7 @@ export function GroupFooter({ basePath }: { basePath: string }) {
         <span
           className={`material-icons ${pathname.endsWith(GroupSection.HALLOFFAME) ? "text-primary" : ""}`}
         >
-          celebration
+          emoji_events
         </span>
       </Link>
 
@@ -34,7 +34,7 @@ export function GroupFooter({ basePath }: { basePath: string }) {
         <span
           className={`material-icons ${pathname.endsWith(GroupSection.EVENTS) ? "text-primary" : ""}`}
         >
-          account_balance_wallet
+          event
         </span>
       </Link>
     </footer>
