@@ -37,11 +37,11 @@ export default function Home() {
       {cards.map(card => (
         <div key={card.id} className="card-container transition flex justify-center items-center" onClick={() => handleFlip(card.id)}>
           <div className={`card ${card.isFlipped ? 'flipped' : ''}`}>
-            <div className="front bg-surface-variant rounded-lg max-w-lg w-full">
+            <div className="front bg-surface-variant rounded-lg max-w-lg w-full" >
             <div className="award-section bg-secondary-container font-semibold">
-            <span className="material-icons text-primary">military_tech</span>
+            {/* <span className="material-icons text-primary">military_tech</span> */}
             </div>
-              <div className="text-lg font-bold">{card.question}</div>
+              <div className="text-lg font-bold m-auto">{card.question}</div>
               <div className="answer-section bg-secondary-container">
                 <span className="material-icons">touch_app</span>
               </div>

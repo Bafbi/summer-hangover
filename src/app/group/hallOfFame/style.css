@@ -25,25 +25,26 @@
   backface-visibility: hidden;
   justify-content: center;
   align-items: center;
+  text-align: center;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .card .back {
   transform: rotateY(180deg);
 }
 
 .card .front .answer-section{
-  margin-top: auto; /* Pousse la section réponse vers le bas */
   width: 100%;
-  padding: 10px;
+  padding: 4px;
   text-align: center;
   border-radius: 8px;
 }
 
 .card .front .award-section {
   width: 100%;
-  padding: 4px;
+  padding: 15px;
   text-align: center;
   border-radius: 8px;
 }
