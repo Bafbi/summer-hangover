@@ -9,7 +9,7 @@ export function SendFriendRequest() {
   const router = useRouter();
   const [friendId, setFriendId] = useState("");
 
-  const sendFriendRequest = api.friend.sendFriendRequest.useMutation({
+  const sendFriendRequest = api.group.createGroup.useMutation({
     onSuccess: () => {
       router.refresh();
       setFriendId("");
@@ -20,7 +20,7 @@ export function SendFriendRequest() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        sendFriendRequest.mutate({ friendId });
+        sendFriendRequest.mutate({ name: "pis" });
       }}
       className="flex flex-col gap-2"
     >
