@@ -44,13 +44,19 @@ const Notifications = () => {
     <div className="bg-surface flex h-screen flex-col">
       <MainMenuHeader />
 
-      <main className="bg-surface mt-12 flex-grow overflow-y-auto overflow-x-hidden px-4 py-4">
+      <main className="bg-surface mt-12 flex-grow overflow-y-auto overflow-x-hidden px-2 py-4">
         {/* Titre de la section notif + bouton retour et marqué comme lu */}
-        <div className="mb-8 mt-3 flex items-center justify-between">
+        <div className="bg-surface-variant mb-4 mt-6 flex h-14 flex-col items-center rounded-md">
+          <h1 className="pt-2 text-4xl font-semibold">Notifications</h1>
+        </div>
+        <div className="mb-8 ml-52 mt-3 flex items-center justify-between">
           <div className="flex items-center space-x-1">
-            <button className="mr-3 rounded-md bg-inverse-primary px-4 py-1 text-sm font-semibold text-inverse-surface">
-              Marquer <br />
-              comme lu
+            <button className="mr-3 rounded-md bg-inverse-primary px-5 py-1 text-sm font-semibold text-inverse-surface">
+              <span>
+                Marquer
+                <br />
+                comme lu
+              </span>
             </button>
             <Link
               href="/menu"
@@ -62,32 +68,8 @@ const Notifications = () => {
             </Link>
           </div>
         </div>
-        <h1 className="text-4xl font-semibold">Notifications</h1>
 
         {/* Section des notifications */}
-        <div className="mt-12">
-          <h1 className="mb-4 text-2xl font-semibold">Notifications</h1>
-          {notifications.map((section, index) => (
-            <div key={index} className="mb-6">
-              <h2 className="mb-2 text-xl font-semibold">{section.date} :</h2>
-              <ul>
-                {section.items.length > 0 ? (
-                  section.items.map((item) => (
-                    <li key={item.id} className="mb-2">
-                      {item.text}{" "}
-                      <a href={item.link} className="">
-                        {item.groupName || item.eventName}
-                      </a>
-                      .
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-gray-500">Aucune notification.</li>
-                )}
-              </ul>
-            </div>
-          ))}
-        </div>
       </main>
     </div>
   );

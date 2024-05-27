@@ -197,7 +197,7 @@ const Menu = () => {
           </main>
         ) : (
           <>
-            <main className="bg-surface mb-24 mt-16 flex-grow overflow-y-auto p-4">
+            <main className="mb-18 bg-surface mt-16 flex-grow overflow-y-auto p-4">
               {/* Affiche tout les groupes auquel l'user appartient déjà */}
               {groups.map((group, index) => (
                 <Link
@@ -205,7 +205,10 @@ const Menu = () => {
                   href={group.href}
                   className="bg-surface-variant mb-4 flex h-28 flex-col overflow-hidden rounded-md"
                 >
-                  <div className="flex items-center justify-between border-b border-outline-variant px-1 pb-1 pt-2">
+                  <div
+                    className="bg-secondary-container flex items-center justify-between border-b
+                   border-outline-variant px-1 pb-1 pt-2"
+                  >
                     <span className="text-xl font-semibold">{group.name}</span>
                     <span className="text-right">
                       Par <span className="font-semibold">{group.creator}</span>
@@ -237,19 +240,19 @@ const Menu = () => {
                   </div>
                 </Link>
               ))}
-              <div className="pointer-events-none fixed bottom-24 left-0 right-0 h-16 bg-gradient-to-t from-surface to-transparent"></div>
             </main>
             {/* Case pour ajouter un nouveau groupe */}
             <div
               onClick={handleAddGroupClick}
-              className="border-th bg-primary-container fixed bottom-2 left-4 right-4 flex h-24 
-              cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md border-current px-4 text-left"
+              className="bg-primary-container fixed bottom-0 flex h-20
+              w-full flex-row items-center justify-center"
             >
-              <span style={{ fontSize: 40 }} className="material-icons">
+              <span className="text-xl font-semibold">
+                Ajouter un nouveau groupe
+              </span>
+              <span style={{ fontSize: 38 }} className="material-icons">
                 add
               </span>
-
-              <p className="text-center">Ajouter un nouveau groupe</p>
             </div>
           </>
         )}
