@@ -1,10 +1,12 @@
+// src/pages/auth/signIn.tsx
 import { GetServerSideProps } from 'next';
 import { getProviders, signIn } from 'next-auth/react';
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from '../../styles/customAuth.module.css';
 import axios from 'axios';
+import { Popup } from '../../components/Popup';
 
 interface Provider {
   id: string;
@@ -26,6 +28,22 @@ export default function SignIn({ providers }: SignInProps) {
     password: '',
   });
   const router = useRouter();
+  const [popup, setPopup] = useState<{ message: string, type: 'error' | 'success' | 'warning' | null } | null>(null);
+
+  useEffect(() => {
+    if (router.query.showPopup) {
+      setPopup({
+        message: router.query.message as string,
+        type: router.query.type as 'error' | 'success' | 'warning' | null,
+      });
+
+      // Clear the query parameters after displaying the popup
+      router.replace({
+        pathname: router.pathname,
+        query: {},
+      }, undefined, { shallow: true });
+    }
+  }, [router.query]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -55,6 +73,7 @@ export default function SignIn({ providers }: SignInProps) {
 
   const handleSignInSummer = async (event: FormEvent) => {
     event.preventDefault();
+    setPopup(null);
 
     try {
       const result = await signIn("credentials", {
@@ -65,9 +84,17 @@ export default function SignIn({ providers }: SignInProps) {
 
       if (result?.error) {
         console.error('Error logging in user', result.error);
+        if (result.error === "Invalid email") {
+          setPopup({ message: "Email invalide", type: 'warning' });
+        } else if (result.error === "Invalid password") {
+          setPopup({ message: "Mot de passe erroné", type: 'warning' });
+        } else {
+          setPopup({ message: "Erreur de connexion", type: 'error' });
+        }
       } else {
         console.log('User logged in successfully');
-        // Redirect to a page if needed
+        setPopup({ message: `Bienvenue ${formData.firstName}`, type: 'success' });
+        router.push('/app');
       }
     } catch (error) {
       console.error('Error logging in user', error);
@@ -76,6 +103,9 @@ export default function SignIn({ providers }: SignInProps) {
 
   return (
     <div className={styles.customSigninContainer}>
+      {popup && (
+        <Popup message={popup.message} type={popup.type} />
+      )}
       <div className={styles.logoContainer}>
         <Image
           className={styles.logoImage}
