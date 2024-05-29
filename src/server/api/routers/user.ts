@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers, users } from "~/server/db/schema";
 
-export const contactsRouter = createTRPCRouter({
+export const userRouter = createTRPCRouter({
 
     getContacts: protectedProcedure.query(async({ ctx }) => {
         const contactQuery =  await ctx.db.query.users.findFirst({
@@ -15,7 +15,21 @@ export const contactsRouter = createTRPCRouter({
               with: {
                 group: 
                 { columns: {},
-                    with: {members: {columns:{userId: true}}}
+                    with: {
+                      members: {
+                        columns:{
+                          userId: true
+                        },
+                        with: {
+                          user: {
+                            columns:{
+                              name:true
+                            }
+                          }
+                        }
+                        }
+                  }
+
                 }
               },
             },
@@ -25,7 +39,7 @@ export const contactsRouter = createTRPCRouter({
         const seenUserIds = new Set<string>();
         const filteredGroups = contactQuery.groups.map(group => ({
           members: group.group.members.filter(member => {
-            if (!seenUserIds.has(member.userId)) {
+            if (!seenUserIds.has(member.userId) && member.userId!=ctx.session.user.id) {
               seenUserIds.add(member.userId);
               return true;
             }

@@ -20,7 +20,10 @@ export function SendFriendRequest() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        sendFriendRequest.mutate({ name: "pis" });
+        sendFriendRequest.mutate({
+          name: "pis",
+          members: []
+        });
       }}
       className="flex flex-col gap-2"
     >

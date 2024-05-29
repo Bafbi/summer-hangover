@@ -7,6 +7,10 @@ import Link from "next/link";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import router from "next/router";
+import { createTRPCRouter } from "~/server/api/trpc";
+
+
+
 
 const CreateGroup = () => {
   const [newGroupName, setNewGroupName] = useState("");
@@ -14,13 +18,8 @@ const CreateGroup = () => {
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const router = useRouter();
 
-  const contacts = [
-    { id: "1", firstName: "Paul", lastName: "Pousset" },
-    { id: "2", firstName: "Julien", lastName: "De Almeida" },
-    { id: "3", firstName: "Nathan", lastName: "Eudeline" },
-    { id: "4", firstName: "Enzo", lastName: "Leroux" },
-    { id: "5", firstName: "John", lastName: "Doe" },
-  ];
+
+  const { data: contactData, isLoading } = api.user.getContacts.useQuery();
 
   const handleCheckboxChange = (contactId: string) => {
     setSelectedContacts((prevSelectedContacts) => {
@@ -96,28 +95,30 @@ const CreateGroup = () => {
               Contacts à ajouter :
             </label>
             <div className="border-gray-300 mt-1 h-52 overflow-y-auto rounded-md border p-2">
-              {contacts.map((contact) => (
-                <div
-                  key={contact.id}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center pb-3">
-                    <span style={{ fontSize: 38 }} className="material-icons">
-                      account_box
-                    </span>
-                    <span className="ml-2 text-xl font-semibold">
-                      {contact.firstName} {contact.lastName}
-                    </span>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedContacts.includes(contact.id)}
-                    onChange={() => handleCheckboxChange(contact.id)}
-                    className="border-gray-300 mb-2 h-5 w-5 rounded"
-                  />
-                </div>
-                
-              ))}
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : (
+                contactData?.groups.flatMap((group: { members: any[]; }) =>
+                  group.members.map(member => (
+                    <div key={member.userId} className="flex items-center justify-between">
+                      <div className="flex items-center pb-3">
+                        <span style={{ fontSize: 38 }} className="material-icons">
+                          account_box
+                        </span>
+                        <span className="ml-2 text-xl font-semibold">
+                          {member.user.name}
+                        </span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={selectedContacts.includes(member.userId)}
+                        onChange={() => handleCheckboxChange(member.userId)}
+                        className="border-gray-300 mb-2 h-5 w-5 rounded"
+                      />
+                    </div>
+                  ))
+                )
+              )}
             </div>
           </div>
           <div className="mt-8 flex justify-center">
