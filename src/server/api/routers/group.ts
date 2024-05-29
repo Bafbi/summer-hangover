@@ -24,14 +24,13 @@ export const groupRouter = createTRPCRouter({
         .values({
           userAdmin: ctx.session.user.id,
           createdBy: ctx.session.user.id,
-
           description: input.description,
           name: input.name,
         })
         .returning({ groupId: groups.id });
       if (id[0] == null) return;
-      const {groupId} = id[0];
-      
+      const { groupId } = id[0];
+
       const users = input.members.map((user) => ({
         userId: user,
         groupId: groupId,
@@ -39,22 +38,43 @@ export const groupRouter = createTRPCRouter({
       users.push({
         userId: ctx.session.user.id,
         groupId: groupId,
-      })
+      });
 
       await ctx.db.insert(groupsMembers).values(users);
     }),
 
-  getGroups: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.query.users.findFirst({
+  getGroups: protectedProcedure.query(async ({ ctx }) => {
+    const groupsQuery = await ctx.db.query.users.findFirst({
       columns: {},
       where: (users, { eq }) => eq(users.id, ctx.session.user.id),
       with: {
         groups: {
+          columns: {},
           with: {
-            group: true,
+            group: {
+              with: {
+                createdBy: {
+                  columns: {
+                    name: true,
+                  },
+                },
+                members: {
+                  columns: {},
+                  with: {
+                    user: {
+                      columns: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
+    if (groupsQuery == undefined) return null;
+    return groupsQuery.groups.map((group) => group.group);
   }),
 });
