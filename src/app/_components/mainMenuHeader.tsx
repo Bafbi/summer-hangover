@@ -1,3 +1,4 @@
+import Link from "next/link";
 import * as React from "react";
 
 export default function MainMenuHeader() {
@@ -9,13 +10,25 @@ export default function MainMenuHeader() {
         </p>
       </div>
       <div className="flex justify-around space-x-7 pr-1 text-on-surface-variant">
-        <div className="relative flex items-center justify-center ">
-          <span className="material-icons animate-shake relative animate-ping text-error">
+        <Link
+          href="/app/notification"
+          className="relative flex items-center justify-center "
+        >
+          <span
+            style={{ fontSize: 40 }}
+            className="material-icons animate-shake relative animate-ping text-error"
+          >
             notifications
           </span>
-        </div>
-
-        <span className="material-icons">account_circle</span>
+        </Link>
+        <Link
+          href="/app/profile"
+          className="relative flex items-center justify-center "
+        >
+          <span style={{ fontSize: 40 }} className="material-icons">
+            account_circle
+          </span>
+        </Link>
       </div>
     </div>
   );

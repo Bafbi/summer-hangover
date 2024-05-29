@@ -6,8 +6,6 @@ import Head from "next/head";
 import Link from "next/link";
 
 const Menu = () => {
-  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
-
   const groups = [
     {
       id: 1,
@@ -75,10 +73,6 @@ const Menu = () => {
     { id: 19, firstName: "Bob", lastName: "Marley" },
     { id: 20, firstName: "Stevie", lastName: "Wonder" },
   ];
-
-  const handleAddGroupClick = () => {
-    setIsCreatingGroup(true);
-  };
 
   return (
     <>
