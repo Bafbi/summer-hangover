@@ -22,6 +22,12 @@
   @apply mt-2 p-2 bg-button-bg text-white border-none rounded cursor-pointer w-full text-lg font-semibold transition duration-300;
 }
 
+/* src/styles/customAuth.module.css */
+.errorMessage {
+  color: red;
+  margin-bottom: 1em;
+}
+
 .customFormButton:hover {
   @apply bg-button-bg-hover;
 }

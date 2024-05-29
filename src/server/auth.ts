@@ -9,7 +9,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
-import { DrizzleAdapter } from "@next-auth/drizzle-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { users } from "~/server/db/schema";
 
 /**

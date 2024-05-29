@@ -7,7 +7,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "~/server/db";
 import { users, accounts, sessions, verificationTokens } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { env } from "~/env.mjs";
 

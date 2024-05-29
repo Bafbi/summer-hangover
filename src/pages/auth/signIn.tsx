@@ -1,4 +1,3 @@
-// src/pages/auth/signIn.tsx
 import { GetServerSideProps } from 'next';
 import { getProviders, signIn } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
@@ -27,14 +26,15 @@ export default function SignIn({ providers }: SignInProps) {
     email: '',
     password: '',
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
-  const [popup, setPopup] = useState<{ message: string, type: 'error' | 'success' | 'warning' | null } | null>(null);
+  const [popup, setPopup] = useState<{ message: string, type: 'success' | null } | null>(null);
 
   useEffect(() => {
     if (router.query.showPopup) {
       setPopup({
         message: router.query.message as string,
-        type: router.query.type as 'error' | 'success' | 'warning' | null,
+        type: router.query.type as 'success' | null,
       });
 
       // Clear the query parameters after displaying the popup
@@ -73,6 +73,7 @@ export default function SignIn({ providers }: SignInProps) {
 
   const handleSignInSummer = async (event: FormEvent) => {
     event.preventDefault();
+    setErrorMessage(null);
     setPopup(null);
 
     try {
@@ -85,19 +86,26 @@ export default function SignIn({ providers }: SignInProps) {
       if (result?.error) {
         console.error('Error logging in user', result.error);
         if (result.error === "Invalid email") {
-          setPopup({ message: "Email invalide", type: 'warning' });
+          setErrorMessage("Email invalide");
         } else if (result.error === "Invalid password") {
-          setPopup({ message: "Mot de passe erroné", type: 'warning' });
+          setErrorMessage("Mot de passe erroné");
         } else {
-          setPopup({ message: "Erreur de connexion", type: 'error' });
+          setErrorMessage("Erreur de connexion");
         }
       } else {
         console.log('User logged in successfully');
-        setPopup({ message: `Bienvenue ${formData.firstName}`, type: 'success' });
-        router.push('/app');
+        router.push({
+          pathname: '/',
+          query: {
+            showPopup: 'true',
+            message: 'Connexion Etablie',
+            type: 'success',
+          },
+        });
       }
     } catch (error) {
       console.error('Error logging in user', error);
+      setErrorMessage("Erreur de connexion");
     }
   };
 
@@ -135,6 +143,7 @@ export default function SignIn({ providers }: SignInProps) {
           <div className={styles.customFormContainer}>
             <form onSubmit={handleSignInSummer}>
               <h2 className={styles.customHeader}>Connexion avec Summer</h2>
+              {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
               <input type="email" name="email" placeholder="Email" required className={styles.customInput} onChange={handleChange} />
               <input type="password" name="password" placeholder="Mot de passe" required className={styles.customInput} onChange={handleChange} />
               <button type="submit" className={styles.customFormButton}>Se connecter avec Summer</button>
