@@ -11,21 +11,37 @@ import { groups, groupsMembers, users } from "~/server/db/schema";
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
-    .input(z.object({ name: z.string(), description: z.string().optional() }))
+    .input(
+      z.object({
+        name: z.string(),
+        description: z.string().optional(),
+        members: z.string().array(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-       const id = await ctx.db.insert(groups).values({
-        userAdmin: ctx.session.user.id,
-        createdBy: ctx.session.user.id,
-        
-        description: input.description,
-        name: input.name,
-      }).returning({groupId: groups.id })
-      if (id[0] == null) return;
-       await ctx.db.insert(groupsMembers).values({
-        userId: ctx.session.user.id,
+      const id = await ctx.db
+        .insert(groups)
+        .values({
+          userAdmin: ctx.session.user.id,
+          createdBy: ctx.session.user.id,
 
-        groupId: id[0].groupId,
+          description: input.description,
+          name: input.name,
+        })
+        .returning({ groupId: groups.id });
+      if (id[0] == null) return;
+      const {groupId} = id[0];
+      
+      const users = input.members.map((user) => ({
+        userId: user,
+        groupId: groupId,
+      }));
+      users.push({
+        userId: ctx.session.user.id,
+        groupId: groupId,
       })
+
+      await ctx.db.insert(groupsMembers).values(users);
     }),
 
   getGroups: protectedProcedure.query(({ ctx }) => {
@@ -36,7 +52,7 @@ export const groupRouter = createTRPCRouter({
         groups: {
           with: {
             group: true,
-          }
+          },
         },
       },
     });

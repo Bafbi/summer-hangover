@@ -4,36 +4,25 @@ import MainMenuFooter from "~/app/_components/mainMenuFooter";
 import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import Head from "next/head";
 import Link from "next/link";
+import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
+import router from "next/router";
 
 const CreateGroup = () => {
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupDescription, setNewGroupDescription] = useState("");
-  const [selectedContacts, setSelectedContacts] = useState<number[]>([]);
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const router = useRouter();
 
   const contacts = [
-    { id: 1, firstName: "Paul", lastName: "Pousset" },
-    { id: 2, firstName: "Julien", lastName: "De Almeida" },
-    { id: 3, firstName: "Nathan", lastName: "Eudeline" },
-    { id: 4, firstName: "Enzo", lastName: "Leroux" },
-    { id: 5, firstName: "John", lastName: "Doe" },
-    { id: 6, firstName: "Jane", lastName: "Smith" },
-    { id: 7, firstName: "Alice", lastName: "Johnson" },
-    { id: 8, firstName: "Bob", lastName: "Brown" },
-    { id: 9, firstName: "Michael", lastName: "Jackson" },
-    { id: 10, firstName: "Elvis", lastName: "Presley" },
-    { id: 11, firstName: "Freddie", lastName: "Mercury" },
-    { id: 12, firstName: "David", lastName: "Bowie" },
-    { id: 13, firstName: "Prince", lastName: "Rogers Nelson" },
-    { id: 14, firstName: "Whitney", lastName: "Houston" },
-    { id: 15, firstName: "Amy", lastName: "Winehouse" },
-    { id: 16, firstName: "Kurt", lastName: "Cobain" },
-    { id: 17, firstName: "Janis", lastName: "Joplin" },
-    { id: 18, firstName: "Jimi", lastName: "Hendrix" },
-    { id: 19, firstName: "Bob", lastName: "Marley" },
-    { id: 20, firstName: "Stevie", lastName: "Wonder" },
+    { id: "1", firstName: "Paul", lastName: "Pousset" },
+    { id: "2", firstName: "Julien", lastName: "De Almeida" },
+    { id: "3", firstName: "Nathan", lastName: "Eudeline" },
+    { id: "4", firstName: "Enzo", lastName: "Leroux" },
+    { id: "5", firstName: "John", lastName: "Doe" },
   ];
 
-  const handleCheckboxChange = (contactId: number) => {
+  const handleCheckboxChange = (contactId: string) => {
     setSelectedContacts((prevSelectedContacts) => {
       if (prevSelectedContacts.includes(contactId)) {
         return prevSelectedContacts.filter((id) => id !== contactId);
@@ -43,16 +32,14 @@ const CreateGroup = () => {
     });
   };
 
-  const handleConfirmClick = () => {
-    // Logic to handle group creation will go here
-    console.log("New group name:", newGroupName);
-    console.log("New group description:", newGroupDescription);
-    console.log("Selected contacts:", selectedContacts);
-    // Reset the form
-    setNewGroupName("");
-    setNewGroupDescription("");
-    setSelectedContacts([]);
-  };
+  const createGroup = api.group.createGroup.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      setNewGroupName("");
+      setNewGroupDescription("");
+      setSelectedContacts([])
+    },
+  });
 
   return (
     <>
@@ -70,6 +57,14 @@ const CreateGroup = () => {
               supervised_user_circle
             </span>
           </div>
+          <form onSubmit={(e) => {
+        e.preventDefault();
+        createGroup.mutate({
+          name: newGroupName,
+          members: selectedContacts,
+        });
+      }}>
+            
           <h1 className="-mt-2 text-center text-xl font-semibold">
             Créer un nouveau groupe de sortie :
           </h1>
@@ -121,16 +116,18 @@ const CreateGroup = () => {
                     className="border-gray-300 mb-2 h-5 w-5 rounded"
                   />
                 </div>
+                
               ))}
             </div>
           </div>
           <div className="mt-8 flex justify-center">
-            <Link
-              href="/app"
-              className="hover:bg-indigo-700 text-on surface h-15 w-35 bg-primary-container rounded-md px-6 py-3"
-            >
-              Confirmer
-            </Link>
+          <button
+        type="submit"
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+        disabled={createGroup.isPending}
+      >
+        {createGroup.isPending ? "Submitting..." : "Submit"}
+      </button>
             <Link
               href="/app"
               className="hover:bg-indigo-700 text-on h-15 w-35 surface bg-error ml-7 rounded-md px-6 py-3"
@@ -138,7 +135,9 @@ const CreateGroup = () => {
               Annuler
             </Link>
           </div>
+          </form>
         </main>
+        
       </div>
     </>
   );
