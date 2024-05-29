@@ -1,6 +1,7 @@
 // src/components/Popup.tsx
 import React, { useEffect } from 'react';
-import styles from './Popup.module.css';
+
+import styles from '../styles/popup.module.css';
 
 interface PopupProps {
   message: string;
