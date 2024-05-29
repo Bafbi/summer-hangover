@@ -59,7 +59,7 @@ const Notifications = () => {
               </span>
             </button>
             <Link
-              href="/menu"
+              href="/app"
               className="rounded-full bg-inverse-primary p-2 font-bold"
             >
               <span style={{ fontSize: 40 }} className="material-icons">
