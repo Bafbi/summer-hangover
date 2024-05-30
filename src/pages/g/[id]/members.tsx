@@ -29,7 +29,7 @@ const GroupMembersPage: NextPage<{ groupId: string }> = ({ groupId }) => {
     api.group.getMembers.useQuery({ groupId: groupId });
 
   const { mutate: removeMember } = api.group.removeMember.useMutation({
-    onSuccess: (_, variables) => {
+    onSuccess: (_: any, variables: { userId: string; }) => {
       const updatedMembers = members?.filter((m) => m.id !== variables.userId);
       setMembers(updatedMembers);
     },
@@ -44,13 +44,19 @@ const GroupMembersPage: NextPage<{ groupId: string }> = ({ groupId }) => {
 
   // Invitation links
 
+  type RouterOutputs = {
+    group: {
+      getInvitationLinks: any[]; // Replace 'any[]' with the actual type of getInvitationLinks
+    };
+  };
+
   const [invitationLinks, setInvitationLinks] = useState<
     RouterOutputs["group"]["getInvitationLinks"]
   >([]);
 
   const { mutate: generateInvitationLink } =
     api.group.generateInvitationLink.useMutation({
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         setInvitationLinks((links) => [...links, data]);
       },
     });
@@ -109,6 +115,7 @@ const GroupMembersPage: NextPage<{ groupId: string }> = ({ groupId }) => {
                   <span>{member.name}</span>
                   <button
                     onClick={() => removeMember({ groupId, userId: member.id })}
+                    title="Remove Member"
                   >
                     <FaTimes className="h-4 w-4 text-red-500" />
                   </button>
@@ -135,21 +142,17 @@ const GroupMembersPage: NextPage<{ groupId: string }> = ({ groupId }) => {
                   key={inviteLink.id}
                   className="item-center flex justify-between py-2"
                 >
-                  <div className="flex items-center">
-                    <span className="text-xs sm:text-base">
-                      {`https://summertrip.fr${router.basePath}/i/${inviteLink.link}`}
-                    </span>
-                    <button
-                      onClick={() =>
-                        copyToClipboard(
-                          `https://summertrip.fr${router.basePath}/i/${inviteLink.link}`
-                        )
-                      }
-                      className="ml-2"
-                    >
-                      <FaCopy className="h-4 w-4 text-primary" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() =>
+                      copyToClipboard(
+                        `https://summertrip.fr${router.basePath}/i/${inviteLink.link}`
+                      )
+                    }
+                    className="ml-2"
+                    title="Copy Invitation Link"
+                  >
+                    <FaCopy className="h-4 w-4 text-primary" />
+                  </button>
                   <div>
                     <button
                       onClick={() =>

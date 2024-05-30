@@ -3,7 +3,7 @@ import styles from '../styles/popup.module.css';
 
 interface PopupProps {
   message: string;
-  type: 'success';
+  type: 'success' | 'error' | null;
 }
 
 export const Popup: React.FC<PopupProps> = ({ message, type }) => {
@@ -19,7 +19,7 @@ export const Popup: React.FC<PopupProps> = ({ message, type }) => {
   }, []);
 
   return (
-    <div className={`${styles.popup} ${styles[type]}`}>
+    <div className={`${styles.popup} ${type && styles[type]}`}>
       {message}
     </div>
   );

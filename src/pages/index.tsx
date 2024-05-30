@@ -4,6 +4,7 @@ import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { Popup } from "../components/Popup"; // Import the Popup component
 import styles from '../styles/customAuth.module.css';
 
 const Home: NextPage = () => {
@@ -14,16 +15,17 @@ const Home: NextPage = () => {
   const [popupType, setPopupType] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
-    if (router.query.showPopup) {
-      setPopupMessage(router.query.message as string);
-      setPopupType(router.query.type as 'success' | 'error');
+    const showPopupFromStorage = localStorage.getItem('showPopup');
+    if (showPopupFromStorage) {
+      setPopupMessage(showPopupFromStorage);
+      setPopupType('success');
       setShowPopup(true);
+      localStorage.removeItem('showPopup');
       setTimeout(() => {
         setShowPopup(false);
-        router.replace('/', undefined, { shallow: true });
       }, 3000);
     }
-  }, [router.query]);
+  }, []);
 
   useEffect(() => {
     if (sessionData) {
@@ -57,9 +59,7 @@ const Home: NextPage = () => {
         </div>
       </main>
       {showPopup && (
-        <div className={`${styles.popup} ${popupType === 'success' ? styles.success : styles.error}`}>
-          {popupMessage}
-        </div>
+        <Popup message={popupMessage} type={popupType} />
       )}
     </>
   );

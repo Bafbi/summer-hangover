@@ -14,7 +14,7 @@ const GroupsPage: NextPage = () => {
     required: true,
   });
 
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]); // Add the 'Group' type
 
   const { data: groupsData, isLoading: groupsLoading } =
     api.group.getAll.useQuery();
@@ -38,7 +38,7 @@ const GroupsPage: NextPage = () => {
   const [endDate, setEndDate] = useState(new Date());
 
   const createGroupMutation = api.group.create.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: Group) => {
       setGroupName("");
       setGroupDescription("");
       setPlaceName("");
@@ -78,6 +78,7 @@ const GroupsPage: NextPage = () => {
           <button
             className="mx-4 h-full w-14"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            title="Toggle Menu"
           >
             <Image
               className="rounded-full"

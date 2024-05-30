@@ -40,6 +40,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 type PageType = "chat" | "planning" | "activity";
 
 const AppPage = (props: { groupId: string; } ) => {
+
   const { groupId } = props;
 
   const [page, setPage] = useState<PageType>("chat");
@@ -47,7 +48,7 @@ const AppPage = (props: { groupId: string; } ) => {
   const router = useRouter();
 
   const { data: groupData, isLoading: groupLoading } =
-    api.group.getById.useQuery({ id: groupId });
+    api.group.getById.useQuery({ id: groupId }); // Access the group property from the api object
 
   if ((!groupLoading && !groupData) || groupData === null)
     return router.push("/g");
@@ -67,7 +68,7 @@ const AppPage = (props: { groupId: string; } ) => {
         />
 
         {/* Content */}
-        <main className="flex-grow overflow-y-auto overflow-x-hidden bg-[#405340] px-0 py-0" style={{ height: 'calc(100vh - 220px)' }}>
+        <main className="flex-grow overflow-y-auto overflow-x-hidden bg-[#405340] px-0 py-0 main-container">
 
           {page === "chat" && <ChatComponent groupId={groupId} />}
           {page === "planning" && <PlanningComponent groupId={groupId} />}
@@ -83,6 +84,7 @@ const AppPage = (props: { groupId: string; } ) => {
                 page === "activity" ? "bg-[#E49A0A] text-[#1E5552]" : ""
               } rounded-full px-4 py-2`}
               onClick={() => setPage("activity")}
+              title="Activity"
             >
               <FaHeart className="h-12 w-12" />
             </button>
@@ -92,6 +94,7 @@ const AppPage = (props: { groupId: string; } ) => {
                 page === "chat" ? "bg-[#E49A0A] text-[#1E5552]" : ""
               } rounded-full px-4 py-2`}
               onClick={() => setPage("chat")}
+              title="Chat"
             >
               <FaComment className="h-12 w-12" />
             </button>
@@ -101,6 +104,7 @@ const AppPage = (props: { groupId: string; } ) => {
                 page === "planning" ? "bg-[#E49A0A] text-[#1E5552]" : ""
               } rounded-full px-4 py-2`}
               onClick={() => setPage("planning")}
+              title="Planning"
             >
               <FaCalendar className="h-12 w-12" />
             </button>

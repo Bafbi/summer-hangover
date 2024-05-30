@@ -16,6 +16,11 @@ interface SignInProps {
   providers: Record<string, Provider>;
 }
 
+interface PopupProps {
+  message: string;
+  type: 'success' | 'error' | null;
+}
+
 export default function SignIn({ providers }: SignInProps) {
   const [showSignUp, setShowSignUp] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,19 +36,18 @@ export default function SignIn({ providers }: SignInProps) {
   const [popup, setPopup] = useState<{ message: string, type: 'success' | null } | null>(null);
 
   useEffect(() => {
-    if (router.query.showPopup) {
+    const showPopupFromStorage = localStorage.getItem('showPopup');
+    if (showPopupFromStorage) {
       setPopup({
-        message: router.query.message as string,
-        type: router.query.type as 'success' | null,
+        message: showPopupFromStorage,
+        type: 'success',
       });
-
-      // Clear the query parameters after displaying the popup
-      router.replace({
-        pathname: router.pathname,
-        query: {},
-      }, undefined, { shallow: true });
+      localStorage.removeItem('showPopup');
+      setTimeout(() => {
+        setPopup(null);
+      }, 3000);
     }
-  }, [router.query]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -55,18 +59,19 @@ export default function SignIn({ providers }: SignInProps) {
 
   const handleSignUp = async (event: FormEvent) => {
     event.preventDefault();
+    setErrorMessage(null);
 
     try {
       await axios.post('/api/auth/signup', formData);
-      router.push({
-        pathname: '/',
-        query: {
-          showPopup: 'true',
-          message: 'Vous êtes bien inscrit',
-          type: 'success',
-        },
-      });
+      router.push('/');
+      localStorage.setItem('showPopup', 'Vous êtes bien inscrit');
+      
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        setErrorMessage('Email déjà inscrit');
+      } else {
+        setErrorMessage('Erreur lors de l\'inscription');
+      }
       console.error('Error registering user', error);
     }
   };
@@ -74,7 +79,6 @@ export default function SignIn({ providers }: SignInProps) {
   const handleSignInSummer = async (event: FormEvent) => {
     event.preventDefault();
     setErrorMessage(null);
-    setPopup(null);
 
     try {
       const result = await signIn("credentials", {
@@ -85,32 +89,27 @@ export default function SignIn({ providers }: SignInProps) {
 
       if (result?.error) {
         console.error('Error logging in user', result.error);
-        if (result.error === "Invalid email") {
-          setErrorMessage("Email invalide");
-        } else if (result.error === "Invalid password") {
-          setErrorMessage("Mot de passe erroné");
+        if (result.error === 'Invalid email') {
+          setErrorMessage('Email invalide');
+        } else if (result.error === 'Invalid password') {
+          setErrorMessage('Mot de passe erroné');
         } else {
-          setErrorMessage("Erreur de connexion");
+          setErrorMessage('Erreur de connexion');
         }
       } else {
         console.log('User logged in successfully');
-        router.push({
-          pathname: '/',
-          query: {
-            showPopup: 'true',
-            message: 'Connexion Etablie',
-            type: 'success',
-          },
-        });
+        localStorage.setItem('showPopup', 'Connexion Etablie');
+        router.push('/');
       }
     } catch (error) {
       console.error('Error logging in user', error);
-      setErrorMessage("Erreur de connexion");
+      setErrorMessage('Erreur de connexion');
     }
   };
 
   return (
     <div className={styles.customSigninContainer}>
+      
       {popup && (
         <Popup message={popup.message} type={popup.type} />
       )}
@@ -128,6 +127,7 @@ export default function SignIn({ providers }: SignInProps) {
         <div className={styles.customFormContainer}>
           <form onSubmit={handleSignUp}>
             <h2 className={styles.customHeader}>Inscription avec Summer</h2>
+            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
             <input type="text" name="firstName" placeholder="Prénom" required className={styles.customInput} onChange={handleChange} />
             <input type="text" name="lastName" placeholder="Nom" required className={styles.customInput} onChange={handleChange} />
             <input type="number" name="age" placeholder="Âge" required className={styles.customInput} onChange={handleChange} />
@@ -155,8 +155,7 @@ export default function SignIn({ providers }: SignInProps) {
             return (
               <button
                 key={provider.name}
-                className={styles.providerButton}
-                style={{ maxWidth: '320px' }} // Same width as the form container
+                className={`${styles.providerButton} ${styles.maxWidth320}`}
                 onClick={() => signIn(provider.id)}
               >
                 {`Se connecter avec ${provider.name}`}

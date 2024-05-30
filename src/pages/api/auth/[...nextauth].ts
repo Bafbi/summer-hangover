@@ -55,7 +55,7 @@ export default NextAuth({
           }
         } catch (error) {
           console.error("Error logging in user:", error);
-          throw new Error(error.message);
+          throw new Error(error.message as string);
         }
       }
     })
