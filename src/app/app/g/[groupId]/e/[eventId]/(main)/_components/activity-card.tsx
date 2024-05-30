@@ -1,10 +1,13 @@
-export interface Activity {
-  id: number;
+export type  Activity= {
+  id: number | null;
   name: string;
-  location: string;
-  description: string;
+  description: string | null;
+  groupId: number | null;
   createdBy: string;
+  eventId: number | null;
+  location: string;
 }
+
 
 export function ActivityCard({
   activity,
@@ -12,7 +15,9 @@ export function ActivityCard({
 }: {
   activity: Activity;
   isFavorite: boolean;
-}) {
+}
+
+) {
   return (
     <>
       <div

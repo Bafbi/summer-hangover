@@ -1,39 +1,14 @@
-import Link from "next/link";
-import { Event, EventCard } from "../_components/event-card";
 
-export default function EventsPage() {
-  const events: Event[] = [
-    {
-      id: 1,
-      title: "Soirée du 8/10",
-      description: "Venez nombreux à la soirée du 8/10",
-      date: new Date("2021-10-08"),
-    },
-    {
-      id: 2,
-      title: "Soirée du 8/10",
-      description: "Venez nombreux à la soirée du 8/10",
-      date: new Date("2021-10-08"),
-    },
-    {
-      id: 3,
-      title: "Soirée du 8/10",
-      description: "Venez nombreux à la soirée du 8/10",
-      date: new Date("2021-10-08"),
-    },
-    {
-      id: 4,
-      title: "Soirée du 8/10",
-      description: "Venez nombreux à la soirée du 8/10",
-      date: new Date("2021-10-08"),
-    },
-    {
-      id: 5,
-      title: "Soirée du 8/10",
-      description: "Venez nombreux à la soirée du 8/10",
-      date: new Date("2021-10-08"),
-    },
-  ];
+import Link from "next/link";
+import { api } from "~/trpc/server";
+import { EventCard } from "../_components/event-card";
+
+
+export default async function EventsPage(  {
+  params
+}:{params: {groupId: string}})  {
+
+  const events = await api.event.getEvents({groupId: +params.groupId});
 
   return (
     <>
@@ -56,7 +31,7 @@ export default function EventsPage() {
             <span className="material-icons">add_circle</span>
           </Link>
           <Link
-            href="/other-content-2"
+            href="events/new"
             className="bg-primary-container my-4 flex w-full max-w-60 flex-grow cursor-pointer items-center justify-center space-x-2 space-x-reverse rounded-l-xl p-2 transition-transform hover:scale-105"
             style={{ minHeight: "60px" }}
             passHref
