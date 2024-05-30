@@ -1,11 +1,49 @@
-"use client";
 import React from "react";
-import MainMenuFooter from "~/app/_components/mainMenuFooter";
+import { useForm } from "react-hook-form";
 import Head from "next/head";
 import MainMenuHeader from "~/app/_components/mainMenuHeader";
+import { useSession } from "next-auth/react";
+import { api } from "~/trpc/server";
 import Link from "next/link";
 
-const Profile = () => {
+export default function Profile() {
+  const { data: session } = useSession();
+  const profile = api.profile.getProfile();
+
+  const updateProfile = api.profile.updateProfile();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: profile?.name || "",
+      email: profile?.email || "",
+      image: profile?.image || "",
+      description: profile?.description || "",
+    },
+  });
+
+  const onSubmit = (data: {
+    name: string;
+    email: string;
+    image: string;
+    description: string;
+  }) => {
+    updateProfile.mutate({
+      id: profile?.id,
+      name: data.name,
+      email: data.email,
+      image: data.image,
+      description: data.description,
+    });
+  };
+
+  if (!profile) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Head>
@@ -20,93 +58,88 @@ const Profile = () => {
           <div className="profile-container mt-10 flex flex-col items-center">
             <div className="relative">
               <img
-                src="/profileLogo.png"
+                src={profile?.image || "/profileLogo.png"}
                 alt="User Icon"
                 className="user-icon h-40 w-40 rounded-full"
               />
               <button className="change-photo-button absolute bottom-0 right-0 rounded-full bg-inverse-primary px-2 pt-2 text-on-surface">
                 <span style={{ fontSize: 28 }} className="material-icons">
-                  settingsa
+                  file_upload
                 </span>
               </button>
             </div>
             <p className="UniqueUserName mt-3 text-3xl font-semibold">
-              Cypounet
+              {profile?.name || "Cypounet"}
             </p>
           </div>
           <div
-            className="form-container mb-4 mt-4 flex w-full max-w-md flex-col items-center 
-          rounded-md bg-on-inverse-surface p-4"
+            className="form-container bg-surface mb-4 mt-2 flex w-full max-w-md flex-col 
+          items-center justify-center rounded-md p-3"
           >
-            {[
-              {
-                label: "Username",
-                type: "text",
-                placeholder: "Pseudo (unique)",
-              },
-              {
-                label: "First Name",
-                type: "text",
-                placeholder: "Prénom",
-              },
-              {
-                label: "Last Name",
-                type: "text",
-                placeholder: "Nom de famille",
-              },
-              {
-                label: "Email",
-                type: "email",
-                placeholder: "Email",
-              },
-              {
-                label: "Password",
-                type: "password",
-                placeholder: "Mot de passe",
-              },
-              {
-                label: "Bio",
-                type: "textarea",
-                placeholder: "Présente toi auprès du reste du monde !",
-              },
-            ].map((field) => (
-              <div key={field.label} className="mb-4 flex w-full items-center">
-                {field.type === "textarea" ? (
-                  <textarea
-                    className="border-gray-300 flex-grow rounded-md border p-2"
-                    placeholder={field.placeholder}
-                  />
-                ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+              <div className="mb-5 flex w-full items-center justify-between">
+                <div>
+                  <p className="text-sm">Pseudo</p>
                   <input
-                    type={field.type}
-                    className="border-gray-300 flex-grow rounded-md border p-2"
-                    placeholder={field.placeholder}
+                    type="text"
+                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    placeholder="Pseudo (unique)"
+                    {...register("name", { required: true })}
                   />
-                )}
-                <button className="bg-red-500 ml-2 rounded-full p-2 text-white">
-                  <span className="material-icons">close</span>
-                </button>
+                  {errors.name && <span>Ce champ est requis</span>}
+                </div>
               </div>
-            ))}
-            <div className="mt-8 flex justify-center">
-              <Link
-                href="/app"
-                className="hover:bg-indigo-700 text-on surface h-15 w-35 bg-primary-container rounded-md px-6 py-3"
-              >
-                Confirmer
-              </Link>
-              <Link
-                href="/app"
-                className="hover:bg-indigo-700 text-on h-15 w-35 surface bg-error ml-7 rounded-md px-6 py-3"
-              >
-                Annuler
-              </Link>
-            </div>
+              <div className="mb-5 flex w-full items-center justify-between">
+                <div>
+                  <p className="text-sm">Email</p>
+                  <input
+                    type="email"
+                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    placeholder="Email"
+                    {...register("email", { required: true })}
+                  />
+                  {errors.email && <span>Ce champ est requis</span>}
+                </div>
+              </div>
+              <div className="mb-5 flex w-full items-center justify-between">
+                <div>
+                  <p className="text-sm">Description</p>
+                  <textarea
+                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    placeholder="Présente toi auprès du reste du monde !"
+                    {...register("description")}
+                  />
+                </div>
+              </div>
+              <div className="mb-5 flex w-full items-center justify-between">
+                <div>
+                  <p className="text-sm">Image</p>
+                  <input
+                    type="text"
+                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    placeholder="URL de l'image"
+                    {...register("image")}
+                  />
+                </div>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="submit"
+                  className="hover:bg-indigo-700 surface h-15 w-35 bg-primary-container rounded-md px-6 py-3 font-semibold text-on-surface"
+                >
+                  Enregistrer
+                </button>
+                <Link
+                  href="/app"
+                  className="text-on h-15 w-35 surface bg-error ml-7 rounded-md px-6 py-3 font-semibold"
+                >
+                  Annuler
+                </Link>
+              </div>
+            </form>
           </div>
         </main>
       </div>
     </>
   );
-};
-
-export default Profile;
+}
