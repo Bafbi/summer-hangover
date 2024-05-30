@@ -1,12 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 import { db } from '~/server/db';
-import { inviteLinks, userGroups } from '~/server/db/schema';
+import { inviteLinks, groupsMembers } from '~/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
+    const session = await getSession({ req });
+    if (!session) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const { groupId } = req.body;
-    const userId = req.session.user.id; // Assuming you have session middleware to get user ID
+    const userId = session.user.id;
 
     try {
       const inviteLink = await db.query.inviteLinks.findFirst({
@@ -17,9 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Invalid invitation link' });
       }
 
-      await db.insert(userGroups).values({
-        userId,
+      await db.insert(groupMembers).values({
         groupId: inviteLink.groupId,
+        userId,
       });
 
       res.status(200).json({ message: 'Invitation accepted' });

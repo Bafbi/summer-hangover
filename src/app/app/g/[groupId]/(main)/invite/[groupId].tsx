@@ -57,7 +57,6 @@ const InvitePage: NextPage<{ groupId: string; groupName: string }> = ({ groupId,
   };
 
   return (
-
     <main className="flex h-screen flex-col items-center justify-center bg-[#40534D]">
       <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-4xl font-bold text-[#E49A0A]">SUMMER TRIP</h1>
