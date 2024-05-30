@@ -3,6 +3,8 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { SessionProvider } from "next-auth/react";
+import SessionWrapper from "./_components/session_wrapper";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -25,7 +27,9 @@ export default function RootLayout({
       </head>
 
       <body className="bg-surface">
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <SessionWrapper>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </SessionWrapper>
       </body>
     </html>
   );

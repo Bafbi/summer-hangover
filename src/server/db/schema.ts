@@ -49,53 +49,12 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
-  friends: many(friends, { relationName: "user" }),
-  friendsBy: many(friends, { relationName: "friend" }),
   groups: many(groupsMembers),
   groupsAdmin: many(groups, { relationName: "admin" }),
   groupsCreated: many(groups, { relationName: "createdBy" }),
   events: many(eventsParticipants),
   eventsCreated: many(events, { relationName: "createdBy" }),
   activitiesCreated: many(activities, { relationName: "createdBy" }),
-}));
-
-enum FriendStatus {
-  ACCEPTED = "ACCEPTED",
-  PENDING = "PENDING",
-  REJECTED = "REJECTED",
-  BLOCKED = "BLOCKED",
-}
-
-export const friends = createTable(
-  "friends",
-  {
-    userId: text("userId", { length: 255 })
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    friendId: text("friendId", { length: 255 })
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    status: text("status", { length: 255 })
-      .$type<FriendStatus>()
-      .notNull()
-      .default(FriendStatus.PENDING),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.userId, table.friendId] }),
-  }),
-);
-
-export const friendsRelations = relations(friends, ({ one }) => ({
-  user: one(users, {
-    fields: [friends.userId],
-    references: [users.id],
-    relationName: "user",
-  }),
-  friend: one(users, {
-    fields: [friends.friendId],
-    references: [users.id],
-    relationName: "friend",
-  }),
 }));
 
 export const accounts = createTable(
@@ -272,36 +231,13 @@ export const eventsParticipantsRelations = relations(
   }),
 );
 
-export const messages = createTable("message", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  groupId: int("groupId", { mode: "number" })
-    .notNull()
-    .references(() => groups.id),
-  eventId: int("eventId", { mode: "number" }).references(() => events.id),
-  userId: text("userId", { length: 255 })
-    .notNull()
-    .references(() => users.id),
-  content: text("content", { length: 1024 }).notNull(),
-  createdAt: int("createdAt", { mode: "timestamp" })
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-});
-
-export const messagesRelations = relations(messages, ({ one }) => ({
-  group: one(groups, { fields: [messages.groupId], references: [groups.id] }),
-  user: one(users, { fields: [messages.userId], references: [users.id] }),
-  event: one(events, { fields: [messages.eventId], references: [events.id] }),
-}));
-
 export const activities = createTable(
   "activity",
   {
     id: int("id", { mode: "number" }),
     eventId: int("eventId", { mode: "number" }),
     groupId: int("groupId", { mode: "number" }),
-    createdBy: text("createdBy", { length: 255 })
-      .notNull()
-      .references(() => users.id),
+    createdBy: text("createdBy", { length: 255 }).notNull(),
     location: text("location", { length: 255 }).notNull(),
     description: text("description", { length: 255 }),
     name: text("name", { length: 255 }).notNull(),
@@ -321,4 +257,24 @@ export const activitiesRelations = relations(activities, ({ one }) => ({
     references: [users.id],
     relationName: "createdBy",
   }),
+}));
+
+export const messages = createTable("message", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  groupId: int("groupId", { mode: "number" }).notNull(),
+  eventId: int("eventId", { mode: "number" }),
+  userId: text("userId", { length: 255 }).notNull(),
+  content: text("content", { length: 1024 }).notNull(),
+  createdAt: int("createdAt", { mode: "timestamp" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  user: one(users, { fields: [messages.userId], references: [users.id] }),
+  event: one(events, {
+    fields: [messages.groupId, messages.eventId],
+    references: [events.groupId, events.id],
+  }),
+  group: one(groups, { fields: [messages.groupId], references: [groups.id] }),
 }));

@@ -4,6 +4,7 @@ import { friendRouter } from "./routers/friend";
 import { activityRouter } from "./routers/activity";
 import { groupRouter } from "./routers/group";
 import { eventRouter } from "./routers/event";
+import { chatRouter } from "./routers/chat";
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   activity: activityRouter,
   group: groupRouter,
   event: eventRouter,
+  chat: chatRouter,
 });
 
 // export type definition of API
