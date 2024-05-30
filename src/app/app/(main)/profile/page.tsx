@@ -1,16 +1,16 @@
+"use client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import Head from "next/head";
 import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import { useSession } from "next-auth/react";
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
 import Link from "next/link";
 
 export default function Profile() {
-  const { data: session } = useSession();
-  const profile = api.profile.getProfile();
+  const  {data: profile} = api.profile.getProfile.useQuery();
 
-  const updateProfile = api.profile.updateProfile();
+  const updateProfile = api.profile.updateProfile.useMutation();
 
   const {
     register,
@@ -19,24 +19,23 @@ export default function Profile() {
   } = useForm({
     defaultValues: {
       name: profile?.name || "",
-      email: profile?.email || "",
-      image: profile?.image || "",
       description: profile?.description || "",
+      firstName: profile?.firstName || "",
+      lastName: profile?.lastName || "",
     },
   });
 
   const onSubmit = (data: {
     name: string;
-    email: string;
-    image: string;
     description: string;
+    firstName: string;
+    lastName: string;
   }) => {
     updateProfile.mutate({
-      id: profile?.id,
       name: data.name,
-      email: data.email,
-      image: data.image,
       description: data.description,
+      firstName: data.firstName,
+      lastName: data.lastName,
     });
   };
 
@@ -46,9 +45,6 @@ export default function Profile() {
 
   return (
     <>
-      <Head>
-        <title>Profile</title>
-      </Head>
       <div className="bg-surface flex h-screen flex-col">
         <MainMenuHeader />
         <main className="toutLeMain bg-surface mt-16 flex-grow flex-col items-center justify-center overflow-y-auto overflow-x-hidden px-2">
@@ -91,14 +87,26 @@ export default function Profile() {
               </div>
               <div className="mb-5 flex w-full items-center justify-between">
                 <div>
-                  <p className="text-sm">Email</p>
+                  <p className="text-sm">Prénom</p>
                   <input
-                    type="email"
+                    type="text"
                     className="w-full flex-grow rounded-md border p-2 pr-20"
-                    placeholder="Email"
-                    {...register("email", { required: true })}
+                    placeholder="Ton vrai prénom"
+                    {...register("firstName", { required: true })}
                   />
-                  {errors.email && <span>Ce champ est requis</span>}
+                  {errors.firstName && <span>Ce champ est requis</span>}
+                </div>
+              </div>
+              <div className="mb-5 flex w-full items-center justify-between">
+                <div>
+                  <p className="text-sm">Nom</p>
+                  <input
+                    type="text"
+                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    placeholder="Ton ptit nom"
+                    {...register("lastName", { required: true })}
+                  />
+                  {errors.lastName && <span>Ce champ est requis</span>}
                 </div>
               </div>
               <div className="mb-5 flex w-full items-center justify-between">
@@ -108,17 +116,6 @@ export default function Profile() {
                     className="w-full flex-grow rounded-md border p-2 pr-20"
                     placeholder="Présente toi auprès du reste du monde !"
                     {...register("description")}
-                  />
-                </div>
-              </div>
-              <div className="mb-5 flex w-full items-center justify-between">
-                <div>
-                  <p className="text-sm">Image</p>
-                  <input
-                    type="text"
-                    className="w-full flex-grow rounded-md border p-2 pr-20"
-                    placeholder="URL de l'image"
-                    {...register("image")}
                   />
                 </div>
               </div>
@@ -133,7 +130,7 @@ export default function Profile() {
                   href="/app"
                   className="text-on h-15 w-35 surface bg-error ml-7 rounded-md px-6 py-3 font-semibold"
                 >
-                  Annuler
+                  Retour
                 </Link>
               </div>
             </form>

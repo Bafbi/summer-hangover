@@ -11,7 +11,8 @@ export default function MainMenuHeader() {
       </div>
       <div className="flex justify-around space-x-7 pr-1 text-on-surface-variant">
         <Link
-          href="/app/notification"
+          href="notification"
+          passHref
           className="relative flex items-center justify-center "
         >
           <span
@@ -22,7 +23,8 @@ export default function MainMenuHeader() {
           </span>
         </Link>
         <Link
-          href="/app/profile"
+          href="app/profile"
+          passHref
           className="relative flex items-center justify-center "
         >
           <span style={{ fontSize: 40 }} className="material-icons">
