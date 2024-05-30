@@ -6,7 +6,7 @@ import QRCode from 'react-qr-code';
 
 export function GroupHeader() {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
-  const groupLink = "http://localhost:3000/app/g/your-group-id";
+  const groupLink = "http://localhost:3000/invite/your-group-id";
 
   const handleInvitationClick = () => {
     setInvitationOpen(true);
@@ -53,10 +53,10 @@ export function GroupHeader() {
               <div className="mt-2 p-2 border rounded w-full text-center bg-white text-black flex items-center justify-between">
                 <span className="break-words">{groupLink}</span>
                 <button
-                  className="ml-2 bg-gray-200 hover:bg-gray-300 text-black font-bold py-1 px-2 rounded"
+                  className="ml-2"
                   onClick={handleCopyClick}
                 >
-                  Copier
+                  <span className="material-icons">content_copy</span>
                 </button>
               </div>
             </div>
