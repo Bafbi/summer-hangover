@@ -50,6 +50,17 @@ export const users = createTable("user", {
   lastName: text("lastName", { length: 255 }),
 });
 
+export const notifications = createTable("notification", {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    userId: text("userId", { length: 255 }).notNull().references(() => users.id),
+    message: text("message", { length: 255 }).notNull(),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    userIdIdx: index("notification_userId_idx").on(table.userId),
+  }),
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   friends: many(friends, { relationName: "user" }),
