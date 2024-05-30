@@ -6,6 +6,7 @@ import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import { useSession } from "next-auth/react";
 import { api } from "~/trpc/react";
 import Link from "next/link";
+import AppHeader from "../_components/header";
 
 export default function Profile() {
   const  {data: profile} = api.profile.getProfile.useQuery();
@@ -44,14 +45,13 @@ export default function Profile() {
   }
 
   return (
-    <>
       <div className="bg-surface flex h-screen flex-col">
-        <MainMenuHeader />
+        <AppHeader />
         <main className="toutLeMain bg-surface mt-16 flex-grow flex-col items-center justify-center overflow-y-auto overflow-x-hidden px-2">
-          <div className="bg-surface-variant mb-4 mt-6 flex h-14 flex-col items-center rounded-md">
+          <div className="bg-surface-variant mb-4 mt-4 flex h-14 flex-col items-center rounded-md">
             <h1 className="pt-2 text-4xl font-semibold">Profile</h1>
           </div>
-          <div className="profile-container mt-10 flex flex-col items-center">
+          <div className="profile-container mt-8 flex flex-col items-center">
             <div className="relative">
               <img
                 src={profile?.image || "/profileLogo.png"}
@@ -72,13 +72,13 @@ export default function Profile() {
             className="form-container bg-surface mb-4 mt-2 flex w-full max-w-md flex-col 
           items-center justify-center rounded-md p-3"
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full items-center">
               <div className="mb-5 flex w-full items-center justify-between">
                 <div>
                   <p className="text-sm">Pseudo</p>
                   <input
                     type="text"
-                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    className="w-full flex-grow rounded-md border p-2 pr-24"
                     placeholder="Pseudo (unique)"
                     {...register("name", { required: true })}
                   />
@@ -90,7 +90,7 @@ export default function Profile() {
                   <p className="text-sm">Prénom</p>
                   <input
                     type="text"
-                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    className="w-full flex-grow rounded-md border p-2 pr-24"
                     placeholder="Ton vrai prénom"
                     {...register("firstName", { required: true })}
                   />
@@ -102,7 +102,7 @@ export default function Profile() {
                   <p className="text-sm">Nom</p>
                   <input
                     type="text"
-                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    className="w-full flex-grow rounded-md border p-2 pr-24"
                     placeholder="Ton ptit nom"
                     {...register("lastName", { required: true })}
                   />
@@ -113,13 +113,13 @@ export default function Profile() {
                 <div>
                   <p className="text-sm">Description</p>
                   <textarea
-                    className="w-full flex-grow rounded-md border p-2 pr-20"
+                    className="w-full flex-grow rounded-md border p-2 pr-24"
                     placeholder="Présente toi auprès du reste du monde !"
                     {...register("description")}
                   />
                 </div>
               </div>
-              <div className="mt-4 flex justify-center">
+              <div className="mt-4 items-center flex justify-center">
                 <button
                   type="submit"
                   className="hover:bg-indigo-700 surface h-15 w-35 bg-primary-container rounded-md px-6 py-3 font-semibold text-on-surface"
@@ -137,6 +137,5 @@ export default function Profile() {
           </div>
         </main>
       </div>
-    </>
   );
 }
