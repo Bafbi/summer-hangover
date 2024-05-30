@@ -3,11 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
   html {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
-}
+
 
 img, video {
   @apply max-w-[70%] h-auto;
