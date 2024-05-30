@@ -15,7 +15,7 @@ export const activityRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(activities).values({
         id: randomInt(1,1000000),
-        eventId: input.eventId,
+        eventId: input.eventId, 
         groupId: input.groupId,
         createdBy: ctx.session.user.id,
         location: input.location,

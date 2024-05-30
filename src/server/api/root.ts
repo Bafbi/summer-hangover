@@ -4,6 +4,7 @@ import { friendRouter } from "./routers/friend";
 import { activityRouter } from "./routers/activity";
 import { groupRouter } from "./routers/group";
 import { eventRouter } from "./routers/event";
+import { chatRouter } from "./routers/chat";
 import { userRouter } from "./routers/user";
 import { profileRouter } from "./routers/profile";
 import { notificationRouter } from "./routers/notifications";
@@ -19,7 +20,8 @@ export const appRouter = createTRPCRouter({
   activity: activityRouter,
   group: groupRouter,
   event: eventRouter,
-  user:  userRouter,
+  chat: chatRouter,
+  user: userRouter,
   profile: profileRouter,
   notification: notificationRouter,
 });

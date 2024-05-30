@@ -33,7 +33,7 @@ export default async function GroupsPage() {
                     people
                   </span>
                   <span className="text-left text-sm text-on-surface-variant">
-                    {group.members.length} membres
+                    {group.members.map((member) => member.user.name).join(", ")}
                   </span>
                 </div>
               </div>

@@ -10,8 +10,8 @@ import {
 import { events } from "~/server/db/schema";
 
 export const eventRouter = createTRPCRouter({
-  createActivity: protectedProcedure
-    .input(z.object({ name: z.string(), description: z.string().optional(),date: z.date(),location: z.string().optional(),groupId: z.number(), }))
+  createEvent: protectedProcedure
+    .input(z.object({ name: z.string(), description: z.string().optional(),date: z.string().datetime(),location: z.string().optional(),groupId: z.number(), }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(events).values({
        id: randomInt(1,100000),
@@ -20,7 +20,7 @@ export const eventRouter = createTRPCRouter({
         description: input.description,
         name: input.name,
         location: input.location,
-        date: input.date,
+        date: new Date(input.date),
       });
     }),
     getEvents: protectedProcedure.input(z.object({groupId: z.number()})).query(({ ctx ,input}) => {
