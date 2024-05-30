@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { desc, relations, sql } from "drizzle-orm";
 import {
   index,
   int,
@@ -39,8 +39,12 @@ export const posts = createTable(
 
 export const users = createTable("user", {
   id: text("id", { length: 255 }).notNull().primaryKey(),
-  name: text("name", { length: 255 }),
+  firstName: text("firstName", { length: 255 }).notNull(),
+  lastName: text("lastName", { length: 255 }).notNull(),
+  age: int("age").notNull(),
+  description: text("description", { length: 255 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
+  password: text("password", { length: 255 }).notNull(),
   emailVerified: int("emailVerified", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
@@ -55,6 +59,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   events: many(eventsParticipants),
   eventsCreated: many(events, { relationName: "createdBy" }),
   activitiesCreated: many(activities, { relationName: "createdBy" }),
+  usedLinks: many(inviteLinks),
 }));
 
 export const accounts = createTable(
@@ -277,4 +282,26 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     references: [events.groupId, events.id],
   }),
   group: one(groups, { fields: [messages.groupId], references: [groups.id] }),
+}));
+
+export const inviteLinks = createTable("inviteLinks", {
+  id: text("id", { length: 255 }).primaryKey(),
+  groupId: int("groupId", { mode: "number" })
+    .notNull()
+    .references(() => groups.id),
+  link: text("link", { length: 255 }).unique().notNull(),
+  createdAt: int("createdAt", { mode: "timestamp" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  expiresAt: int("expiresAt", { mode: "timestamp" }).notNull(),
+  maxUses: int("maxUses").notNull(),
+  used: int("used").default(0),
+});
+
+export const inviteLinksRelations = relations(inviteLinks, ({ one, many }) => ({
+  group: one(groups, {
+    fields: [inviteLinks.groupId],
+    references: [groups.id],
+  }),
+  usedBy: many(users, { relationName: "usedLinks" }),
 }));

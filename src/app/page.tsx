@@ -37,10 +37,10 @@ async function CrudShowcase() {
     <div className="w-full max-w-xs">
       <h2 className="text-2xl font-bold">Friends</h2>
       <ul>
-        {groups && groups.groups.map(({group}) => (
-          <li key={group.id} className="flex items-center space-x-2">
+        {groups && groups.map(({ id, name }) => (
+          <li key={id} className="flex items-center space-x-2">
             <span className="material-icons">person</span>
-            <span>{group.name}</span>
+            <span>{name}</span>
           </li>
         ))}
       </ul>
