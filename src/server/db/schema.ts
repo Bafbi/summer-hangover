@@ -351,3 +351,30 @@ export const inviteLinkUsersRelations = relations(
     }),
   }),
 );
+
+export const expenses = createTable( 
+  "expense",
+  {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    groupId: int("groupId", { mode: "number" })
+      .notNull(),
+    eventId: int("eventId", { mode: "number" }).notNull(),
+    userId: text("userId", { length: 255 }).notNull(),
+    amount: int("amount").notNull(),
+    label: text("label", { length: 255 }),
+    createdAt: int("createdAt", { mode: "timestamp" })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+);
+
+export const expensesRelations = relations(expenses, ({ one }) => ({
+  event : one(events, {
+    fields: [expenses.groupId, expenses.eventId],
+    references: [events.id, events.id],
+  }),
+  user : one(users, {
+    fields: [expenses.userId],
+    references: [users.id],
+  }),
+}));
