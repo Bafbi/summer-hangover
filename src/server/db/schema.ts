@@ -58,14 +58,22 @@ export const usersRelations = relations(users, ({ many }) => ({
   usedLinks: many(inviteLinkUsers),
 }));
 
-export const notifications = createTable("notification", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  userId: text("userId", { length: 255 }).notNull().references(() => users.id),
-  message: text("message", { length: 255 }).notNull(),
-  createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
-}, (notification) => ({
-  userIdIdx: index("notification_userId_idx").on(notification.userId),
-}));
+export const notifications = createTable(
+  "notification",
+  {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    userId: text("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    message: text("message", { length: 255 }).notNull(),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(
+      sql`CURRENT_TIMESTAMP`,
+    ),
+  },
+  (notification) => ({
+    userIdIdx: index("notification_userId_idx").on(notification.userId),
+  }),
+);
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, { fields: [notifications.userId], references: [users.id] }),
@@ -189,25 +197,22 @@ export const groupsMembersRelations = relations(groupsMembers, ({ one }) => ({
   user: one(users, { fields: [groupsMembers.userId], references: [users.id] }),
 }));
 
-export const events = createTable(
-  "event",
-  {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    groupId: int("groupId", { mode: "number" })
-      .notNull()
-      .references(() => groups.id),
-    name: text("name", { length: 255 }).notNull(),
-    description: text("description", { length: 255 }),
-    createdBy: text("createdBy", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: int("createdAt", { mode: "timestamp" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-    date: int("date", { mode: "timestamp" }).notNull(),
-    location: text("location", { length: 255 }),
-  },
-);
+export const events = createTable("event", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  groupId: int("groupId", { mode: "number" })
+    .notNull()
+    .references(() => groups.id),
+  name: text("name", { length: 255 }).notNull(),
+  description: text("description", { length: 255 }),
+  createdBy: text("createdBy", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: int("createdAt", { mode: "timestamp" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  date: int("date", { mode: "timestamp" }).notNull(),
+  location: text("location", { length: 255 }),
+});
 
 export const eventsRelations = relations(events, ({ one, many }) => ({
   group: one(groups, { fields: [events.groupId], references: [groups.id] }),
@@ -221,16 +226,20 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
   activities: many(activities),
 }));
 
-export const eventsParticipants = createTable("eventParticipants", {
-  eventId: int("eventId", { mode: "number" })
-    .notNull()
-    .references(() => events.id),
-  userId: text("userId", { length: 255 })
-    .notNull()
-    .references(() => users.id),
-}, (table) => ({
-  pk: primaryKey({ columns: [table.eventId, table.userId] }),
-}));
+export const eventsParticipants = createTable(
+  "eventParticipants",
+  {
+    eventId: int("eventId", { mode: "number" })
+      .notNull()
+      .references(() => events.id),
+    userId: text("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.eventId, table.userId] }),
+  }),
+);
 
 export const eventsParticipantsRelations = relations(
   eventsParticipants,
@@ -246,18 +255,15 @@ export const eventsParticipantsRelations = relations(
   }),
 );
 
-export const activities = createTable(
-  "activity",
-  {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    eventId: int("eventId", { mode: "number" }),
-    groupId: int("groupId", { mode: "number" }),
-    createdBy: text("createdBy", { length: 255 }).notNull(),
-    location: text("location", { length: 255 }).notNull(),
-    description: text("description", { length: 255 }),
-    name: text("name", { length: 255 }).notNull(),
-  },
-);
+export const activities = createTable("activity", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  eventId: int("eventId", { mode: "number" }),
+  groupId: int("groupId", { mode: "number" }),
+  createdBy: text("createdBy", { length: 255 }).notNull(),
+  location: text("location", { length: 255 }).notNull(),
+  description: text("description", { length: 255 }),
+  name: text("name", { length: 255 }).notNull(),
+});
 
 export const activitiesRelations = relations(activities, ({ one }) => ({
   event: one(events, {
@@ -277,11 +283,9 @@ export const activitiesRelations = relations(activities, ({ one }) => ({
 
 export const messages = createTable("message", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  groupId: int("groupId", { mode: "number" }).notNull()
-    .references(() => groups.id),
+  groupId: int("groupId", { mode: "number" }).notNull(),
   eventId: int("eventId", { mode: "number" }),
-  userId: text("userId", { length: 255 }).notNull()
-    .references(() => users.id),
+  userId: text("userId", { length: 255 }).notNull(),
   content: text("content", { length: 1024 }).notNull(),
   createdAt: int("createdAt", { mode: "timestamp" })
     .notNull()
@@ -291,8 +295,8 @@ export const messages = createTable("message", {
 export const messagesRelations = relations(messages, ({ one }) => ({
   user: one(users, { fields: [messages.userId], references: [users.id] }),
   event: one(events, {
-    fields: [messages.eventId],
-    references: [events.id],
+    fields: [messages.groupId, messages.eventId],
+    references: [events.groupId, events.id],
   }),
   group: one(groups, { fields: [messages.groupId], references: [groups.id] }),
 }));
@@ -334,13 +338,16 @@ export const inviteLinkUsers = createTable(
   }),
 );
 
-export const inviteLinkUsersRelations = relations(inviteLinkUsers, ({ one }) => ({
-  inviteLink: one(inviteLinks, {
-    fields: [inviteLinkUsers.inviteLinkId],
-    references: [inviteLinks.id],
+export const inviteLinkUsersRelations = relations(
+  inviteLinkUsers,
+  ({ one }) => ({
+    inviteLink: one(inviteLinks, {
+      fields: [inviteLinkUsers.inviteLinkId],
+      references: [inviteLinks.id],
+    }),
+    user: one(users, {
+      fields: [inviteLinkUsers.userId],
+      references: [users.id],
+    }),
   }),
-  user: one(users, {
-    fields: [inviteLinkUsers.userId],
-    references: [users.id],
-  }),
-}));
+);
