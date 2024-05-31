@@ -1,12 +1,24 @@
 "use client";
-
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QRCode from 'react-qr-code';
+import { api } from "~/trpc/react";
 
-export function GroupHeader() {
+export function GroupHeader({ groupId }: { groupId: number }) {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
-  const groupLink = "http://localhost:3000/invite/your-group-id";
+  const [mounted, setMounted] = useState(false);
+  const [groupLink, setGroupLink] = useState("");
+  const [groupName, setGroupName] = useState("");
+
+  const { data: groupData, isLoading } = api.group.getGroupById.useQuery({ id: groupId });
+
+  useEffect(() => {
+    setMounted(true);
+    if (groupData) {
+      setGroupLink(groupData.inviteLink);
+      setGroupName(groupData.name);
+    }
+  }, [groupData]);
 
   const handleInvitationClick = () => {
     setInvitationOpen(true);
@@ -21,6 +33,8 @@ export function GroupHeader() {
     alert("Lien copié dans le presse-papiers !");
   };
 
+  if (!mounted || isLoading) return null;
+
   return (
     <>
       <header className="bg-surface sticky top-0 z-10 mx-2 flex h-16 items-center justify-between border-b border-inverse-surface px-4">
@@ -28,7 +42,7 @@ export function GroupHeader() {
           <span className="material-icons">home</span>
         </Link>
         <h1 className="text-xl font-bold text-primary underline">
-          Sortie du 19/05
+          {groupName}
         </h1>
         <span className="cursor-pointer material-icons" onClick={handleInvitationClick}>
           mail_outline

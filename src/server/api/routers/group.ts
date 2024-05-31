@@ -1,13 +1,7 @@
-import { group } from "console";
-import { randomInt } from "crypto";
 import { z } from "zod";
-
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers, users } from "~/server/db/schema";
+import { v4 as uuidv4 } from "uuid";
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -16,9 +10,11 @@ export const groupRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         members: z.string().array(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
+      const inviteLink = `http://localhost:3000/invite/${uuidv4()}`;
+
       const id = await ctx.db
         .insert(groups)
         .values({
@@ -26,21 +22,23 @@ export const groupRouter = createTRPCRouter({
           createdBy: ctx.session.user.id,
           description: input.description,
           name: input.name,
+          inviteLink: inviteLink,
         })
         .returning({ groupId: groups.id });
+
       if (id[0] == null) return;
       const { groupId } = id[0];
 
-      const users = input.members.map((user) => ({
+      const usersToInsert = input.members.map((user) => ({
         userId: user,
         groupId: groupId,
       }));
-      users.push({
+      usersToInsert.push({
         userId: ctx.session.user.id,
         groupId: groupId,
       });
 
-      await ctx.db.insert(groupsMembers).values(users);
+      await ctx.db.insert(groupsMembers).values(usersToInsert);
     }),
 
   getGroups: protectedProcedure.query(async ({ ctx }) => {
@@ -77,4 +75,26 @@ export const groupRouter = createTRPCRouter({
     if (groupsQuery == undefined) return null;
     return groupsQuery.groups.map((group) => group.group);
   }),
+
+  getGroupById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const group = await ctx.db.query.groups.findFirst({
+        where: (groups, { eq }) => eq(groups.id, input.id),
+        with: {
+          createdBy: {
+            columns: { name: true },
+          },
+          members: {
+            columns: {},
+            with: {
+              user: {
+                columns: { name: true },
+              },
+            },
+          },
+        },
+      });
+      return group;
+    }),
 });

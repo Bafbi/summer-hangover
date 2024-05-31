@@ -89,6 +89,8 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
             name="message"
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
+            title="Message"
+            placeholder="Enter your message"
           />
           <button type="submit">Send</button>
         </form>
