@@ -7,36 +7,52 @@
   import { useSession } from 'next-auth/react';
   import { api } from "~/trpc/react";
   import Pusher from "pusher-js";
-import { env } from "~/env";
+  import { env } from "~/env";
+  import { format, isToday, isYesterday } from 'date-fns';
 
-  const notifTest = [
-    {
-      date: "Aujourd'hui",
-      items: [
-        {
-          id: 1, text: "Paul vous a invité à rejoindre son groupe", groupName: "Nom du groupe", link: "#",
-        },
-        {
-          id: 2, text: "Nathan a ajouté une nouvelle activité à l'évènement",eventName: "Nom de l'évènement", link: "#",
-        },
-      ],
-    },
-    {
-      date: "Hier",
-      items: [
-        {
-          id: 3,
-          text: "Julien a ajouté un nouvel évènement au groupe",
-          groupName: "Nom du groupe",
-          link: "#",
-        },
-      ],
-    },
-    {
-      date: "Mardi 07/06/2024",
-      items: [],
-    },
-  ];
+  interface Notification {
+    id: number;
+    userId: string;
+    message: string;
+    createdAt: string; 
+  }
+
+// Fonction qui permet de formater les notifications
+  const formatNotifications = (notifications: any[]) => {
+    // On formate les notifications pour les regrouper par date
+    const formattedNotifs = notifications.reduce((accumulator, notification) => {
+
+      // "date" désigne la date de la notification
+      const date = new Date(notification.createdAt);
+
+
+      // Test si la date est invalide
+      if (isNaN(date.getTime())) {
+        console.error('Invalid date:', notification.createdAt);
+        return accumulator;
+      }
+
+      // On formate la date pour l'afficher en tant que chaine de caractères
+      const formattedDate = isToday(date) ? "Aujourd'hui" : 
+                            (isYesterday(date) ? 'Hier' : format(date, 'eeee dd/MM/yyyy'));
+  
+      // Si la date n'existe pas dans l'accumulateur, on la créer
+      if (!accumulator[formattedDate]) {
+        accumulator[formattedDate] = [];
+      }
+
+      // On ajoute la notification à la date correspondante
+      accumulator[formattedDate].push(notification);
+      return accumulator;
+    }, {});
+  
+    console.log('SIMPLE_formattedNotifications:', formattedNotifs);
+    console.log('ENTRIES_Object.entries(formattedNotifications):', Object.entries(formattedNotifs));
+    // On tri les dates par ordre décroissant pour les afficher en commencant par la plus récente
+    return Object.entries(formattedNotifs)
+      .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime());
+  };
+
 
   export default function Notifications() {
     
@@ -62,9 +78,10 @@ import { env } from "~/env";
         authEndpoint: '/api/pusher/auth',
       });
 
-      // Abonnez-vous à un canal privé pour l'utilisateur actuel
+      // Canal privé de l'utilisateur
       const channel = pusher.subscribe(`private-user-${userId}`);
 
+      // Associe une fonction de rappel à l'event 'new-notification' sur le canal
       channel.bind('new-notification', (data: { message: any; }) => {
         setNotifications((prevNotifications) => [
           ...prevNotifications,
@@ -72,6 +89,7 @@ import { env } from "~/env";
         ]);
       });
 
+      // Nettoyage et fin d'écoute du canal
       return () => {
         pusher.unsubscribe(`private-user-${userId}`);
       };
@@ -83,6 +101,8 @@ import { env } from "~/env";
       await sendNotification.mutateAsync({ message });
     };
 
+    const formattedNotifications = formatNotifications(notifications);
+    
     return (
       <div className="bg-surface flex h-screen flex-col">
         <MainMenuHeader />
@@ -118,11 +138,27 @@ import { env } from "~/env";
 
           {/* Section des notifications */}
           {/* TODO : Faire le front des notif + séparation selon leurs dates (auj, hier, antèrieur)*/}
-          {notifications.map((notification, index) => (
-            <div key={index} className="notification-item">
-              {notification.message}
+          {formattedNotifications.map(([date, items], index) => (
+            <div key={index}>
+              <h1>{date}</h1>
+              {items.map((notification, idx) => (
+                <div key={idx} className="notification-item">
+                  {notification.message}
+                </div>
+              ))}
             </div>
           ))}
+
+          /* TODO : le contenue de chaque notification de formattedNotifications de la manière suivante:
+           Aujourd'hui :
+           - NOM1 a ajouté un nouvel évènement au groupe (exemple)
+           Hier :
+           - NOM2 vous a invité à rejoindre son groupe (exemple)
+           - NOM3 a ajouté une nouvelle activité à l'évènement (exemple)
+           Mardi 07/06/2024 :
+           - NOM4 a ajouté un nouvel évènement au groupe (exemple)*/
+          
+          
         </main>
       </div>
     );

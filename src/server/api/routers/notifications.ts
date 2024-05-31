@@ -31,12 +31,11 @@ export const notificationRouter = createTRPCRouter({
           throw new Error('Utilisateur non trouvé');
         }
   
-        const userId = users.id;
+        const userId = ctx.session.user.id;
   
         // Enregistre la notif dans la base de données :
         await db.insert(notifications).values({
-            id: Math.floor(Math.random() * 1000000),
-            userId: (users.id).toString(),
+            userId: userId,
             message: input.message,
             createdAt: new Date(),
         });
@@ -53,30 +52,3 @@ export const notificationRouter = createTRPCRouter({
       return db.select().from(notifications).where(eq(notifications.userId, ctx.session.user.id));
     }),
   });
-
-
-
-
-/*export const notificationRouter = createTRPCRouter({
-  sendNotification: protectedProcedure
-    .input(z.object({
-      message: z.string(),
-    }))
-    .mutation(async ({ ctx, input }) => {
-      // Récupérez l'utilisateur connecté
-      const user = await drizzle.select().from(users).where(eq(users.email, ctx.session.user.email)).single();
-
-      if (!user) {
-        throw new Error('Utilisateur non trouvé');
-      }
-
-      const userId = user.id;
-
-      // Déclenche l'événement 'new-notification' sur le canal 'private-user-{userId}'
-      await pusher.trigger(`private-user-${userId}`, 'new-notification', {
-        message: input.message,
-      });
-
-      return { message: 'Notification envoyée avec succès' };
-    }),
-});*/

@@ -69,7 +69,7 @@ export const notifications = createTable("notification", {
     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     userId: text("userId", { length: 255 }).notNull().references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`),
   },
   (notification) => ({
     userIdIdx: index("notification_userId_idx").on(notification.userId),
