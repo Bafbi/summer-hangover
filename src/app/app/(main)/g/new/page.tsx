@@ -115,8 +115,12 @@ const CreateGroup = () => {
                             {member.user.name}
                           </span>
                         </div>
+                        <label className="text-gray-700 block text-xl font-medium">
+                          Checkbox Label:
+                        </label>
                         <input
                           type="checkbox"
+                          title="checkboxx"
                           checked={selectedContacts.includes(member.userId)}
                           onChange={() => handleCheckboxChange(member.userId)}
                           className="border-gray-300 mb-2 h-5 w-5 rounded"
@@ -145,7 +149,7 @@ const CreateGroup = () => {
           </form>
         </main>
       </div>
-      <MainMenuFooter />
+      <MainMenuFooter pathname={""} />
     </>
   );
 };
