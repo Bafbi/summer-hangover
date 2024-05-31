@@ -6,28 +6,27 @@ import {
     protectedProcedure,
     publicProcedure,
   } from "~/server/api/trpc";
-  import { tricounts } from "~/server/db/schema";
+  import { expenses } from "~/server/db/schema";
 
   export const tricountRouter = createTRPCRouter({
     createTricount: protectedProcedure
-    .input(z.object({ groupId: z.number(),label: z.string(),eventId: z.number(), price: z.number()}))
+    .input(z.object({ groupId: z.number(),label: z.string(),eventId: z.number(), amount: z.number()}))
     .mutation(async ({ ctx, input }) => {
         console.log(input);
         
-      await ctx.db.insert(tricounts).values({
-        id: randomInt(1,1000000),
+      await ctx.db.insert(expenses).values({
         eventId: input.eventId,
         groupId: input.groupId,
         userId: ctx.session.user.id,
-        price: input.price,
+        amount: input.amount,
         label: input.label, 
       });
     }),
     
     getTricount: protectedProcedure.input(z.object({groupId: z.number(), eventId: z.number()})).query(({ ctx ,input}) => {
       
-      return ctx.db.query.tricounts.findMany({
-        where: (tricounts, { eq, and}) => and(eq(tricounts.groupId,input.groupId ),eq(tricounts.eventId,input.eventId)),
+      return ctx.db.query.expenses.findMany({
+        where: (expenses, { eq, and}) => and(eq(expenses.groupId,input.groupId ),eq(expenses.eventId,input.eventId)),
       });
     }),
   });

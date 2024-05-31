@@ -35,7 +35,7 @@ const CreateTricount = ({params}: {params:{groupId: string, eventId: string}}) =
         e.preventDefault();
         createTricount.mutate({
           label: NewTricountLabel,
-          price: +NewTricountPrice,
+          amount: +NewTricountPrice,
           groupId: +params.groupId,
           eventId: +params.eventId,
         });
