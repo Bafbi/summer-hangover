@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers, users } from "~/server/db/schema";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -10,7 +10,7 @@ export const groupRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         members: z.string().array(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const inviteLink = `http://localhost:3000/invite/${uuidv4()}`;
@@ -77,33 +77,24 @@ export const groupRouter = createTRPCRouter({
   }),
 
   getGroupById: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const group = await ctx.db.query.groups.findFirst({
-        where: (groups, { eq }) => eq(groups.id, parseInt(input.id)),
+        where: (groups, { eq }) => eq(groups.id, input.id),
         with: {
           createdBy: {
-            columns: {
-              name: true,
-            },
+            columns: { name: true },
           },
           members: {
             columns: {},
             with: {
               user: {
-                columns: {
-                  name: true,
-                },
+                columns: { name: true },
               },
             },
           },
         },
       });
-
-      if (!group) {
-        throw new Error("Group not found");
-      }
-
       return group;
     }),
 });

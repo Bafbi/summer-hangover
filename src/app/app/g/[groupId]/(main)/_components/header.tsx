@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import QRCode from 'react-qr-code';
 import { api } from "~/trpc/react";
 
-export function GroupHeader({ groupId }: { groupId: string }) {
+export function GroupHeader({ groupId }: { groupId: number }) {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [groupLink, setGroupLink] = useState("");
@@ -16,7 +16,7 @@ export function GroupHeader({ groupId }: { groupId: string }) {
     setMounted(true);
     if (groupData) {
       setGroupLink(groupData.inviteLink);
-      setGroupName(groupData.name); // Set the group name
+      setGroupName(groupData.name);
     }
   }, [groupData]);
 
@@ -42,7 +42,7 @@ export function GroupHeader({ groupId }: { groupId: string }) {
           <span className="material-icons">home</span>
         </Link>
         <h1 className="text-xl font-bold text-primary underline">
-          {groupName} {/* Display the group name here */}
+          {groupName}
         </h1>
         <span className="cursor-pointer material-icons" onClick={handleInvitationClick}>
           mail_outline
