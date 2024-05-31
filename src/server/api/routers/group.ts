@@ -1,13 +1,10 @@
-import { group } from "console";
-import { randomInt } from "crypto";
 import { z } from "zod";
-
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
 } from "~/server/api/trpc";
 import { groups, groupsMembers, users } from "~/server/db/schema";
+import { v4 as uuidv4 } from 'uuid';
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -19,6 +16,8 @@ export const groupRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const inviteLink = `http://localhost:3000/invite/${uuidv4()}`;
+
       const id = await ctx.db
         .insert(groups)
         .values({
@@ -26,21 +25,23 @@ export const groupRouter = createTRPCRouter({
           createdBy: ctx.session.user.id,
           description: input.description,
           name: input.name,
+          inviteLink: inviteLink,  // Ajouter inviteLink ici
         })
         .returning({ groupId: groups.id });
+
       if (id[0] == null) return;
       const { groupId } = id[0];
 
-      const users = input.members.map((user) => ({
+      const usersToInsert = input.members.map((user) => ({
         userId: user,
         groupId: groupId,
       }));
-      users.push({
+      usersToInsert.push({
         userId: ctx.session.user.id,
         groupId: groupId,
       });
 
-      await ctx.db.insert(groupsMembers).values(users);
+      await ctx.db.insert(groupsMembers).values(usersToInsert);
     }),
 
   getGroups: protectedProcedure.query(async ({ ctx }) => {

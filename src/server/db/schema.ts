@@ -137,7 +137,7 @@ export const verificationTokens = createTable(
 export const groups = createTable("group", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name", { length: 255 }).notNull(),
-  inviteLink: text("invitelink", { length: 255 }),
+  inviteLink: text("inviteLink", { length: 255 }),
   description: text("description", { length: 255 }),
   userAdmin: text("userAdmin", { length: 255 })
     .notNull()

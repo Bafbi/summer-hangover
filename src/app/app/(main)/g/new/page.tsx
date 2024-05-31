@@ -16,9 +16,6 @@ const CreateGroup = () => {
 
   const { data: contactData, isLoading } = api.user.getContacts.useQuery();
 
-  const groupId = uuidv4();  // Generate a unique ID for the group
-  const inviteLink = `http://localhost:3000/invite/${groupId}`;
-
   const handleCheckboxChange = (contactId: string) => {
     setSelectedContacts((prevSelectedContacts) => {
       if (prevSelectedContacts.includes(contactId)) {
@@ -40,12 +37,14 @@ const CreateGroup = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const groupId = uuidv4();  // Generate a unique ID for the group
+    const inviteLink = `http://localhost:3000/invite/${groupId}`;
 
     const newGroupData = {
       name: newGroupName,
-      invitelink: inviteLink,
       description: newGroupDescription,
-      members: selectedContacts,  // Pass the invite link to the mutation
+      members: selectedContacts,
+      inviteLink: inviteLink,  // Pass the invite link to the mutation
     };
 
     console.log("Creating group with the following data:", newGroupData);
