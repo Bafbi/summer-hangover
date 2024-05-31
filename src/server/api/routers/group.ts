@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers, users } from "~/server/db/schema";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -83,7 +80,7 @@ export const groupRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const group = await ctx.db.query.groups.findFirst({
-        where: (groups, { eq }) => eq(groups.id, input.id),
+        where: (groups, { eq }) => eq(groups.id, parseInt(input.id)),
         with: {
           createdBy: {
             columns: {

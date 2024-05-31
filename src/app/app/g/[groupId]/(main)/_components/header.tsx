@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import QRCode from 'react-qr-code';
 import { api } from "~/trpc/react";
 
-export function GroupHeader({ groupId }) {
+export function GroupHeader({ groupId }: { groupId: string }) {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [groupLink, setGroupLink] = useState("");
