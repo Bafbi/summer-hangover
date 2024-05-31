@@ -32,6 +32,28 @@ export default async function BudgetPage() {
           10<span className="material-icons mx-1">euro_symbol</span>
         </div>
       </div>
+      <div className="sortie flex w-full items-center justify-between">
+          <Link
+            href="/other-content-2"
+            className="bg-primary-container my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105"
+            style={{
+              minHeight: "60px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span className="material-icons">add_circle</span>
+          </Link>
+          <Link
+            href="./budgets/create"
+            className="bg-primary-container my-4 flex w-full max-w-60 flex-grow cursor-pointer items-center justify-center space-x-2 space-x-reverse rounded-l-xl p-2 transition-transform hover:scale-105"
+            style={{ minHeight: "60px" }}
+            passHref
+          >
+            <div>Ajouter une dépense</div>
+          </Link>
+        </div>
       </main>
     </>
   );

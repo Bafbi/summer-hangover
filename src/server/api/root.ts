@@ -7,6 +7,7 @@ import { chatRouter } from "./routers/chat";
 import { userRouter } from "./routers/user";
 import { profileRouter } from "./routers/profile";
 import { notificationRouter } from "./routers/notifications";
+import { tricountRouter } from "./routers/tricount";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   profile: profileRouter,
   notification: notificationRouter,
+  tricount: tricountRouter,
 });
 
 // export type definition of API
