@@ -78,4 +78,15 @@ export const groupRouter = createTRPCRouter({
     if (groupsQuery == undefined) return null;
     return groupsQuery.groups.map((group) => group.group);
   }),
+
+  getGroupById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const group = await ctx.db
+        .select()
+        .from(groups)
+        .where(groups.id.eq(input.id))
+        .single();
+      return group;
+    }),
 });
