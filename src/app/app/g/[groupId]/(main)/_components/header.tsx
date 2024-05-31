@@ -1,15 +1,19 @@
 "use client";
-
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QRCode from 'react-qr-code';
 import { useRouter } from "next/router";
 
 export function GroupHeader() {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { groupId } = router.query;
   const groupLink = `http://localhost:3000/invite/${groupId}`;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleInvitationClick = () => {
     setInvitationOpen(true);
@@ -23,6 +27,8 @@ export function GroupHeader() {
     navigator.clipboard.writeText(groupLink);
     alert("Lien copié dans le presse-papiers !");
   };
+
+  if (!mounted) return null;
 
   return (
     <>
