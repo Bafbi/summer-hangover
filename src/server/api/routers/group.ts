@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers, users } from "~/server/db/schema";
 import { v4 as uuidv4 } from 'uuid';
 
