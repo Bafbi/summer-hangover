@@ -42,7 +42,7 @@ export function GroupHeader({ groupId }) {
           <span className="material-icons">home</span>
         </Link>
         <h1 className="text-xl font-bold text-primary underline">
-          {groupName} 
+          {groupName} {/* Display the group name here */}
         </h1>
         <span className="cursor-pointer material-icons" onClick={handleInvitationClick}>
           mail_outline
