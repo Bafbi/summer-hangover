@@ -23,10 +23,15 @@ import {
       });
     }),
     
-    getTricount: protectedProcedure.input(z.object({groupId: z.number(), eventId: z.number()})).query(({ ctx ,input}) => {
-      
-      return ctx.db.query.expenses.findMany({
-        where: (expenses, { eq, and}) => and(eq(expenses.groupId,input.groupId ),eq(expenses.eventId,input.eventId)),
-      });
-    }),
+    // get all expenses (label & amount) for a specific event
+
+    getExpenses: protectedProcedure.input(z.object({groupId: z.number(), eventId: z.number()})).query(({ ctx ,input}) => {
+        
+        return ctx.db.query.expenses.findMany({
+          where: (expenses, { eq ,and}) => and(eq(expenses.groupId,input.groupId ),eq(expenses.eventId,input.eventId)),
+          with: {
+            user: true,
+          }
+        });
+      } ),
   });
