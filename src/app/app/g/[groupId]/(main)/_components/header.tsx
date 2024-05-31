@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import QRCode from 'react-qr-code';
+import { useRouter } from "next/router";
 
 export function GroupHeader() {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
-  const groupLink = "http://localhost:3000/invite/your-group-id";
+  const router = useRouter();
+  const { groupId } = router.query;
+  const groupLink = `http://localhost:3000/invite/${groupId}`;
 
   const handleInvitationClick = () => {
     setInvitationOpen(true);

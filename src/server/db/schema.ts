@@ -1,4 +1,4 @@
-import { desc, relations, sql } from "drizzle-orm";
+import { Relations, desc, relations, sql } from "drizzle-orm";
 import {
   index,
   int,
@@ -8,12 +8,6 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
 export const createTable = sqliteTableCreator(
   (name) => `summer-hangover_${name}`,
 );
@@ -52,7 +46,6 @@ export const users = createTable("user", {
   image: text("image", { length: 255 }),
 });
 
-
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   groups: many(groupsMembers),
@@ -62,22 +55,20 @@ export const usersRelations = relations(users, ({ many }) => ({
   eventsCreated: many(events, { relationName: "createdBy" }),
   activitiesCreated: many(activities, { relationName: "createdBy" }),
   notifications: many(notifications),
-  //usedLinks: many(inviteLinks),
+  usedLinks: many(inviteLinkUsers),
 }));
 
 export const notifications = createTable("notification", {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    userId: text("userId", { length: 255 }).notNull().references(() => users.id),
-    message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
-  },
-  (notification) => ({
-    userIdIdx: index("notification_userId_idx").on(notification.userId),
-  }),
-);
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: text("userId", { length: 255 }).notNull().references(() => users.id),
+  message: text("message", { length: 255 }).notNull(),
+  createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+}, (notification) => ({
+  userIdIdx: index("notification_userId_idx").on(notification.userId),
+}));
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
-  user: one(users, { fields: [notifications.id], references: [users.id] }),
+  user: one(users, { fields: [notifications.userId], references: [users.id] }),
 }));
 
 export const accounts = createTable(
@@ -146,6 +137,7 @@ export const verificationTokens = createTable(
 export const groups = createTable("group", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name", { length: 255 }).notNull(),
+  inviteLink: text("invitelink", { length: 255 }),
   description: text("description", { length: 255 }),
   userAdmin: text("userAdmin", { length: 255 })
     .notNull()
@@ -171,6 +163,7 @@ export const groupsRelations = relations(groups, ({ one, many }) => ({
     relationName: "createdBy",
   }),
   messages: many(messages),
+  inviteLinks: many(inviteLinks),
 }));
 
 export const groupsMembers = createTable(
@@ -199,7 +192,7 @@ export const groupsMembersRelations = relations(groupsMembers, ({ one }) => ({
 export const events = createTable(
   "event",
   {
-    id: int("id", { mode: "number" }),
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     groupId: int("groupId", { mode: "number" })
       .notNull()
       .references(() => groups.id),
@@ -214,9 +207,6 @@ export const events = createTable(
     date: int("date", { mode: "timestamp" }).notNull(),
     location: text("location", { length: 255 }),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.id, table.groupId] }),
-  }),
 );
 
 export const eventsRelations = relations(events, ({ one, many }) => ({
@@ -238,7 +228,9 @@ export const eventsParticipants = createTable("eventParticipants", {
   userId: text("userId", { length: 255 })
     .notNull()
     .references(() => users.id),
-});
+}, (table) => ({
+  pk: primaryKey({ columns: [table.eventId, table.userId] }),
+}));
 
 export const eventsParticipantsRelations = relations(
   eventsParticipants,
@@ -257,7 +249,7 @@ export const eventsParticipantsRelations = relations(
 export const activities = createTable(
   "activity",
   {
-    id: int("id", { mode: "number" }),
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     eventId: int("eventId", { mode: "number" }),
     groupId: int("groupId", { mode: "number" }),
     createdBy: text("createdBy", { length: 255 }).notNull(),
@@ -265,15 +257,16 @@ export const activities = createTable(
     description: text("description", { length: 255 }),
     name: text("name", { length: 255 }).notNull(),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.id, table.eventId, table.groupId] }),
-  }),
 );
 
 export const activitiesRelations = relations(activities, ({ one }) => ({
   event: one(events, {
-    fields: [activities.eventId, activities.groupId],
-    references: [events.id, events.groupId],
+    fields: [activities.eventId],
+    references: [events.id],
+  }),
+  group: one(groups, {
+    fields: [activities.groupId],
+    references: [groups.id],
   }),
   createdBy: one(users, {
     fields: [activities.createdBy],
@@ -284,9 +277,11 @@ export const activitiesRelations = relations(activities, ({ one }) => ({
 
 export const messages = createTable("message", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  groupId: int("groupId", { mode: "number" }).notNull(),
+  groupId: int("groupId", { mode: "number" }).notNull()
+    .references(() => groups.id),
   eventId: int("eventId", { mode: "number" }),
-  userId: text("userId", { length: 255 }).notNull(),
+  userId: text("userId", { length: 255 }).notNull()
+    .references(() => users.id),
   content: text("content", { length: 1024 }).notNull(),
   createdAt: int("createdAt", { mode: "timestamp" })
     .notNull()
@@ -296,14 +291,13 @@ export const messages = createTable("message", {
 export const messagesRelations = relations(messages, ({ one }) => ({
   user: one(users, { fields: [messages.userId], references: [users.id] }),
   event: one(events, {
-    fields: [messages.groupId, messages.eventId],
-    references: [events.groupId, events.id],
+    fields: [messages.eventId],
+    references: [events.id],
   }),
   group: one(groups, { fields: [messages.groupId], references: [groups.id] }),
 }));
 
-/*
-export const inviteLinks = createTable("inviteLinks", {
+export const inviteLinks = createTable("inviteLink", {
   id: text("id", { length: 255 }).primaryKey(),
   groupId: int("groupId", { mode: "number" })
     .notNull()
@@ -322,6 +316,31 @@ export const inviteLinksRelations = relations(inviteLinks, ({ one, many }) => ({
     fields: [inviteLinks.groupId],
     references: [groups.id],
   }),
-  usedBy: many(users, { relationName: "usedLinks" }),
+  usedBy: many(inviteLinkUsers),
 }));
-*/
+
+export const inviteLinkUsers = createTable(
+  "inviteLinkUsers",
+  {
+    inviteLinkId: text("inviteLinkId", { length: 255 })
+      .notNull()
+      .references(() => inviteLinks.id),
+    userId: text("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.inviteLinkId, table.userId] }),
+  }),
+);
+
+export const inviteLinkUsersRelations = relations(inviteLinkUsers, ({ one }) => ({
+  inviteLink: one(inviteLinks, {
+    fields: [inviteLinkUsers.inviteLinkId],
+    references: [inviteLinks.id],
+  }),
+  user: one(users, {
+    fields: [inviteLinkUsers.userId],
+    references: [users.id],
+  }),
+}));
