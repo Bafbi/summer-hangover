@@ -80,7 +80,7 @@ export const groupRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const group = await ctx.db.query.groups.findFirst({
-        where: (groups, { eq }) => eq(groups.id, input.id),
+        where: (groups, { eq }) => eq(groups.id, parseInt(input.id)),
         with: {
           createdBy: {
             columns: {
