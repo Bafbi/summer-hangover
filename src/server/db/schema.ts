@@ -38,29 +38,20 @@ export const posts = createTable(
 );
 
 export const users = createTable("user", {
-  id: text("id", { length: 255 }).notNull().primaryKey(),
-  firstName: text("firstName", { length: 255 }).notNull(),
-  lastName: text("lastName", { length: 255 }).notNull(),
-  age: int("age").notNull(),
-  description: text("description", { length: 255 }).notNull(),
+  id: text("id", { length: 255 }).primaryKey(),
+  name: text("name", { length: 255 }).notNull(),
+  firstName: text("firstName", { length: 255 }),
+  lastName: text("lastName", { length: 255 }),
+  age: int("age"),
+  description: text("description", { length: 255 }),
   email: text("email", { length: 255 }).notNull(),
-  password: text("password", { length: 255 }).notNull(),
+  password: text("password", { length: 255 }),
   emailVerified: int("emailVerified", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
   image: text("image", { length: 255 }),
 });
 
-export const notifications = createTable("notification", {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    userId: text("userId", { length: 255 }).notNull().references(() => users.id),
-    message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
-  },
-  (table) => ({
-    userIdIdx: index("notification_userId_idx").on(table.userId),
-  }),
-);
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
@@ -70,7 +61,23 @@ export const usersRelations = relations(users, ({ many }) => ({
   events: many(eventsParticipants),
   eventsCreated: many(events, { relationName: "createdBy" }),
   activitiesCreated: many(activities, { relationName: "createdBy" }),
-  usedLinks: many(inviteLinks),
+  notifications: many(notifications),
+  //usedLinks: many(inviteLinks),
+}));
+
+export const notifications = createTable("notification", {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    userId: text("userId", { length: 255 }).notNull().references(() => users.id),
+    message: text("message", { length: 255 }).notNull(),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+  },
+  (notification) => ({
+    userIdIdx: index("notification_userId_idx").on(notification.userId),
+  }),
+);
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, { fields: [notifications.id], references: [users.id] }),
 }));
 
 export const accounts = createTable(
@@ -295,6 +302,7 @@ export const messagesRelations = relations(messages, ({ one }) => ({
   group: one(groups, { fields: [messages.groupId], references: [groups.id] }),
 }));
 
+/*
 export const inviteLinks = createTable("inviteLinks", {
   id: text("id", { length: 255 }).primaryKey(),
   groupId: int("groupId", { mode: "number" })
@@ -316,3 +324,4 @@ export const inviteLinksRelations = relations(inviteLinks, ({ one, many }) => ({
   }),
   usedBy: many(users, { relationName: "usedLinks" }),
 }));
+*/

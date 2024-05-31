@@ -14,16 +14,10 @@ import { env } from "~/env";
       date: "Aujourd'hui",
       items: [
         {
-          id: 1,
-          text: "Paul vous a invité à rejoindre son groupe",
-          groupName: "Nom du groupe",
-          link: "#",
+          id: 1, text: "Paul vous a invité à rejoindre son groupe", groupName: "Nom du groupe", link: "#",
         },
         {
-          id: 2,
-          text: "Nathan a ajouté une nouvelle activité à l'évènement",
-          eventName: "Nom de l'évènement",
-          link: "#",
+          id: 2, text: "Nathan a ajouté une nouvelle activité à l'évènement",eventName: "Nom de l'évènement", link: "#",
         },
       ],
     },
@@ -100,6 +94,8 @@ import { env } from "~/env";
           <div className="bg-surface-variant mb-4 mt-6 flex h-14 flex-col items-center rounded-md">
             <h1 className="pt-2 text-4xl font-semibold">Notifications</h1>
           </div>
+          <button onClick={handleSendNotification}>Envoyer une notification</button>
+          <p>session.user.id = {session?.user.id}</p>
           <div className="mb-8 ml-52 mt-3 flex items-center justify-between">
             <div className="flex items-center space-x-1">
               <button className="mr-3 rounded-md bg-inverse-primary px-5 py-1 text-sm font-semibold text-inverse-surface">

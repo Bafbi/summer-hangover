@@ -18,12 +18,13 @@ const pusher = new Pusher({
 // Les notifications sont envoyées à un utilisateur spécifique
 // et stockées dans la base de données
 export const notificationRouter = createTRPCRouter({
+
     sendNotification: protectedProcedure
       .input(z.object({
         message: z.string(),
       }))
       .mutation(async ({ ctx, input }) => {
-        
+        console.log("Session:", ctx.session);
         const user = await db.select().from(users).where(eq(users.id, ctx.session.user.id));
   
         if (!user) {
@@ -49,20 +50,7 @@ export const notificationRouter = createTRPCRouter({
       }),
   
     getNotifications: protectedProcedure.query(async ({ ctx }) => {
-      // On récupère d'abord l'user qui nous intéresse
-      const user = await db.select().from(users).where(eq(users.id, ctx.session.user.id));
-  
-      // debug
-      if (!user) {
-        throw new Error('Utilisateur non trouvé');
-      }
-  
-      const userId = users.id;
-  
-      // On récupère les notifications de cette user
-      const userNotifications = await db.select().from(notifications).where(eq(notifications.userId, userId));
-  
-      return userNotifications;
+      return db.select().from(notifications).where(eq(notifications.userId, ctx.session.user.id));
     }),
   });
 
