@@ -25,7 +25,7 @@ export const groupRouter = createTRPCRouter({
           createdBy: ctx.session.user.id,
           description: input.description,
           name: input.name,
-          inviteLink: inviteLink,  // Ajouter inviteLink ici
+          inviteLink: inviteLink,
         })
         .returning({ groupId: groups.id });
 
@@ -78,4 +78,35 @@ export const groupRouter = createTRPCRouter({
     if (groupsQuery == undefined) return null;
     return groupsQuery.groups.map((group) => group.group);
   }),
+
+  getGroupById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const group = await ctx.db.query.groups.findFirst({
+        where: (groups, { eq }) => eq(groups.id, input.id),
+        with: {
+          createdBy: {
+            columns: {
+              name: true,
+            },
+          },
+          members: {
+            columns: {},
+            with: {
+              user: {
+                columns: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!group) {
+        throw new Error("Group not found");
+      }
+
+      return group;
+    }),
 });
