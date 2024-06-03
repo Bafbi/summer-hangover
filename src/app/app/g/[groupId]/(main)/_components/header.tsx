@@ -1,22 +1,22 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import QRCode from 'react-qr-code';
+import QRCode from "react-qr-code";
 import { api } from "~/trpc/react";
 
 export function GroupHeader({ groupId }: { groupId: number }) {
   const [isInvitationOpen, setInvitationOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [groupLink, setGroupLink] = useState("");
   const [groupName, setGroupName] = useState("");
 
   const { data: groupData, isLoading } = api.group.getGroupById.useQuery({ id: groupId });
 
   useEffect(() => {
-    setMounted(true);
     if (groupData) {
       setGroupLink(groupData.inviteLink);
       setGroupName(groupData.name);
+      console.log("Group Data:", groupData); // Log group data for debugging
     }
   }, [groupData]);
 
@@ -29,11 +29,11 @@ export function GroupHeader({ groupId }: { groupId: number }) {
   };
 
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(groupLink);
+    navigator.clipboard.writeText(`http://localhost:3000/invite/${groupLink}`);
     alert("Lien copié dans le presse-papiers !");
   };
 
-  if (!mounted || isLoading) return null;
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <>
@@ -60,16 +60,13 @@ export function GroupHeader({ groupId }: { groupId: number }) {
             </button>
             <h2 className="text-2xl font-bold text-white mb-4">Inviter vos amis</h2>
             <div className="flex flex-col items-center">
-              <QRCode value={groupLink} size={128} />
+              <QRCode value={`http://localhost:3000/invite/${groupLink}`} size={128} />
               <p className="mt-4 text-white">Scannez ce QR code</p>
               <p className="mt-2 text-white">ou</p>
               <p className="mt-2 text-white">copiez ce lien</p>
               <div className="mt-2 p-2 border rounded w-full text-center bg-white text-black flex items-center justify-between">
-                <span className="break-words">{groupLink}</span>
-                <button
-                  className="ml-2"
-                  onClick={handleCopyClick}
-                >
+              <span className="break-words"> {`http://localhost:3000/invite/${groupLink}`}</span>
+                <button className="ml-2" onClick={handleCopyClick}>
                   <span className="material-icons">content_copy</span>
                 </button>
               </div>

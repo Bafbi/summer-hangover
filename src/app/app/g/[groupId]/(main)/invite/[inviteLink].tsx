@@ -2,23 +2,16 @@ import { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { db } from "~/server/db";
-import { groups, inviteLinks, users, groupsMembers } from "~/server/db/schema";
+import { groups, inviteLinks, groupsMembers } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const groupId = context.params?.groupId as string;
-  const inviteLink = await db.query.inviteLinks.findFirst({
-    where: (inviteLinks, { eq }) => eq(inviteLinks.link, groupId),
-  });
+  const inviteLink = context.params?.inviteLink as string;
 
-  if (!inviteLink) {
-    return {
-      notFound: true,
-    };
-  }
+  console.log("inviteLink:", inviteLink);  // Log the inviteLink for debugging
 
   const group = await db.query.groups.findFirst({
-    where: (groups, { eq }) => eq(groups.id, inviteLink.groupId),
+    where: (groups, { eq }) => eq(groups.inviteLink, inviteLink),
   });
 
   if (!group) {
@@ -29,28 +22,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      groupId,
+      inviteLink,
       groupName: group.name,
+      groupId: group.id,
     },
   };
 };
 
-const InvitePage: NextPage<{ groupId: string; groupName: string }> = ({ groupId, groupName }) => {
+const InvitePage: NextPage<{ inviteLink: string; groupName: string; groupId: number }> = ({ inviteLink, groupName, groupId }) => {
   const { data: sessionData } = useSession({ required: true });
   const router = useRouter();
 
   const handleAcceptInvite = async () => {
     try {
-      // Assuming you have an API route to handle accepting invites
-      await fetch(`/api/invite/accept`, {
+      const response = await fetch(`/api/invite/accept`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ groupId }),
+        body: JSON.stringify({ inviteLink }),
       });
 
-      router.push(`/g/${groupId}`);
+      if (response.ok) {
+        router.push(`/g/${groupId}`);
+      } else {
+        console.error("Failed to accept invite:", await response.json());
+      }
     } catch (error) {
       console.error("Error accepting invite:", error);
     }
