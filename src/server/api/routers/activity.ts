@@ -29,6 +29,7 @@ export const activityRouter = createTRPCRouter({
       
       return ctx.db.query.activities.findMany({
         where: (activities, { eq ,and}) => and(eq(activities.groupId,input.groupId ),eq(activities.eventId,input.eventId)),
+        with: {createdBy: true},
       });
     }),
 });

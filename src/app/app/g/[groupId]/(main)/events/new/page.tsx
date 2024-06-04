@@ -25,7 +25,7 @@ const CreateEvent =  ({
 
   const createEvent = api.event.createEvent.useMutation({
     onSuccess: () => {
-      router.refresh();
+      router.back();
       setNewEventName("");
       setNewEventDescription("");
       setEventLocation("")
