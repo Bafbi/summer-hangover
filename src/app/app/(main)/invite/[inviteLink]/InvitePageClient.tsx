@@ -1,55 +1,44 @@
-import { GetServerSideProps, NextPage } from "next";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { db } from "~/server/db";
-import { groups, inviteLinks, groupsMembers } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+"use client";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const inviteLink = context.params?.inviteLink as string;
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
-  console.log("inviteLink:", inviteLink);  // Log the inviteLink for debugging
+interface InvitePageClientProps {
+  inviteLink: string;
+  groupName: string;
+  groupId: number;
+}
 
-  const group = await db.query.groups.findFirst({
-    where: (groups, { eq }) => eq(groups.inviteLink, inviteLink),
-  });
-
-  if (!group) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      inviteLink,
-      groupName: group.name,
-      groupId: group.id,
-    },
-  };
-};
-
-const InvitePage: NextPage<{ inviteLink: string; groupName: string; groupId: number }> = ({ inviteLink, groupName, groupId }) => {
+export default function InvitePageClient({ inviteLink, groupName, groupId }: InvitePageClientProps) {
   const { data: sessionData } = useSession({ required: true });
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   const handleAcceptInvite = async () => {
     try {
+      console.log("Sending request to accept invite:", inviteLink);
+
       const response = await fetch(`/api/invite/accept`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ inviteLink }),
       });
 
+      console.log("Response received:", response);
+
       if (response.ok) {
         router.push(`/g/${groupId}`);
       } else {
-        console.error("Failed to accept invite:", await response.json());
+        const responseData = await response.json();
+        setError(responseData.error || 'Failed to accept invite');
+        console.error('Failed to accept invite:', responseData);
       }
     } catch (error) {
-      console.error("Error accepting invite:", error);
+      console.error('Error accepting invite:', error);
+      setError('Error accepting invite');
     }
   };
 
@@ -61,6 +50,7 @@ const InvitePage: NextPage<{ inviteLink: string; groupName: string; groupId: num
         <p className="text-2xl font-semibold text-[#E49A0A]">
           Vous avez été invité à rejoindre le groupe {groupName}
         </p>
+        {error && <p className="text-red-500">{error}</p>}
         <div className="flex gap-4">
           <button
             className="rounded-lg bg-[#1E5552] px-4 py-2 text-lg font-semibold text-[#E49A0A] hover:bg-[#1CCDB3]"
@@ -78,6 +68,4 @@ const InvitePage: NextPage<{ inviteLink: string; groupName: string; groupId: num
       </div>
     </main>
   );
-};
-
-export default InvitePage;
+}

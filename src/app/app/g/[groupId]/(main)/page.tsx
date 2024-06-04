@@ -19,8 +19,12 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
   >([]);
   const [chatInput, setChatInput] = useState("");
   const [messageId, setMessageId] = useState<number>(0);
+  const [tmpMessages, setTmpMessages] = useState<string | null>(null);
 
   const sendMessageMutation = api.chat.sendMessage.useMutation({
+    onMutate: ({ groupId, content }) => {
+      setTmpMessages(content);
+    },
     onSuccess: () => {
       setChatInput("");
     },
@@ -43,6 +47,7 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
   useEffect(() => {
     if (messageData) {
       setMessages((prevMessages) => [...prevMessages, messageData]);
+      setTmpMessages(null);
     }
   }, [messageData]);
 
@@ -73,8 +78,18 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
         <h1>Group Main</h1>
         <ul>
           {messages.map((message) => (
-            <li key={message.id}>{message.content}</li>
+            <li
+              className={`${message.id == -1 ? "text-outline" : ""}`}
+              key={message.id}
+            >
+              {message.content}
+            </li>
           ))}
+          {tmpMessages && (
+            <li className="text-outline" key={tmpMessages}>
+              {tmpMessages}
+            </li>
+          )}
         </ul>
         <form
           onSubmit={(e) => {
