@@ -67,7 +67,7 @@ export const notifications = createTable(
       .references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
     createdAt: int("createdAt", { mode: "timestamp" }).default(
-      sql`CURRENT_TIMESTAMP`,
+      sql`(strftime('%s', 'now'))`,
     ),
   },
   (notification) => ({
@@ -281,6 +281,39 @@ export const activitiesRelations = relations(activities, ({ one }) => ({
   }),
 }));
 
+export const votesActivities = createTable(
+  "voteActivity",
+  {
+    activityId: int("activityId", { mode: "number" }).notNull(),
+    eventId: int("eventId", { mode: "number" }).notNull(),
+    groupId: int("groupId", { mode: "number" }).notNull(),
+    userId: text("userId", { length: 255 }).notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({
+      columns: [table.activityId, table.eventId, table.groupId, table.userId],
+    }),
+  }),
+);
+
+export const votesActivitiesRelations = relations(
+  votesActivities,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [votesActivities.userId],
+      references: [users.id],
+    }),
+    activity: one(activities, {
+      fields: [
+        votesActivities.groupId,
+        votesActivities.eventId,
+        votesActivities.groupId,
+      ],
+      references: [activities.groupId, activities.eventId, activities.groupId],
+    }),
+  }),
+);
+
 export const messages = createTable("message", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   groupId: int("groupId", { mode: "number" }).notNull(),
@@ -352,28 +385,24 @@ export const inviteLinkUsersRelations = relations(
   }),
 );
 
-export const expenses = createTable( 
-  "expense",
-  {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    groupId: int("groupId", { mode: "number" })
-      .notNull(),
-    eventId: int("eventId", { mode: "number" }).notNull(),
-    userId: text("userId", { length: 255 }).notNull(),
-    amount: int("amount").notNull(),
-    label: text("label", { length: 255 }),
-    createdAt: int("createdAt", { mode: "timestamp" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-  },
-);
+export const expenses = createTable("expense", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  groupId: int("groupId", { mode: "number" }).notNull(),
+  eventId: int("eventId", { mode: "number" }).notNull(),
+  userId: text("userId", { length: 255 }).notNull(),
+  amount: int("amount").notNull(),
+  label: text("label", { length: 255 }),
+  createdAt: int("createdAt", { mode: "timestamp" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
 
 export const expensesRelations = relations(expenses, ({ one }) => ({
-  event : one(events, {
+  event: one(events, {
     fields: [expenses.groupId, expenses.eventId],
     references: [events.id, events.id],
   }),
-  user : one(users, {
+  user: one(users, {
     fields: [expenses.userId],
     references: [users.id],
   }),

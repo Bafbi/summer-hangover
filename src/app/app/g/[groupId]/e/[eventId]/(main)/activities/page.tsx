@@ -62,11 +62,13 @@ export default function Home( {
         </div>
       </main>
       {showPopup && selectedActivity && (
-        <div className="bg-secondary-container absolute bottom-0 z-10 mx-auto w-11/12 animate-slideinBotton overflow-y-hidden rounded-t-lg">
+        <div className="bg-secondary-container absolute bottom-0 z-10 mx-auto w-full animate-slideinBotton overflow-y-hidden rounded-t-lg h-40">
+          <div className="m-4">
           <h2 className="text-xl font-bold">{selectedActivity.name}</h2>
           <p>Lieu : {selectedActivity.location}</p>
           <p>Description : {selectedActivity.description}</p>
-          <p>Créé par : {selectedActivity.createdBy}</p>
+          <p>Créé par : {selectedActivity.createdBy.name}</p>
+          </div>
         </div>
       )}
     </>

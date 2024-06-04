@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { groups, groupsMembers, users } from "~/server/db/schema";
+import { groups, groupsMembers, inviteLinks, users } from "~/server/db/schema";
 import { v4 as uuidv4 } from "uuid";
 
 export const groupRouter = createTRPCRouter({
@@ -10,10 +10,10 @@ export const groupRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         members: z.string().array(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
-      const inviteLink = `http://localhost:3000/invite/${uuidv4()}`;
+      const inviteLink = uuidv4();  // Generate only the UUID part
 
       const id = await ctx.db
         .insert(groups)
@@ -22,7 +22,7 @@ export const groupRouter = createTRPCRouter({
           createdBy: ctx.session.user.id,
           description: input.description,
           name: input.name,
-          inviteLink: inviteLink,
+          inviteLink: inviteLink,  // Store only the UUID
         })
         .returning({ groupId: groups.id });
 
