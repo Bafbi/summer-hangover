@@ -11,9 +11,6 @@ importers:
       '@auth/drizzle-adapter':
         specifier: ^0.7.0
         version: 0.7.0
-      '@esbuild/win32-x64':
-        specifier: ^0.21.4
-        version: 0.21.4
       '@libsql/client':
         specifier: ^0.6.0
         version: 0.6.0
@@ -459,12 +456,6 @@ packages:
 
   '@esbuild/win32-x64@0.19.12':
     resolution: {integrity: sha512-T1QyPSDCyMXaO3pzBkF96E8xMkiRYbUEZADd29SyPGabqxMViNoii+NcK7eWJAEoU6RZyEm5lVSIjTmcdoB9HA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [win32]
-
-  '@esbuild/win32-x64@0.21.4':
-    resolution: {integrity: sha512-sywLRD3UK/qRJt0oBwdpYLBibk7KiRfbswmWRDabuncQYSlf8aLEEUor/oP6KRz8KEG+HoiVLBhPRD5JWjS8Sg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
@@ -2943,8 +2934,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.19.12':
     optional: true
-
-  '@esbuild/win32-x64@0.21.4': {}
 
   '@eslint-community/eslint-utils@4.4.0(eslint@8.57.0)':
     dependencies:
