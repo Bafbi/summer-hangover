@@ -27,7 +27,7 @@ const CreateActivity =  ({
 
   const createActivity = api.activity.createActivity.useMutation({
     onSuccess: () => {
-      router.refresh();
+      router.back();
       setNewActivityName("");
       setNewActivityDescription("");
       setActivityLocation("")
@@ -106,12 +106,13 @@ const CreateActivity =  ({
          
           <div className="mt-8 flex justify-center">
           <button
-        type="submit"
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
-        disabled={createActivity.isPending}
-      >
-        {createActivity.isPending ? "Submitting..." : "Submit"}
-      </button>
+            type="submit"
+            className="rounded-full bg-container px-10 py-3 font-semibold transition hover:bg-surface-variant border-primary border"
+            disabled={createActivity.isPending}
+           
+          >
+            {createActivity.isPending ? "Submitting..." : "Submit"}
+          </button>
            
           </div>
           </form>

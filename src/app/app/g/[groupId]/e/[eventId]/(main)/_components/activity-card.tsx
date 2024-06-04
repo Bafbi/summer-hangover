@@ -3,7 +3,11 @@ export type  Activity= {
   name: string;
   description: string | null;
   groupId: number | null;
-  createdBy: string;
+  createdBy: string & {
+    
+    name: string;
+   
+};
   eventId: number | null;
   location: string;
 }

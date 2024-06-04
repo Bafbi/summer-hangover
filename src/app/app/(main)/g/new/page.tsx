@@ -33,7 +33,7 @@ const CreateGroup = () => {
 
   const createGroup = api.group.createGroup.useMutation({
     onSuccess: () => {
-      router.refresh();
+      router.back();
       setNewGroupName("");
       setNewGroupDescription("");
       setSelectedContacts([])
