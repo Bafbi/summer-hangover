@@ -1,19 +1,22 @@
+"use client"
+import { api } from "~/trpc/react";
+
 export type  Activity= {
-  id: number | null;
+  id: number ;
   name: string;
   description: string | null;
-  groupId: number | null;
+  groupId: number;
   createdBy: string & {
     
     name: string;
    
 };
-  eventId: number | null;
+  eventId: number ;
   location: string;
 }
 
 
-export function ActivityCard({
+export  function ActivityCard({
   activity,
   isFavorite,
 }: {
@@ -22,6 +25,10 @@ export function ActivityCard({
 }
 
 ) {
+
+  const vote =  api.activity.getVotes.useQuery({groupId: activity.groupId, eventId: activity.eventId,activityId: activity.id});
+
+
   return (
     <>
       <div
@@ -31,6 +38,9 @@ export function ActivityCard({
           <span className="text-lg font-semibold">{activity.name}</span>
           <span className="text-sm font-medium text-outline">
             Lieux: {activity.location}
+          </span>
+          <span className="text-sm font-medium text-outline">
+            Lieux: {vote.data?.count}
           </span>
         </div>
         <div className="bg-secondary-container flex h-10 items-center justify-around gap-1 p-2">
