@@ -25,7 +25,7 @@ export default function ActiviteLayout({
     <div className="bg-surface flex min-h-screen flex-col">
       <EventHeader />
       <main className="flex-grow">{children}</main>
-      <EventFooter basePath={`/app/g/${params.groupId}/e/${params.groupId}`} />
+      <EventFooter basePath={`/app/g/${params.groupId}/e/${params.eventId}`} />
     </div>
   );
 }

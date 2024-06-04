@@ -29,7 +29,6 @@ export const chatRouter = createTRPCRouter({
         .returning({ messageId: messages.id });
       if (res[0] == null) return;
       const { messageId } = res[0];
-      console.log(`group-${input.groupId}`, "new-message", messageId);
       await pusher.trigger(`group-${input.groupId}`, "new-message", {
         messageId,
       });
@@ -40,6 +39,14 @@ export const chatRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.query.messages.findFirst({
         where: (messages, { eq }) => eq(messages.id, input.messageId),
+        with: {
+          user: {
+            columns: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
     }),
 
@@ -47,8 +54,16 @@ export const chatRouter = createTRPCRouter({
     .input(z.object({ groupId: z.number() }))
     .query(({ ctx, input }) => {
       return ctx.db.query.messages.findMany({
-        where: (messages, { eq, and, notExists }) =>
-          eq(messages.groupId, input.groupId),
+        where: (messages, { eq, and, isNull }) =>
+          and(eq(messages.groupId, input.groupId), isNull(messages.eventId)),
+        with: {
+          user: {
+            columns: {
+              id: true,
+              name: true,
+            },
+          },
+        },
         orderBy: (messages, { desc }) => [desc(messages.createdAt)],
       });
     }),
