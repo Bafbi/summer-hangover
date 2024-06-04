@@ -1,24 +1,26 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, ActivityCard } from "../_components/activity-card";
 import Link from "next/link";
+import { useRef, useState } from "react";
 import { api } from "~/trpc/react";
+import { ActivityCard, type Activity } from "../_components/activity-card";
 
-export default function Home( {
-  params
-}:{params: {
-  groupId: string,
-  eventId: string,
-}})
-    {
-
-  const {data:activities} = api.activity.getActivities.useQuery({
+export default function Home({
+  params,
+}: {
+  params: {
+    groupId: string;
+    eventId: string;
+  };
+}) {
+  const { data: activities } = api.activity.getActivities.useQuery({
     groupId: +params.groupId,
     eventId: +params.eventId,
   });
 
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+    null,
+  );
   const [favorite, setFavorite] = useState<number | null>(null);
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -34,7 +36,7 @@ export default function Home( {
         </Link>
         {/* <div className=" float-right flex w-11/12 flex-row flex-wrap gap-2 rounded-s-lg border-y-2 border-l-2 border-dashed border-secondary p-2"> */}
         <div className=" float-right grid w-11/12 grid-cols-2 gap-2 rounded-s-lg border-inverse-surface p-2">
-          {activities && activities.map((activity) => (
+          {activities?.map((activity) => (
             <div
               key={activity.id}
               onTouchStart={() => {
@@ -62,12 +64,12 @@ export default function Home( {
         </div>
       </main>
       {showPopup && selectedActivity && (
-        <div className="bg-secondary-container absolute bottom-0 z-10 mx-auto w-full animate-slideinBotton overflow-y-hidden rounded-t-lg h-40">
+        <div className="bg-secondary-container absolute bottom-0 z-10 mx-auto h-40 w-full animate-slideinBotton overflow-y-hidden rounded-t-lg">
           <div className="m-4">
-          <h2 className="text-xl font-bold">{selectedActivity.name}</h2>
-          <p>Lieu : {selectedActivity.location}</p>
-          <p>Description : {selectedActivity.description}</p>
-          <p>Créé par : {selectedActivity.createdBy.name}</p>
+            <h2 className="text-xl font-bold">{selectedActivity.name}</h2>
+            <p>Lieu : {selectedActivity.location}</p>
+            <p>Description : {selectedActivity.description}</p>
+            <p>Créé par : {selectedActivity.createdBy.name}</p>
           </div>
         </div>
       )}

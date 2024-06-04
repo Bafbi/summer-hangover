@@ -30,6 +30,10 @@
 //     },
 //   };
 // };
+//
+export default function InvitePage() {
+  return <div>Invite Page</div>;
+}
 
 // const InvitePage: NextPage<{ inviteLink: string; groupName: string; groupId: number }> = ({ inviteLink, groupName, groupId }) => {
 //   const { data: sessionData } = useSession({ required: true });

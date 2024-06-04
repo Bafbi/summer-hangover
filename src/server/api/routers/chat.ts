@@ -1,11 +1,7 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
-import { messages, posts } from "~/server/db/schema";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { messages } from "~/server/db/schema";
 import { pusher } from "~/server/pusher";
 
 export const chatRouter = createTRPCRouter({
