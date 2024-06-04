@@ -29,7 +29,7 @@ export function GroupHeader({ groupId }: { groupId: number }) {
   };
 
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/invite/${groupLink}`);
+    navigator.clipboard.writeText(`http://localhost:3000/app/invite/${groupLink}`);
     alert("Lien copié dans le presse-papiers !");
   };
 
@@ -60,12 +60,12 @@ export function GroupHeader({ groupId }: { groupId: number }) {
             </button>
             <h2 className="text-2xl font-bold text-white mb-4">Inviter vos amis</h2>
             <div className="flex flex-col items-center">
-              <QRCode value={`http://localhost:3000/invite/${groupLink}`} size={128} />
+              <QRCode value={`http://localhost:3000/app/invite/${groupLink}`} size={128} />
               <p className="mt-4 text-white">Scannez ce QR code</p>
               <p className="mt-2 text-white">ou</p>
               <p className="mt-2 text-white">copiez ce lien</p>
               <div className="mt-2 p-2 border rounded w-full text-center bg-white text-black flex items-center justify-between">
-              <span className="break-words"> {`http://localhost:3000/invite/${groupLink}`}</span>
+              <span className="break-words"> {`http://localhost:3000/app/invite/${groupLink}`}</span>
                 <button className="ml-2" onClick={handleCopyClick}>
                   <span className="material-icons">content_copy</span>
                 </button>
