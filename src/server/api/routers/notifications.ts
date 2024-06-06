@@ -1,9 +1,8 @@
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { eq, not } from "drizzle-orm";
-import { notifications, notificationType } from "~/server/db/schema";
+import { notificationType, notifications } from "~/server/db/schema";
 import { pusher } from "~/server/pusher";
-import Notifications from "~/app/app/(main)/notification/page";
 
 export const notificationRouter = createTRPCRouter({
   sendNotification: protectedProcedure

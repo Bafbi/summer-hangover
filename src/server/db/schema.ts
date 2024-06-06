@@ -1,5 +1,4 @@
-import { Relations, desc, relations, sql } from "drizzle-orm";
-import { boolean } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
 import {
   index,
   int,
@@ -8,7 +7,6 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
-import { INPUT_VALIDATION_RULES } from "node_modules/react-hook-form/dist/constants";
 
 export const createTable = sqliteTableCreator(
   (name) => `summer-hangover_${name}`,
@@ -84,7 +82,7 @@ export const notifications = createTable(
     createdAt: int("createdAt", { mode: "timestamp" }).default(
       sql`(strftime('%s', 'now'))`,
     ),
-    isRead: int("isRead", { mode: 'boolean' }),
+    isRead: int("isRead", { mode: "boolean" }),
     notifType: text("notifType", { enum: notificationType }).notNull(),
   },
   (notification) => ({

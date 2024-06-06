@@ -4,10 +4,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
-import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import { env } from "~/env";
 import { api, type RouterOutputs } from "~/trpc/react";
-import { notificationType } from "~/server/db/schema";
 
 function formatNotifications(
   notifications: RouterOutputs["notification"]["getNotifications"],
@@ -145,9 +143,10 @@ export default function Notifications() {
                   className="mx-7 mb-24 mt-10 flex items-center justify-between gap-4
                 rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-on-surface-variant"
                 >
-                  <p className="text-center text-base font-semibold">
-                    Vous n'avez pas de notification pour le moment. Lorsque vous
-                    en recevrez, elles apparaîtront ici.
+                  <p className="text-wrap text-center text-base font-semibold">
+                    {
+                      "Vous n'avez pas de notification pour le moment. Lorsque vous en recevrez, elles apparaîtront ici."
+                    }
                   </p>
                 </div>
               </div>
@@ -182,7 +181,7 @@ export default function Notifications() {
           {/* Hier */}
           {formattedNotifications.yesterdaysNotifications.length > 0 && (
             <>
-              <div className="mb-4 mt-8 flex h-10 flex-col items-center rounded-md bg-surface-variant text-on-surface-variant">
+              <div className="bg-surface-variant mb-4 mt-8 flex h-10 flex-col items-center rounded-md text-on-surface-variant">
                 <h1 className="pt-1 text-2xl font-semibold">Hier</h1>
               </div>
               <div>
