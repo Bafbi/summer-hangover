@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import Pusher from "pusher-js";
 import { useEffect, useRef, useState } from "react";
 import { env } from "~/env";

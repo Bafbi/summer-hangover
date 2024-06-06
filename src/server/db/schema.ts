@@ -1,4 +1,4 @@
-import { Relations, desc, relations, sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   index,
   int,
@@ -66,9 +66,9 @@ export const notifications = createTable(
       .notNull()
       .references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(
-      sql`(strftime('%s', 'now'))`,
-    ),
+    createdAt: int("createdAt", { mode: "timestamp" })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
   },
   (notification) => ({
     userIdIdx: index("notification_userId_idx").on(notification.userId),
