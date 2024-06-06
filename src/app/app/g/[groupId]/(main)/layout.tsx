@@ -1,6 +1,6 @@
-import { GroupHeader } from "./_components/header";
 import type { Metadata } from "next/types";
 import { GroupFooter } from "./_components/footer";
+import { GroupHeader } from "./_components/header";
 
 export async function generateMetadata({
   params,

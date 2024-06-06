@@ -1,6 +1,6 @@
-import { getServerAuthSession } from "~/server/auth";
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getServerAuthSession } from "~/server/auth";
 
 export default async function Home() {
   const session = await getServerAuthSession();
