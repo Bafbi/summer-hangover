@@ -3,7 +3,6 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import { SessionProvider } from "next-auth/react";
 import SessionWrapper from "./_components/session_wrapper";
 
 export const metadata = {

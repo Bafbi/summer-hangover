@@ -1,6 +1,6 @@
-import { EventHeader } from "./_components/header";
 import type { Metadata } from "next/types";
 import { EventFooter } from "./_components/footer";
+import { EventHeader } from "./_components/header";
 
 export async function generateMetadata({
   params,

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { api } from "~/trpc/server";
-import {Expense, ExpenseCard} from "../_components/expense-card";
 
 export default async function BudgetPage({
-  params}:{params: {groupId: string, eventId: string, main: string}}) {
+  params,
+}: {
+  params: { groupId: string; eventId: string; main: string };
+}) {
   const expenses = await api.tricount.getExpenses({
     groupId: +params.groupId,
     eventId: +params.eventId,
@@ -11,33 +13,54 @@ export default async function BudgetPage({
 
   return (
     <>
-      <main className="bg-surface grid grid-cols-1 gap">
-      <div className="sortie flex justify-between items-center w-full">
-      <Link href="/other-content-2" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-r-xl p-2" style={{ minHeight: '60px' }} passHref>
-      <span className="material-icons">account_balance_wallet</span>
-      <div>
-          Expenses
-      </div>
-      </Link>
-      <Link href="/other-content-2" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
-        <span className="material-icons">price_change</span>
-          <div>
-            Balance
-          </div>
-      </Link>
-      </div>
+      <main className="gap bg-surface grid grid-cols-1">
+        <div className="sortie flex w-full items-center justify-between">
+          <Link
+            href="/other-content-2"
+            className="bg-primary-container my-4 flex w-2/6 max-w-40 flex-grow cursor-pointer flex-col items-center justify-center rounded-r-xl p-2"
+            style={{ minHeight: "60px" }}
+            passHref
+          >
+            <span className="material-icons">account_balance_wallet</span>
+            <div>Expenses</div>
+          </Link>
+          <Link
+            href="/other-content-2"
+            className="bg-primary-container my-4 flex w-2/6 max-w-40 flex-grow cursor-pointer flex-col items-center justify-center rounded-l-xl p-2 "
+            style={{ minHeight: "60px" }}
+            passHref
+          >
+            <span className="material-icons">price_change</span>
+            <div>Balance</div>
+          </Link>
+        </div>
         {expenses.map((expense) => (
-          <div className="sortie flex justify-between items-center w-full" key={expense.id}>
-            <Link href="/other-content-1" className="bg-surface-variant max-w-60 my-4 flex-col flex w-full cursor-pointer justify-start rounded-r-xl p-2 " passHref>
-              <div className="font-semibold">
-                {expense.label}
-              </div>
+          <div
+            className="sortie flex w-full items-center justify-between"
+            key={expense.id}
+          >
+            <Link
+              href="/other-content-1"
+              className="bg-surface-variant my-4 flex w-full max-w-60 cursor-pointer flex-col justify-start rounded-r-xl p-2 "
+              passHref
+            >
+              <div className="font-semibold">{expense.label}</div>
               <div>
-                By : {expense.user.name} {/* Remplacer par le nom de l'utilisateur si disponible */}
+                By : {expense.user.name}{" "}
+                {/* Remplacer par le nom de l'utilisateur si disponible */}
               </div>
             </Link>
-            <div className="bg-surface-variant my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {expense.amount}<span className="material-icons mx-1">euro_symbol</span>
+            <div
+              className="bg-surface-variant my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2"
+              style={{
+                minHeight: "60px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {expense.amount}
+              <span className="material-icons mx-1">euro_symbol</span>
             </div>
           </div>
         ))}
