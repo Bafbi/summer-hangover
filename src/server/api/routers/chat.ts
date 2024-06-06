@@ -25,9 +25,19 @@ export const chatRouter = createTRPCRouter({
         .returning({ messageId: messages.id });
       if (res[0] == null) return;
       const { messageId } = res[0];
-      await pusher.trigger(`group-${input.groupId}`, "new-message", {
-        messageId,
-      });
+      if (input.eventId !== undefined) {
+        await pusher.trigger(
+          `event-${input.groupId}-${input.eventId}`,
+          "new-message",
+          {
+            messageId,
+          },
+        );
+      } else {
+        await pusher.trigger(`group-${input.groupId}`, "new-message", {
+          messageId,
+        });
+      }
     }),
 
   getMessage: protectedProcedure
@@ -40,27 +50,47 @@ export const chatRouter = createTRPCRouter({
             columns: {
               id: true,
               name: true,
+              image: true,
             },
           },
         },
       });
     }),
 
-  getGroupMessages: protectedProcedure
-    .input(z.object({ groupId: z.number() }))
+  getMessages: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number().optional() }))
     .query(({ ctx, input }) => {
-      return ctx.db.query.messages.findMany({
-        where: (messages, { eq, and, isNull }) =>
-          and(eq(messages.groupId, input.groupId), isNull(messages.eventId)),
-        with: {
-          user: {
-            columns: {
-              id: true,
-              name: true,
+      const { eventId, groupId } = input;
+      if (eventId !== undefined) {
+        return ctx.db.query.messages.findMany({
+          where: (messages, { eq, and }) =>
+            and(eq(messages.eventId, eventId), eq(messages.groupId, groupId)),
+          with: {
+            user: {
+              columns: {
+                id: true,
+                name: true,
+                image: true,
+              },
             },
           },
-        },
-        orderBy: (messages, { desc }) => [desc(messages.createdAt)],
-      });
+          orderBy: (messages, { asc }) => [asc(messages.createdAt)],
+        });
+      } else {
+        return ctx.db.query.messages.findMany({
+          where: (messages, { eq, and, isNull }) =>
+            and(eq(messages.groupId, groupId), isNull(messages.eventId)),
+          with: {
+            user: {
+              columns: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: (messages, { asc }) => [asc(messages.createdAt)],
+        });
+      }
     }),
 });

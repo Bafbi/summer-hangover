@@ -37,7 +37,6 @@ export default function Home({
   const router = useRouter();
   const addFavorite = api.activity.addFavorite.useMutation({
     onSuccess: () => {
-      console.log("pute");
       router.refresh();
     },
     onError: () => {

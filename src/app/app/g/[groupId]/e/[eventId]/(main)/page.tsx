@@ -1,9 +1,13 @@
-export default async function GroupMain() {
+import Chat from "~/app/_components/chat";
+
+export default function EventMain({
+  params,
+}: {
+  params: { groupId: string; eventId: string };
+}) {
   return (
     <>
-      <main>
-        <h1>Group Main</h1>
-      </main>
+      <Chat groupId={+params.groupId} eventId={+params.eventId} />
     </>
   );
 }
