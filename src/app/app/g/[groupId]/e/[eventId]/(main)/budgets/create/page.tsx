@@ -1,27 +1,28 @@
 "use client";
-import React, { useState } from "react";
-import MainMenuFooter from "~/app/_components/mainMenuFooter";
-import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import Head from "next/head";
 import Link from "next/link";
-import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
-import router from "next/router";
-import { createTRPCRouter } from "~/server/api/trpc";
+import { useState } from "react";
+import MainMenuHeader from "~/app/_components/mainMenuHeader";
+import { api } from "~/trpc/react";
 
-const CreateTricount = ({params}: {params:{groupId: string, eventId: string}}) => {
-    const[NewTricountLabel, setTricountLabel] = useState("");
-    const[NewTricountPrice, setTricountPrice] = useState("");
+const CreateTricount = ({
+  params,
+}: {
+  params: { groupId: string; eventId: string };
+}) => {
+  const [NewTricountLabel, setTricountLabel] = useState("");
+  const [NewTricountPrice, setTricountPrice] = useState("");
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const createTricount = api.tricount.createTricount.useMutation({
-        onSuccess: () => {
-          router.refresh();
-          setTricountLabel("");
-          setTricountPrice("");
-        },
-      });
+  const createTricount = api.tricount.createTricount.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      setTricountLabel("");
+      setTricountPrice("");
+    },
+  });
 
   return (
     <>
@@ -90,7 +91,7 @@ const CreateTricount = ({params}: {params:{groupId: string, eventId: string}}) =
             </Link>
           </div>
           </form>
-        </main> 
+        </main>
       </div>
     </>
   );

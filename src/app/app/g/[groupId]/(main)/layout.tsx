@@ -1,6 +1,6 @@
-import { GroupHeader } from "./_components/header";
 import type { Metadata } from "next/types";
 import { GroupFooter } from "./_components/footer";
+import { GroupHeader } from "./_components/header";
 
 export async function generateMetadata({
   params,
@@ -23,7 +23,7 @@ export default function ActiviteLayout({
 }) {
   return (
     <div className="bg-surface flex min-h-screen flex-col">
-      <GroupHeader />
+      <GroupHeader groupId={+params.groupId} />
       <main className="flex-grow">{children}</main>
       <GroupFooter basePath={`/app/g/${params.groupId}/`} />
     </div>

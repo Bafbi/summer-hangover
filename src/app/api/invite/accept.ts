@@ -1,30 +1,47 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { db } from '~/server/db';
-import { inviteLinks, groupsMembers } from '~/server/db/schema';
+import { groupsMembers, groups } from '~/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    return res.status(200).send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Accept Invite API</title>
+      </head>
+      <body>
+        <h1>API Invite Link is Working!</h1>
+        <p>Method: GET</p>
+      </body>
+      </html>
+    `);
+  }
+
   if (req.method === 'POST') {
     const session = await getSession({ req });
     if (!session) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { groupId } = req.body;
+    const { inviteLink } = req.body;
     const userId = session.user.id;
 
     try {
-      const inviteLink = await db.query.inviteLinks.findFirst({
-        where: (inviteLinks, { eq }) => eq(inviteLinks.link, groupId),
+      const group = await db.query.groups.findFirst({
+        where: (groups, { eq }) => eq(groups.inviteLink, inviteLink),
       });
 
-      if (!inviteLink) {
+      if (!group) {
         return res.status(400).json({ error: 'Invalid invitation link' });
       }
 
       await db.insert(groupsMembers).values({
-        groupId: inviteLink.groupId,
+        groupId: group.id,
         userId,
       });
 

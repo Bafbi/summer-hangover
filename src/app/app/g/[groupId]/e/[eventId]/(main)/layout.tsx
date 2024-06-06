@@ -1,6 +1,6 @@
-import { EventHeader } from "./_components/header";
 import type { Metadata } from "next/types";
 import { EventFooter } from "./_components/footer";
+import { EventHeader } from "./_components/header";
 
 export async function generateMetadata({
   params,
@@ -25,7 +25,7 @@ export default function ActiviteLayout({
     <div className="bg-surface flex min-h-screen flex-col">
       <EventHeader />
       <main className="flex-grow">{children}</main>
-      <EventFooter basePath={`/app/g/${params.groupId}/e/${params.groupId}`} />
+      <EventFooter basePath={`/app/g/${params.groupId}/e/${params.eventId}`} />
     </div>
   );
 }

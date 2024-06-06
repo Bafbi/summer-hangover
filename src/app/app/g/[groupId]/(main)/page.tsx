@@ -1,25 +1,26 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import Pusher from "pusher-js";
 import { useEffect, useRef, useState } from "react";
 import { env } from "~/env";
-import { RouterOutputs, api } from "~/trpc/react";
+import { type RouterOutputs, api } from "~/trpc/react";
 
 const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
   cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
 });
 
 export default function GroupMain({ params }: { params: { groupId: string } }) {
-  const { data: sessionData } = useSession();
-
   const [messages, setMessages] = useState<
     RouterOutputs["chat"]["getGroupMessages"]
   >([]);
   const [chatInput, setChatInput] = useState("");
   const [messageId, setMessageId] = useState<number>(0);
+  const [tmpMessages, setTmpMessages] = useState<string | null>(null);
 
   const sendMessageMutation = api.chat.sendMessage.useMutation({
+    onMutate: ({ content }) => {
+      setTmpMessages(content);
+    },
     onSuccess: () => {
       setChatInput("");
     },
@@ -42,6 +43,7 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
   useEffect(() => {
     if (messageData) {
       setMessages((prevMessages) => [...prevMessages, messageData]);
+      setTmpMessages(null);
     }
   }, [messageData]);
 
@@ -72,8 +74,18 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
         <h1>Group Main</h1>
         <ul>
           {messages.map((message) => (
-            <li key={message.id}>{message.content}</li>
+            <li
+              className={`${message.id == -1 ? "text-outline" : ""}`}
+              key={message.id}
+            >
+              {message.content}
+            </li>
           ))}
+          {tmpMessages && (
+            <li className="text-outline" key={tmpMessages}>
+              {tmpMessages}
+            </li>
+          )}
         </ul>
         <form
           onSubmit={(e) => {
@@ -94,6 +106,7 @@ export default function GroupMain({ params }: { params: { groupId: string } }) {
           />
           <button type="submit">Send</button>
         </form>
+        <div ref={messagesEndRef}></div>
       </main>
     </>
   );

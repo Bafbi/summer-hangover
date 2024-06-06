@@ -1,19 +1,27 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
-import { expenses, users } from "~/server/db/schema";
+
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { expenses } from "~/server/db/schema";
 
 export const tricountRouter = createTRPCRouter({
   createTricount: protectedProcedure
-    .input(z.object({ groupId: z.number(), label: z.string(), eventId: z.number(), amount: z.number() }))
+    .input(
+      z.object({
+        groupId: z.number(),
+        label: z.string(),
+        eventId: z.number(),
+        amount: z.number(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       console.log(input);
-      
+
       await ctx.db.insert(expenses).values({
         eventId: input.eventId,
         groupId: input.groupId,
         userId: ctx.session.user.id,
         amount: input.amount,
-        label: input.label, 
+        label: input.label,
       });
     }),
     
