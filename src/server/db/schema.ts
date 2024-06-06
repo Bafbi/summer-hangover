@@ -1,4 +1,5 @@
-import { relations, sql } from "drizzle-orm";
+import { Relations, desc, relations, sql } from "drizzle-orm";
+import { boolean } from "drizzle-orm/pg-core";
 import {
   index,
   int,
@@ -7,6 +8,7 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { INPUT_VALIDATION_RULES } from "node_modules/react-hook-form/dist/constants";
 
 export const createTable = sqliteTableCreator(
   (name) => `summer-hangover_${name}`,
@@ -58,6 +60,19 @@ export const usersRelations = relations(users, ({ many }) => ({
   usedLinks: many(inviteLinkUsers),
 }));
 
+// Different types of notifications à passer en paramètre
+// Permet de choisir quel texte afficher selon le contexte
+export const notificationType = [
+  "INVITED_TO_GROUP",
+  "NEW_EVENT_TO_GROUP",
+  "NEW_ACTIVITY_TO_EVENT",
+  "NEW_MESSAGES_TO_GROUP",
+  "NEW_MESSAGES_TO_EVENT",
+  "LAST_ONE_TO_VOTE",
+  "VOTE_REMINDER",
+  "EXPENSES_REMINDER",
+] as const;
+
 export const notifications = createTable(
   "notification",
   {
@@ -66,9 +81,11 @@ export const notifications = createTable(
       .notNull()
       .references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(
+      sql`(strftime('%s', 'now'))`,
+    ),
+    isRead: int("isRead", { mode: 'boolean' }),
+    notifType: text("notifType", { enum: notificationType }).notNull(),
   },
   (notification) => ({
     userIdIdx: index("notification_userId_idx").on(notification.userId),

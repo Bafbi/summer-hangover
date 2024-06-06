@@ -13,27 +13,21 @@ export default async function BudgetPage({
 
   return (
     <>
-      <main className="gap bg-surface grid grid-cols-1">
-        <div className="sortie flex w-full items-center justify-between">
-          <Link
-            href="/other-content-2"
-            className="bg-primary-container my-4 flex w-2/6 max-w-40 flex-grow cursor-pointer flex-col items-center justify-center rounded-r-xl p-2"
-            style={{ minHeight: "60px" }}
-            passHref
-          >
-            <span className="material-icons">account_balance_wallet</span>
-            <div>Expenses</div>
-          </Link>
-          <Link
-            href="/other-content-2"
-            className="bg-primary-container my-4 flex w-2/6 max-w-40 flex-grow cursor-pointer flex-col items-center justify-center rounded-l-xl p-2 "
-            style={{ minHeight: "60px" }}
-            passHref
-          >
-            <span className="material-icons">price_change</span>
-            <div>Balance</div>
-          </Link>
-        </div>
+      <main className="bg-surface grid grid-cols-1 gap">
+      <div className="sortie flex justify-between items-center w-full">
+      <Link href="/other-content-2" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-r-xl p-2" style={{ minHeight: '60px' }} passHref>
+      <span className="material-icons">account_balance_wallet</span>
+      <div>
+          Expenses
+      </div>
+      </Link>
+      <Link href="./budgets/balance" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
+        <span className="material-icons">price_change</span>
+          <div>
+            Balance
+          </div>
+      </Link>
+      </div>
         {expenses.map((expense) => (
           <div
             className="sortie flex w-full items-center justify-between"
@@ -46,8 +40,7 @@ export default async function BudgetPage({
             >
               <div className="font-semibold">{expense.label}</div>
               <div>
-                By : {expense.user.name}{" "}
-                {/* Remplacer par le nom de l'utilisateur si disponible */}
+                By : {expense.user.name} 
               </div>
             </Link>
             <div
