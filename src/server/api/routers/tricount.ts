@@ -34,6 +34,7 @@ export const tricountRouter = createTRPCRouter({
     });
   }),
 
+
   // calculate balance between all users
 
   calculateBalance: protectedProcedure.input(z.object({ groupId: z.number(), eventId: z.number() })).query(async ({ ctx, input }) => {
@@ -59,9 +60,11 @@ export const tricountRouter = createTRPCRouter({
     const balances = Object.entries(totals).map(([userId, total]) => ({
       userId: userId,
       balance: total - avgAmount,
-      // Name of the user
       userName: expenses.find(expense => expense.userId === userId)?.user.name || "Unknown"
     }));
+
+    const BalanceSauv = structuredClone(balances);
+
     const payees = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
     const payers = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
 
@@ -78,9 +81,13 @@ export const tricountRouter = createTRPCRouter({
         to: payee.userName,
         amount: amount
       });
+      
+      console.log(BalanceSauv);
 
       payee.balance -= amount;
       payer.balance += amount;
+
+      console.log(BalanceSauv);
 
       if (payee.balance === 0) {
         payees.shift();
@@ -90,7 +97,6 @@ export const tricountRouter = createTRPCRouter({
         payers.shift();
       }
     }
-
-    return transactions;
+    return {transactions, balance: BalanceSauv};
   }),
 });
