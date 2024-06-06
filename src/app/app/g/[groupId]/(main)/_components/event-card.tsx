@@ -60,7 +60,7 @@ export function EventCard({ event }: { event: Event }) {
               })
             }
           >
-            Accéder à l'événement
+            {"Accéder à l'événement"}
           </button>
         )}
       </div>

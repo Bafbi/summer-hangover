@@ -1,17 +1,14 @@
-import Link from "next/link";
 import { api } from "~/trpc/server";
-import {Expense, ExpenseCard} from "../../_components/expense-card";
-import { ConsoleLogWriter } from "drizzle-orm";
 
 export default async function Balance({
-  params
+  params,
 }: {
   params: { groupId: string; eventId: string; main: string };
 }) {
-  const expenses = await api.tricount.getExpenses({
-    groupId: +params.groupId,
-    eventId: +params.eventId,
-  });
+  // const expenses = await api.tricount.getExpenses({
+  //   groupId: +params.groupId,
+  //   eventId: +params.eventId,
+  // });
 
   const transactions = await api.tricount.calculateBalance({
     groupId: +params.groupId,

@@ -1,11 +1,7 @@
 import { randomInt } from "crypto";
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { events, eventsParticipants } from "~/server/db/schema";
 
 export const eventRouter = createTRPCRouter({

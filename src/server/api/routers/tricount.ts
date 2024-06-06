@@ -34,28 +34,36 @@ export const tricountRouter = createTRPCRouter({
     });
   }),
 
-
   // calculate balance between all users
 
-  calculateBalance: protectedProcedure.input(z.object({ groupId: z.number(), eventId: z.number() })).query(async ({ ctx, input }) => {
-    const expenses = await ctx.db.query.expenses.findMany({
-      where: (expenses, { eq, and }) => and(eq(expenses.groupId, input.groupId), eq(expenses.eventId, input.eventId)),
-      with: {
-        user: true,
-      }
-    });
+  calculateBalance: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const expenses = await ctx.db.query.expenses.findMany({
+        where: (expenses, { eq, and }) =>
+          and(
+            eq(expenses.groupId, input.groupId),
+            eq(expenses.eventId, input.eventId),
+          ),
+        with: {
+          user: true,
+        },
+      });
 
-    const totals: { [userId: string]: number } = {};
+      const totals: Record<string, number> = {};
 
-    expenses.forEach(expense => {
-      if (!totals[expense.userId]) {
-        totals[expense.userId] = 0;
-      }
-      totals[expense.userId] += expense.amount;
-    });
+      expenses.forEach((expense) => {
+        if (!totals[expense.userId]) {
+          totals[expense.userId] = 0;
+        }
+        totals[expense.userId] += expense.amount;
+      });
 
-    const totalAmount = Object.values(totals).reduce((acc, amount) => acc + amount, 0);
-    const avgAmount = totalAmount / Object.keys(totals).length;
+      const totalAmount = Object.values(totals).reduce(
+        (acc, amount) => acc + amount,
+        0,
+      );
+      const avgAmount = totalAmount / Object.keys(totals).length;
 
     const balances = Object.entries(totals).map(([userId, total]) => ({
       userId: userId,
@@ -68,13 +76,13 @@ export const tricountRouter = createTRPCRouter({
     const payees = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
     const payers = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
 
-    const transactions = [];
+      const transactions = [];
 
-    while (payees[0] && payers[0]) {
-      const payee = payees[0];
-      const payer = payers[0];
+      while (payees[0] && payers[0]) {
+        const payee = payees[0];
+        const payer = payers[0];
 
-      const amount = Math.min(payee.balance, -payer.balance);
+        const amount = Math.min(payee.balance, -payer.balance);
 
       transactions.push({
         from: payer.userName,
@@ -89,9 +97,9 @@ export const tricountRouter = createTRPCRouter({
 
       console.log(BalanceSauv);
 
-      if (payee.balance === 0) {
-        payees.shift();
-      }
+        if (payee.balance === 0) {
+          payees.shift();
+        }
 
       if (payer.balance === 0) {
         payers.shift();

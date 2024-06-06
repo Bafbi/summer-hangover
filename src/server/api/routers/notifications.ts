@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { eq } from "drizzle-orm";
-import { notifications } from "~/server/db/schema";
+import { notificationType, notifications } from "~/server/db/schema";
 import { pusher } from "~/server/pusher";
 
 export const notificationRouter = createTRPCRouter({
@@ -9,6 +9,7 @@ export const notificationRouter = createTRPCRouter({
     .input(
       z.object({
         message: z.string(),
+        type: z.enum(notificationType),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -18,6 +19,8 @@ export const notificationRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           message: input.message,
           createdAt: new Date(),
+          isRead: false,
+          notifType: input.type,
         })
         .returning({ id: notifications.id });
 

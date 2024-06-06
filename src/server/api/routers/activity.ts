@@ -1,11 +1,7 @@
 import { randomInt } from "crypto";
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { activities, votesActivities } from "~/server/db/schema";
 
 export const activityRouter = createTRPCRouter({
@@ -43,16 +39,17 @@ export const activityRouter = createTRPCRouter({
         with: { createdBy: true },
       });
       const vote = await ctx.db.query.votesActivities.findFirst({
-        where: (votesActivities, {eq, and}) => (and(and(
-          eq(votesActivities.groupId, input.groupId),
-          eq(votesActivities.eventId, input.eventId),),
-          eq(votesActivities.userId, ctx.session.user.id)))
-      })
-      return {activities, vote};
+        where: (votesActivities, { eq, and }) =>
+          and(
+            and(
+              eq(votesActivities.groupId, input.groupId),
+              eq(votesActivities.eventId, input.eventId),
+            ),
+            eq(votesActivities.userId, ctx.session.user.id),
+          ),
+      });
+      return { activities, vote };
     }),
-
-
-
 
   addFavorite: protectedProcedure
     .input(
@@ -72,16 +69,20 @@ export const activityRouter = createTRPCRouter({
           userId: ctx.session.user.id,
         })
         .onConflictDoUpdate({
-          target: [votesActivities.groupId, votesActivities.eventId, votesActivities.userId],
-          set: {activityId: input.activityId}
+          target: [
+            votesActivities.groupId,
+            votesActivities.eventId,
+            votesActivities.userId,
+          ],
+          set: { activityId: input.activityId },
+        });
+      const count = (
+        await ctx.db.query.votesActivities.findMany({
+          where: (votesActivity, { eq }) =>
+            eq(votesActivity.activityId, input.activityId),
         })
-        const count = (
-          await ctx.db.query.votesActivities.findMany({
-            where: (votesActivity, { eq }) =>
-              eq(votesActivity.activityId, input.activityId),
-          })
-        ).length;
-        return { count };
+      ).length;
+      return { count };
     }),
 
   getVotes: protectedProcedure
