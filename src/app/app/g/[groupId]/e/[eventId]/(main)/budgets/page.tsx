@@ -19,7 +19,7 @@ export default async function BudgetPage({
           Expenses
       </div>
       </Link>
-      <Link href="/other-content-2" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
+      <Link href="./budgets/balance" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
         <span className="material-icons">price_change</span>
           <div>
             Balance
@@ -33,7 +33,7 @@ export default async function BudgetPage({
                 {expense.label}
               </div>
               <div>
-                By : {expense.user.name} {/* Remplacer par le nom de l'utilisateur si disponible */}
+                By : {expense.user.name} 
               </div>
             </Link>
             <div className="bg-surface-variant my-4 flex-initial max-w-xs w-1/6 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

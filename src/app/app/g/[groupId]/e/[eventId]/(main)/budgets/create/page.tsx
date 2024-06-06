@@ -26,9 +26,10 @@ const CreateTricount = ({params}: {params:{groupId: string, eventId: string}}) =
   return (
     <>
       <Head>
-        <title>{`Créer un nouveau groupe`}</title>
+        <title>{`Creation of expense`}</title>
       </Head>
       <MainMenuHeader />
+      
       <div className="flex h-screen flex-col">
         <main className="bg-surface mt-16 flex-grow p-4 text-on-surface-variant">
         <form onSubmit={(e) => {
@@ -40,31 +41,37 @@ const CreateTricount = ({params}: {params:{groupId: string, eventId: string}}) =
           eventId: +params.eventId,
         });
       }}>
-            
+          <div className="mb-4 flex justify-center">
+            <span
+              style={{ fontSize: 80 }}
+              className="material-icons text-4xl text-on-surface-variant">
+              paid
+            </span>
+          </div>
           <h1 className="-mt-2 text-center text-xl font-semibold">
-            Créer depense:
+            Create Expense
           </h1>
           <div className="mt-4">
-            <label className="text-gray-700 block text-xl font-medium">
-              article :
+            <label className="text-outlined block text-xl font-medium">
+              Label :
             </label>
             <input
               type="text"
               value={NewTricountLabel}
-              placeholder="Un joli petit nom pour votre groupe..."
+              placeholder="Name of the expense... "
               onChange={(e) => setTricountLabel(e.target.value)}
               className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 mt-1 block w-full rounded-md shadow-sm sm:text-sm"
             />
           </div>
           <div className="mt-4">
-            <label className="text-gray-700 block text-xl font-medium">
-              Description :
+            <label className="text-outlined block text-xl font-medium">
+              Price :
             </label>
             <textarea
               value={NewTricountPrice}
-              placeholder="Description du groupe... Soyez créatif !"
+              placeholder="Amount of the expense..."
               onChange={(e) => setTricountPrice(e.target.value)}
-              className="border-gray-300 focus:border-red-500 focus:ring-red-500 mt-1 block h-32 w-full rounded-md shadow-sm sm:text-sm"
+              className="border-gray-300 focus:border-red-500 focus:ring-red-500 mt-1 block w-full rounded-md shadow-sm sm:text-sm"
             />
           </div>
           <div className="mt-8 flex justify-center">
