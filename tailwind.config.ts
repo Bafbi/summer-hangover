@@ -35,6 +35,10 @@ const config: Config = {
         slideinRight: "slideinRight 0.2s ease-out",
         slideinBotton: "slideinBotton 0.2s ease-out",
       },
+      colors: {
+        positif: "#a2d69c",
+        negatif: "#d77070",
+      }
     },
   },
   plugins: [
