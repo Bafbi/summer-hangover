@@ -134,14 +134,14 @@ const CreateGroup = () => {
             <div className="mt-8 flex justify-center">
               <button
                 type="submit"
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+                className=" bg-white/10 px-10 py-3 font-semibold transition border-2 rounded-3xl"
                 disabled={createGroup.isPending}
               >
                 {createGroup.isPending ? "Submitting..." : "Submit"}
               </button>
               <Link
                 href="/app"
-                className="hover:bg-indigo-700 text-on h-15 w-35 surface bg-error ml-7 rounded-md px-6 py-3"
+                className="hover:bg-indigo-700 text-on h-15 w-35 surface bg-error ml-7 rounded-3xl px-6 py-3"
               >
                 Annuler
               </Link>
@@ -149,7 +149,6 @@ const CreateGroup = () => {
           </form>
         </main>
       </div>
-      <MainMenuFooter pathname={""} />
     </>
   );
 };

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { env } from "~/env";
 import { type RouterOutputs, api } from "~/trpc/react";
 import DefaultProfile from "public/profileLogo.png";
+import { Session } from "next-auth";
 
 const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
   cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
@@ -82,52 +83,36 @@ export default function Chat({
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, tmpMessages]);
 
   return (
     <>
-      <ul className="flex flex-1 flex-col gap-2 py-4">
+      <ul className="flex flex-grow flex-col gap-2 py-4">
         {messages.map((message) => (
-          <li
-            className={` ${message.userId === session?.user.id ? "self-end" : "self-start"} w-5/6`}
+          <Message
             key={message.id}
-          >
-            <div
-              className={` flex ${message.userId === session?.user.id ? "flex-row-reverse" : ""} items-center `}
-            >
-              <div
-                className={`bg-secondary-container flex gap-2 p-1 ${message.userId === session?.user.id ? "flex-row-reverse rounded-ss-md" : "rounded-tr-md"} items-center `}
-              >
-                <Image
-                  src={message.user.image ?? DefaultProfile}
-                  alt="Profile Picture"
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-                <span className=" text-lg font-semibold">
-                  {message.user.name}
-                </span>
-              </div>
-              <span className="flex-1"></span>
-            </div>
-            <div>
-              <p
-                className={`bg-surface-variant overflow-hidden text-pretty break-words ${message.userId === session?.user.id ? "rounded-s-md" : "rounded-e-md"} p-2`}
-              >
-                {message.content}
-              </p>
-            </div>
-          </li>
+            message={{
+              content: message.content,
+              username: message.user.name,
+              userImage: message.user.image,
+            }}
+            isSelf={message.userId === session?.user.id}
+          />
         ))}
         {tmpMessages && (
-          <li className="text-outline" key={tmpMessages}>
-            {tmpMessages}
-          </li>
+          <Message
+            key={tmpMessages}
+            message={{
+              content: tmpMessages,
+              username: session?.user.name,
+              userImage: session?.user.image,
+            }}
+            isSelf={true}
+          />
         )}
       </ul>
       <form
-        className="sticky bottom-0 flex w-full gap-2 p-2"
+        className="sticky bottom-16 flex w-full gap-2 p-2"
         onSubmit={(e) => {
           e.preventDefault();
           if (chatInput.trim() === "") return;
@@ -155,5 +140,42 @@ export default function Chat({
       </form>
       <div ref={messagesEndRef}></div>
     </>
+  );
+}
+
+function Message({
+  message,
+  isSelf,
+}: {
+  message: { content: string; username: string; userImage: string | null };
+  isSelf: boolean;
+}) {
+  return (
+    <li className={` ${isSelf ? "self-end" : "self-start"} w-5/6`}>
+      <div
+        className={` flex ${isSelf ? "flex-row-reverse" : ""} items-center `}
+      >
+        <div
+          className={`bg-secondary-container flex gap-2 p-1 ${isSelf ? "flex-row-reverse rounded-ss-md" : "rounded-tr-md"} items-center `}
+        >
+          <Image
+            src={message.userImage ?? DefaultProfile}
+            alt="Profile Picture"
+            width={32}
+            height={32}
+            className="rounded-full"
+          />
+          <span className=" text-lg font-semibold">{message.username}</span>
+        </div>
+        <span className="flex-1"></span>
+      </div>
+      <div>
+        <p
+          className={`bg-surface-variant overflow-hidden text-pretty break-words ${isSelf ? "rounded-s-md" : "rounded-e-md"} p-2`}
+        >
+          {message.content}
+        </p>
+      </div>
+    </li>
   );
 }

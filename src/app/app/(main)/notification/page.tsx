@@ -78,7 +78,7 @@ export default function Notifications() {
 
   const handleSendNotification = () => {
     if (!session) return;
-    const message = "Test notification INVITED";
+    const message = "Julien vous a invité dans un groupe. Cliquer pour le rejoindre";
     sendNotification.mutate({ message, type: "INVITED_TO_GROUP" });
   };
 
@@ -88,21 +88,22 @@ export default function Notifications() {
   return (
     <div className="bg-surface flex h-screen flex-col">
       {/* Header de la page notif */}
-      <div className="bg-surface-variant fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between px-4 text-inverse-primary">
+      <div className="bg-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between
+        px-4 text-inverse-primary border-b border-inverse-surface">
         <div className="flex-1 justify-between text-inverse-surface">
           <p className="text-2xl font-bold text-inverse-surface">
             Notifications
           </p>
         </div>
-        <div className="flex justify-around space-x-7 pr-1 text-on-surface-variant">
+        <div className="flex justify-around space-x-4 pr-1 text-on-surface-variant">
           <Link
             href="notification"
             passHref
             className="relative flex items-center justify-center "
           >
             <span
-              style={{ fontSize: 40 }}
-              className="material-icons animate-shake relative animate-ping text-error"
+              style={{ fontSize: 36 }}
+              className="material-icons relative text-on-surface-variant"
             >
               notifications
             </span>
@@ -112,7 +113,7 @@ export default function Notifications() {
             passHref
             className="relative flex items-center justify-center "
           >
-            <span style={{ fontSize: 40 }} className="material-icons">
+            <span style={{ fontSize: 36 }} className="material-icons">
               account_circle
             </span>
           </Link>
@@ -158,10 +159,12 @@ export default function Notifications() {
               <div className="bg-surface-variant mb-4 mt-6 flex h-10 flex-col items-center rounded-md">
                 <h1 className="pt-1 text-2xl font-semibold">{"Aujourd'hui"}</h1>
               </div>
-              {formattedNotifications.todaysNotifications.map((notif) => (
-                <div
+              {formattedNotifications.todaysNotifications.map((notif) => {
+
+                return (
+                  <div
                   key={notif.id}
-                  className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-lg"
+                  className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base"
                 >
                   <span
                     style={{ fontSize: 36 }}
@@ -174,7 +177,8 @@ export default function Notifications() {
                       notif.message.slice(1)}
                   </div>
                 </div>
-              ))}
+                )
+              })}
             </>
           )}
 
@@ -192,7 +196,7 @@ export default function Notifications() {
                   >
                     <span
                       style={{ fontSize: 36 }}
-                      className="material-icons pl-1 text-error"
+                      className="material-icons pl-1 text-on-surface-variant"
                     >
                       report
                     </span>
@@ -200,7 +204,7 @@ export default function Notifications() {
                       key={notif.id}
                       className="flex items-center justify-between"
                     >
-                      <div className="flex items-center space-x-2 rounded-md px-3 py-2 text-lg">
+                      <div className="flex items-center space-x-2 rounded-md px-3 text-base">
                         {notif.message.charAt(0).toUpperCase() +
                           notif.message.slice(1)}
                       </div>
@@ -225,7 +229,7 @@ export default function Notifications() {
                     return (
                       <div
                         key={notif.id}
-                        className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-inverse-surface"
+                        className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base text-inverse-surface"
                       >
                         <span
                           style={{ fontSize: 36 }}
@@ -256,32 +260,28 @@ export default function Notifications() {
             </>
           )}
         </div>
-
-        {/* Fin de la section des notifications */}
-
-        {/* Pour harmoniser le bouton retour */}
-        {formattedNotifications.todaysNotifications.length != 0 &&
-          formattedNotifications.todaysNotifications.length <= 5 &&
-          formattedNotifications.yesterdaysNotifications.length === 0 &&
-          formattedNotifications.olderNotifications.length === 0 && (
-            <div className="h-28"></div>
-          )}
-
-        <div className="mt-6 justify-self-end">
-          <div className="flex items-center justify-center">
-            <Link
-              href="/app"
-              className="my-4 items-center rounded-3xl bg-inverse-primary px-10 py-3 text-xl font-semibold text-inverse-surface"
-            >
-              <span>Retour</span>
-            </Link>
-          </div>
-          <div>
+        {/* Pour du test uniquement */}
+        <div>
             <button className="mt-40" onClick={handleSendNotification}>
               Envoyer une notification
             </button>
             <p>session.user.id = {session?.user.id}</p>
           </div>
+          {/* Fin du test */}
+
+        {/* Fin de la section des notifications */}
+
+          <div className="mt-6 justify-self-end">
+            <div className="flex items-center justify-center fixed bottom-0 w-full">
+              <Link
+                href="/app"
+                className="my-4 items-center rounded-3xl bg-inverse-primary px-10 py-3
+                text-xl font-semibold text-inverse-surface"
+              >
+                <span>Retour</span>
+              </Link>
+            </div>
+
         </div>
       </main>
     </div>

@@ -86,7 +86,7 @@ export const groupRouter = createTRPCRouter({
             columns: { name: true },
           },
           members: {
-            columns: {},
+            columns: { userId: true },
             with: {
               user: {
                 columns: { name: true },

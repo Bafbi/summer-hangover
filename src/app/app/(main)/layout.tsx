@@ -1,4 +1,4 @@
-import AppHeader from "./_components/header";
+import AppHeader from "~/app/_components/mainMenuHeader";
 
 export default async function AppLayout({
   children,
