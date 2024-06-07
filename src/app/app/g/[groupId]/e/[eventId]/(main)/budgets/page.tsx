@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { api } from "~/trpc/server";
+import React from "react";
 
 export default async function BudgetPage({
   params,

@@ -1,3 +1,4 @@
+import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -32,6 +33,12 @@ export const tricountRouter = createTRPCRouter({
         user: true,
       }
     });
+  }),
+
+  // delete an expense
+
+  deleteExpense: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
+    return ctx.db.delete(expenses).where(and(eq(expenses.id, input.id), eq(expenses.userId, ctx.session.user.id)));
   }),
 
   // calculate balance between all users

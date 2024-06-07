@@ -4,7 +4,7 @@ export function EventHeader() {
   return (
     <>
       <header className="bg-surface sticky top-0 z-10 ">
-        <div className="mx-2 flex h-16 items-center justify-between border-b border-inverse-surface  px-4">
+        <div className="mx-2 flex h-16 items-center justify-between border-inverse-surface  px-4">
           <Link href={"/app"} className="flex items-center">
             <span className="material-icons">home</span>
           </Link>

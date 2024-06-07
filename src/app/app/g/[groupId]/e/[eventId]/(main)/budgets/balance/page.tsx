@@ -34,7 +34,7 @@ export default async function Balance({
                 {balance.balance}
                 <span className="material-icons mx-1">euro_symbol</span>
               </div>  
-            </div>  
+            </div>
           ))}
         </div>
         <div className="sortie flex flex-col w-full items-center justify-between">

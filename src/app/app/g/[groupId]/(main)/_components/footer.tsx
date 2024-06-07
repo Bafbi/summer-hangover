@@ -13,7 +13,7 @@ export function GroupFooter({ basePath }: { basePath: string }) {
   const pathname = usePathname();
 
   return (
-    <footer className="bg-surface sticky bottom-0 mx-2 flex h-16 flex-row items-center justify-around border-t border-inverse-surface">
+    <footer className="bg-surface sticky bottom-0 mx-2 flex h-16 flex-row items-center justify-around border-inverse-surface">
       <Link href={`${GroupSection.HALLOFFAME}`} replace={true}>
         <span
           className={`material-icons ${pathname.endsWith(GroupSection.HALLOFFAME) && "text-primary"}`}

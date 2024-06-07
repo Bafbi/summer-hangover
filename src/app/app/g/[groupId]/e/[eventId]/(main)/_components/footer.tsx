@@ -14,7 +14,7 @@ export function EventFooter({ basePath }: { basePath: string }) {
 
   return (
     <footer className="bg-surface sticky bottom-0 ">
-      <div className="mx-2 flex h-16 flex-row items-center justify-around border-t border-inverse-surface">
+      <div className="mx-2 flex h-16 flex-row items-center justify-around border-inverse-surface">
         <Link href={`${basePath}/${EventSection.BUDGETS}`}>
           <span
             className={`material-icons ${pathname.includes(EventSection.BUDGETS) ? "text-primary" : ""}`}
