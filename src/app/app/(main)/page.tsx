@@ -16,7 +16,7 @@ export default async function GroupsPage() {
             >
               <div
                 className="bg-secondary-container flex items-center justify-between border-b
-                   border-outline-variant px-1 pb-1 pt-2"
+                  border-outline-variant px-1 pb-1 pt-2"
               >
                 <span className="text-xl font-semibold">{group.name}</span>
                 <span className="text-right">
@@ -40,19 +40,21 @@ export default async function GroupsPage() {
             </Link>
           ))}
         </div>
-        <Link
-          href="app/g/new/"
-          passHref
-          className="bg-primary-container fixed bottom-0 flex h-20 w-full
-              flex-row items-center justify-center gap-2"
-        >
-          <span className="text-xl font-semibold">
-            Ajouter un nouveau groupe
-          </span>
-          <span style={{ fontSize: 30 }} className="material-icons">
-            add
-          </span>
-        </Link>
+          <div className="flex items-center justify-center fixed bottom-0 w-full">
+            <Link
+              href="app/g/new/"
+              passHref
+              className="my-4 items-center flex justify-between rounded-3xl bg-inverse-primary
+              px-10 py-2 space-x-6 text-xl font-semibold text-inverse-surface"
+            >
+              <span className="text-xl text-center font-semibold">
+                Ajouter un <br></br> nouveau groupe
+              </span>
+              <span style={{ fontSize: 44 }} className="material-icons">
+                add
+              </span>
+            </Link>
+          </div>
       </div>
     </>
   );

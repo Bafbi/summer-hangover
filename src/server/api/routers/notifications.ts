@@ -51,4 +51,18 @@ export const notificationRouter = createTRPCRouter({
       .from(notifications)
       .where(eq(notifications.userId, ctx.session.user.id));
   }),
+
+  changeNotificationStatus: protectedProcedure
+    .input(
+      z.object({
+        userId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(notifications)
+        .set({ isRead: true })
+        .where(eq(notifications.userId, ctx.session.user.id));
+    }),
+
 });

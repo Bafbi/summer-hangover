@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { api } from "~/trpc/react";
 import AppHeader from "../_components/header";
-import Image from "next/image";
+
 
 export default function Profile() {
   const { data: profile } = api.profile.getProfile.useQuery();
