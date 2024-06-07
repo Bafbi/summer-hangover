@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { api } from "~/trpc/react";
 import AppHeader from "../_components/header";
 
-
 export default function Profile() {
   const { data: profile } = api.profile.getProfile.useQuery();
 
@@ -55,6 +54,8 @@ export default function Profile() {
               src={profile?.image ?? "/profileLogo.png"}
               alt="User Icon"
               className="user-icon h-40 w-40 rounded-full"
+              width={160}
+              height={160}
             />
             <button className="change-photo-button absolute bottom-0 right-0 rounded-full bg-inverse-primary px-2 pt-2 text-on-surface">
               <span style={{ fontSize: 28 }} className="material-icons">
