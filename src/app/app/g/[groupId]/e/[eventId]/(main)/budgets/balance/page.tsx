@@ -1,4 +1,6 @@
 import { api } from "~/trpc/server";
+import React from "react";
+import Link from "next/link";
 
 export default async function Balance({
   params,
@@ -19,6 +21,20 @@ export default async function Balance({
     <>
       <main className="bg-surface grid grid-cols-1 gap">
         <div>
+          <div className="sortie flex justify-between items-center w-full">
+          <Link href="../budgets" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-r-xl p-2" style={{ minHeight: '60px' }} passHref>
+          <span className="material-icons">account_balance_wallet</span>
+          <div>
+              Expenses
+          </div>
+          </Link>
+          <Link href="./budgets/balance" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
+            <span className="material-icons">price_change</span>
+              <div>
+                Balance
+              </div>
+          </Link>
+          </div>
           <h2 className="bg-surface-variant text-xl mt-2 font-bold sortie flex flex-col w-full items-center justify-between">Balances</h2>
           {transactions.balance.map((balance, index) => (
             <div
