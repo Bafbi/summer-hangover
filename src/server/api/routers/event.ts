@@ -68,6 +68,11 @@ export const eventRouter = createTRPCRouter({
       return ctx.db.query.events.findFirst({
         where: (events, { eq, and }) =>
           and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)),
+        with: {
+          group: {
+            with: { members: true },
+          },
+        },
       });
     }),
 
