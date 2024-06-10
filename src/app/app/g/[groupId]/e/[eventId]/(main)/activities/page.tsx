@@ -12,10 +12,17 @@ export default function Home({
     groupId: string;
     eventId: string;
   };
+
+  
 }) {
   const { data: activities } = api.activity.getActivities.useQuery({
     groupId: +params.groupId,
     eventId: +params.eventId,
+  });
+
+  const {data : event} = api.event.getEventById.useQuery({
+    groupId: +params.groupId, 
+    eventId: +params.eventId
   });
 
   const { data: isParticipant } = api.event.isParticipant.useQuery({
@@ -43,12 +50,60 @@ export default function Home({
       setFavorite(null);
     },
   });
+
+//return the activity with the most votes
+  
+  
+
+  const [remainingTime, setRemainingTime] = useState("");
+  const [timeDiff, setTimeDiff] = useState<number>();
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (event?.endVoteDate === undefined) {
+          return;
+        }
+        const endDateTime = event.endVoteDate; // Replace with your endDateTime
+        const currentTime = new Date();
+        const timeDiff = endDateTime.getTime() - currentTime.getTime();
+        setTimeDiff(timeDiff);
+        if (timeDiff > 0) {
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeDiff % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  
+          if (days > 0) {
+            setRemainingTime(`Vote time: ${days}d ${hours}h ${minutes}m to vote!`);
+          } else if (hours > 0) {
+            setRemainingTime(`Vote time: ${hours}h ${minutes}m to vote!`);
+           } else if (timeDiff > 0) {
+              setRemainingTime(`Vote time: ${minutes}m ${seconds}s to vote!`);
+            }
+          } else {
+            setRemainingTime("Voting has ended");
+          }
+          clearInterval(interval);
+        }
+      , 1000);
+  
+      return () => {
+        clearInterval(interval);
+      };
+    }, [event]);
   return (
     <>
       <main className="bg-surface">
+        <div className="bg-secondary-container mx-4 h-9 flex items-center justify-center rounded">
+          <span className="font-bold">{remainingTime}</span>
+        </div>
         <Link
           href={"activities/new"}
-          className={`bg-primary-container my-4 flex w-5/6 cursor-pointer items-center justify-between space-x-2 rounded-r-xl p-3 transition-transform hover:scale-105 ${isParticipant ? "" : "pointer-events-none opacity-50"}`}
+          className={`bg-primary-container my-4 flex w-5/6 cursor-pointer items-center justify-between space-x-2 rounded-r-xl p-3 transition-transform hover:scale-105 ${isParticipant || (timeDiff ?? 0) < 0 ? "" : "pointer-events-none opacity-50"}`}
         >
           <span className="text-md font-semibold">Add an activity</span>
           <span className="material-icons ">post_add</span>
@@ -78,11 +133,12 @@ export default function Home({
                 if (showPopup) setShowPopup(false);
               }}
               onContextMenu={(e) => e.preventDefault()}
-              className={` ${isParticipant ? "" : "pointer-events-none opacity-50"}`}
+              className={` ${isParticipant || (timeDiff ?? 0) < 0 ? "" : "pointer-events-none opacity-50"}`}
             >
               <ActivityCard
                 isFavorite={favorite === activity.id}
                 activity={activity}
+                timeEndVote={(timeDiff ?? 0) < 0} 
               />
             </div>
           ))}

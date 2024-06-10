@@ -102,4 +102,5 @@ export const activityRouter = createTRPCRouter({
       ).length;
       return { count };
     }),
-});
+
+  })
