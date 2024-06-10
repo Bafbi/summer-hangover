@@ -54,7 +54,7 @@ module.exports = withMaterialColors(
   {
     // Your base colors as HEX values. 'primary' is required.
     // primary: "#F5B61F",
-    primary: "#E19947",
+    primary: "#679c69",
     // secondary: "#5482BB",
   },
   {

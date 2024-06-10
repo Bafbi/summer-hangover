@@ -71,6 +71,20 @@ export const eventRouter = createTRPCRouter({
       });
     }),
 
+  getEventById: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.events.findFirst({
+        where: (events, { eq, and }) =>
+          and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)),
+        with: {
+          group: {
+            with: { members: true },
+          },
+        },
+      });
+    }),
+
   isParticipant: protectedProcedure
     .input(z.object({ groupId: z.number(), eventId: z.number() }))
     .query(async ({ ctx, input }) => {
