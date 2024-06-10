@@ -9,7 +9,7 @@ export enum GroupSection {
   HALLOFFAME = "hallOfFame",
 }
 
-export function GroupFooter({ basePath }: { basePath: string }) {
+export function GroupFooter() {
   const pathname = usePathname();
 
   return (
