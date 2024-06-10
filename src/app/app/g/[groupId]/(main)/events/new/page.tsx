@@ -10,6 +10,7 @@ function CreateEvent({ params }: { params: { groupId: string } }) {
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventLocation, setEventLocation] = useState("");
   const [newEventDate, setEventDate] = useState("");
+  const [newEndVoteDate, setEndVoteDate] = useState("");
   const router = useRouter();
 
   const createEvent = api.event.createEvent.useMutation({
@@ -19,6 +20,7 @@ function CreateEvent({ params }: { params: { groupId: string } }) {
       setNewEventDescription("");
       setEventLocation("");
       setEventDate("");
+      setEndVoteDate("");
     },
   });
 
@@ -47,6 +49,7 @@ function CreateEvent({ params }: { params: { groupId: string } }) {
                 location: newEventLocation,
                 date: new Date(newEventDate).toISOString(),
                 groupId: +params.groupId,
+                endVoteDate: new Date(newEndVoteDate).toISOString(),
               });
             }}
           >
@@ -99,6 +102,21 @@ function CreateEvent({ params }: { params: { groupId: string } }) {
                 className="border-gray-300 focus:border-red-500 focus:ring-red-500 h-15 mt-1 block w-full rounded-md shadow-sm sm:text-sm"
                 value={newEventDate}
                 onChange={(e) => setEventDate(e.target.value)}
+                min="2024-06-07T00:00"
+                max="2060-06-14T00:00"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="text-gray-700 block text-xl font-medium">
+                Choose a limit date to vote:
+              </label>
+
+              <input
+                type="datetime-local"
+                placeholder="Description du groupe... Soyez créatif !"
+                className="border-gray-300 focus:border-red-500 focus:ring-red-500 h-15 mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+                value={newEndVoteDate}
+                onChange={(e) => setEndVoteDate(e.target.value)}
                 min="2024-06-07T00:00"
                 max="2060-06-14T00:00"
               />

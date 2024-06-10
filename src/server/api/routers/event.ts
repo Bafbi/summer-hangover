@@ -13,6 +13,7 @@ export const eventRouter = createTRPCRouter({
         date: z.string().datetime(),
         location: z.string().optional(),
         groupId: z.number(),
+        endVoteDate: z.string().datetime(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -25,6 +26,7 @@ export const eventRouter = createTRPCRouter({
         name: input.name,
         location: input.location,
         date: new Date(input.date),
+        endVoteDate: new Date(input.endVoteDate),
       });
 
       const usersToInsert = {
@@ -45,12 +47,19 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (input.accepted)
+      if (input.accepted) {
         await ctx.db.insert(eventsParticipants).values({
           userId: ctx.session.user.id,
           groupId: input.groupId,
           eventId: input.eventId,
         });
+      } else {
+        await ctx.db.delete(eventsParticipants).values({
+          userId: ctx.session.user.id,
+          groupId: input.groupId,
+          eventId: input.eventId,
+        });
+      }
     }),
 
   getEvents: protectedProcedure
