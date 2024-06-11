@@ -19,7 +19,7 @@ export default async function EventsPage(  {
 
         <div className="sortie flex w-full items-center justify-between">
           <Link
-            href="/other-content-2"
+              href="events/new"
             className="bg-primary-container my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-r-xl p-2 transition-transform hover:scale-105"
             style={{
               minHeight: "60px",
