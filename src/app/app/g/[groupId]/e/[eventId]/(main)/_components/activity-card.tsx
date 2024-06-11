@@ -1,4 +1,5 @@
 "use client"
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 
 export type  Activity= {
@@ -19,14 +20,23 @@ export type  Activity= {
 export  function ActivityCard({
   activity,
   isFavorite,
+  timeEndVote,
 }: {
   activity: Activity;
   isFavorite: boolean;
+  timeEndVote:boolean
 }
 
 ) {
 
   const vote =  api.activity.getVotes.useQuery({groupId: activity.groupId, eventId: activity.eventId,activityId: activity.id});
+
+
+
+
+
+  
+//return true if this activity has most votes
 
 
   return (

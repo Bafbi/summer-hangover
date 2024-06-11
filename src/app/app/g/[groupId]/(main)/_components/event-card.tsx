@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
+import { format } from "date-fns";
 
 type Event = {
   date: Date;
@@ -40,6 +41,11 @@ export function EventCard({ event }: { event: Event }) {
     setNewInvitation(isCurrentUserParticipant);
   }, [isCurrentUserParticipant]);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleDateClick = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   return (
     <>
@@ -53,36 +59,38 @@ export function EventCard({ event }: { event: Event }) {
         </Link>
         {(
           <label className="flex items-center space-x-2">
+            <span>{"Dispo: "}</span>
             <input
-              type="checkbox" 
-              checked= {newInvitation}
-              onChange={(e) =>{
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-primary bg-surface-container border-primary-container "
+              checked={newInvitation}
+              onChange={(e) => {
                 setNewInvitation(e.target.checked);
                 invitation.mutate({
                   groupId: event.groupId,
                   eventId: event.id,
                   accepted: e.target.checked,
-                })}
-               
-              }
+                });
+              }}
             />
-            <span>{"Dispo"}</span>
           </label>
         )}
-       
         <div
-          className="bg-surface-variant my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105"
+          className={`bg-surface-variant my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${
+            isExpanded ? "w-full mx-2" : ""
+          }`}
           style={{
             minHeight: "60px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
+          onClick={handleDateClick}
         >
-          Date
+          {isExpanded ? format(event.date, "dd/MM/yyyy") : "Date"}
         </div>
-       
       </div>
     </>
   );
 }
+         
