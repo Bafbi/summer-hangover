@@ -21,8 +21,11 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
     groupId: +params.groupId,
   });
 
+
+
   const [cards, setCards] = useState<Card[]>([]);
 
+  
   useEffect(() => {
     if (topSpends.data) {
       const initialCards: Omit<Card, "isFlipped">[] = [
