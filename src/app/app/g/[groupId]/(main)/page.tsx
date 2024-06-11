@@ -1,9 +1,9 @@
-import Chat from "~/app/_components/chat";
+import { RedirectType, redirect } from "next/navigation";
 
-export default function GroupMain({ params }: { params: { groupId: string } }) {
-  return (
-    <>
-      <Chat groupId={+params.groupId} />
-    </>
-  );
+export default function GroupDefaultPage({
+  params,
+}: {
+  params: { groupId: string };
+}) {
+  redirect(`${params.groupId}/chat`, RedirectType.replace);
 }

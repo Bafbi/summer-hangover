@@ -4,18 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export enum EventSection {
-  CHAT = "",
+  CHAT = "chat",
   ACTIVITIES = "activities",
   BUDGETS = "budgets",
 }
 
-export function EventFooter({ basePath }: { basePath: string }) {
+export function EventFooter() {
   const pathname = usePathname();
 
   return (
     <footer className="bg-surface sticky bottom-0 ">
-      <div className="mx-2 flex h-16 flex-row items-center justify-around border-t border-inverse-surface">
-        <Link href={`${basePath}/${EventSection.BUDGETS}`}>
+      <div className="mx-2 flex h-16 flex-row items-center justify-around border-inverse-surface">
+        <Link href={`${EventSection.BUDGETS}`} replace={true}>
           <span
             className={`material-icons ${pathname.includes(EventSection.BUDGETS) ? "text-primary" : ""}`}
           >
@@ -23,15 +23,15 @@ export function EventFooter({ basePath }: { basePath: string }) {
           </span>
         </Link>
 
-        <Link href={`${basePath}/`}>
+        <Link href={`${EventSection.CHAT}`} replace={true}>
           <span
-            className={`material-icons ${!pathname.includes(EventSection.ACTIVITIES) && !pathname.includes(EventSection.BUDGETS) && "text-primary"}`}
+            className={`material-icons ${pathname.includes(EventSection.CHAT) && "text-primary"}`}
           >
             chat
           </span>
         </Link>
 
-        <Link href={`${basePath}/${EventSection.ACTIVITIES}`}>
+        <Link href={`${EventSection.ACTIVITIES}`} replace={true}>
           <span
             className={`material-icons ${pathname.includes(EventSection.ACTIVITIES) ? "text-primary" : ""}`}
           >

@@ -8,6 +8,7 @@ import { userRouter } from "./routers/user";
 import { profileRouter } from "./routers/profile";
 import { notificationRouter } from "./routers/notifications";
 import { tricountRouter } from "./routers/tricount";
+import { allOfFameRouter } from "./routers/all-of-fame";
 
 /**
  * This is the primary router for your server.
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   notification: notificationRouter,
   tricount: tricountRouter,
+  allOfFame: allOfFameRouter,
 });
 
 // export type definition of API

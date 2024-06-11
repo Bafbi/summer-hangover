@@ -50,7 +50,7 @@ export default function AppHeader() {
   };
 
   return (
-    <div className="bg-surface border-b border-inverse-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between px-4">
+    <div className="bg-surface border-inverse-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between px-4">
       <div className="flex-1 justify-between text-on-surface">
         <p className="text-2xl font-semibold text-on-surface">
           Summer Hangover

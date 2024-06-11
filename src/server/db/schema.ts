@@ -229,6 +229,7 @@ export const events = createTable(
       .default(sql`CURRENT_TIMESTAMP`),
     date: int("date", { mode: "timestamp" }).notNull(),
     location: text("location", { length: 255 }),
+    endVoteDate: int("endVoteDate", { mode: "timestamp" }).notNull(),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.id, table.groupId] }),
