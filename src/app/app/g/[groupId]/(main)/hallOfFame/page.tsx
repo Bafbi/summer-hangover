@@ -17,19 +17,20 @@ export default function HofPage({params}: {params: {groupId: string}}) {
   // Récupérer les données de l'API
   const topSpends = api.allOfFame.topSpend.useQuery({groupId: +params.groupId});
 
+
+
   const [cards, setCards] = useState<Card[]>([]);
 
+  
   useEffect(() => {
-    if (topSpends.data) {
       const initialCards: Omit<Card, 'isFlipped'>[] = [
-        { id: 1, question: 'Qui a fais la plus grosse dépense ?', answer: `${topSpends.data.user.name} with ${topSpends.data.amount}€` },
+        { id: 1, question: 'Qui a fais la plus grosse dépense ?', answer: `${topSpends.data?.username} with ${topSpends.data?.price}€` },
         { id: 2, question: 'Question 2 ?', answer: '2' },
         { id: 3, question: 'Question 3 ?', answer: '3' },
         { id: 4, question: 'Question 4 ?', answer: '4' },
         { id: 5, question: 'Question 5 ?', answer: '5' }
       ];
       setCards(initialCards.map(card => ({ ...card, isFlipped: false })));
-    }
   }, [topSpends.data]);
 
   const handleFlip = (id: number) => {

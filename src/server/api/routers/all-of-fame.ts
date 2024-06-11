@@ -1,6 +1,7 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, sql, gt } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { db } from "~/server/db";
 import { expenses, users } from "~/server/db/schema";
 
 export const allOfFameRouter = createTRPCRouter({
@@ -15,8 +16,14 @@ export const allOfFameRouter = createTRPCRouter({
             },
             orderBy: (expenses, { desc }) => [desc(expenses.amount)],
         });
+        if (!topSpend) {
+            const noTopSpend = structuredClone(topSpend);
+            return {price: 0 , username: 'nobody found'};
 
-        return topSpend;
+        }
+
+        return {price: topSpend.amount, username: topSpend.user.name};
     }),
 
+    //  user with the most particpiation in events in a group
 });
