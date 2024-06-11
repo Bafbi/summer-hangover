@@ -1,4 +1,6 @@
 import { randomInt } from "crypto";
+import { count, is,eq, desc } from "drizzle-orm";
+import { get } from "http";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -102,5 +104,27 @@ export const activityRouter = createTRPCRouter({
       ).length;
       return { count };
     }),
+
+
+    isFavorite: protectedProcedure
+      .input(
+        z.object({
+          groupId: z.number(),
+          eventId: z.number(),
+          activityId: z.number(),
+        }),
+      )
+      .query(async ({ ctx, input }) => {
+        const fav = await ctx.db
+          .select({ activity: activities, count: count(votesActivities.userId) })
+          .from(activities)
+          .innerJoin(votesActivities, eq(activities.id, votesActivities.activityId))
+          .groupBy(activities.id)
+          .orderBy(desc(count(votesActivities.userId)))
+          .limit(1);
+        console.log(fav[0]);
+        return fav[0]?.activity.id=== input.activityId;
+       
+      }),
 
   })

@@ -32,7 +32,7 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
         {
           id: 1,
           question: "Qui a fais la plus grosse dépense ?",
-          answer: `${topSpends.data.user.name} with ${topSpends.data.amount}€`,
+          answer: `${topSpends.data.username} with ${topSpends.data.price}€`,
         },
         { id: 2, question: "Question 2 ?", answer: "2" },
         { id: 3, question: "Question 3 ?", answer: "3" },

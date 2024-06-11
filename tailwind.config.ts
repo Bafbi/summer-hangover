@@ -39,6 +39,7 @@ const config: Config = {
       colors: {
         positif: "#a2d69c",
         negatif: "#d77070",
+        winner: "#f5b61f",
       },
     },
   },
