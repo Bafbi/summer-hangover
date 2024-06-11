@@ -47,7 +47,7 @@ export default function Home({
     <>
       <main className="bg-surface">
         <Link
-          href={"activities/new"}
+          href={"newActivity"}
           className={`bg-primary-container my-4 flex w-5/6 cursor-pointer items-center justify-between space-x-2 rounded-r-xl p-3 transition-transform hover:scale-105 ${isParticipant ? "" : "pointer-events-none opacity-50"}`}
         >
           <span className="text-md font-semibold">Add an activity</span>

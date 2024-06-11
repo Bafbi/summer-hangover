@@ -4,11 +4,15 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { api } from "~/trpc/react";
 import AppHeader from "../_components/header";
+import { UploadButton } from "~/utils/uploadthing";
+import { useState } from "react";
 
 export default function Profile() {
   const { data: profile } = api.profile.getProfile.useQuery();
 
   const updateProfile = api.profile.updateProfile.useMutation();
+
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const {
     register,
@@ -51,7 +55,7 @@ export default function Profile() {
         <div className="profile-container mt-8 flex flex-col items-center">
           <div className="relative">
             <Image
-              src={profile?.image ?? "/profileLogo.png"}
+              src={profileImageUrl ?? profile?.image ?? "/profileLogo.png"}
               alt="User Icon"
               className="user-icon h-40 w-40 rounded-full"
               width={160}
@@ -61,6 +65,18 @@ export default function Profile() {
               <span style={{ fontSize: 28 }} className="material-icons">
                 file_upload
               </span>
+              <UploadButton
+                endpoint="updateProfilePicture"
+                onClientUploadComplete={(res) => {
+                  // Do something with the response
+                  console.log("Files: ", res[0]?.url);
+                  if (res[0]?.url) setProfileImageUrl(res[0]?.url);
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
             </button>
           </div>
           <p className="UniqueUserName mt-3 text-3xl font-semibold">
