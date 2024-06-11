@@ -6,7 +6,7 @@ export default async function GroupsPage() {
 
   return (
     <>
-      <div className="flex h-screen flex-col ">
+      <div className="flex h-screen flex-col">
         <div className="mb-18 bg-surface mt-16 flex-grow overflow-y-auto p-4">
           {groups?.map((group) => (
             <Link

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import MainMenuFooter from "~/app/_components/mainMenuFooter";
 import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import Head from "next/head";
@@ -8,6 +8,7 @@ import Link from "next/link";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from 'uuid';
+import { notificationType } from "~/server/db/schema";
 
 const CreateGroup = () => {
   const [newGroupName, setNewGroupName] = useState("");
@@ -36,21 +37,28 @@ const CreateGroup = () => {
     },
   });
 
+  // const sendNotificationToUsers = api.notification.sendNotificationToUsers.useMutation();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const groupId = uuidv4();  // Generate a unique ID for the group
-    const inviteLink = `http://localhost:3000/invite/${groupId}`;
 
     const newGroupData = {
       name: newGroupName,
       description: newGroupDescription,
       members: selectedContacts,
-      inviteLink: inviteLink,  // Pass the invite link to the mutation
     };
 
     console.log("Creating group with the following data:", newGroupData);
 
     createGroup.mutate(newGroupData);
+    /* 
+    sendNotificationToUsers.mutate({
+      message: `Vous avez été invité à rejoindre le groupe ${newGroupName}.
+      Cliquez ici pour le rejoindre. ${inviteLink}`,
+      type: "INVITED_TO_GROUP",
+      userIds: selectedContacts,
+    });
+    */
   };
 
   return (
@@ -71,7 +79,7 @@ const CreateGroup = () => {
           </div>
           <form onSubmit={handleSubmit}>
             <h1 className="-mt-2 text-center text-xl font-semibold">
-              Créer un nouveau groupe de sortie :
+              Créer un nouveau groupe :
             </h1>
             <div className="mt-4">
               <label className="text-gray-700 block text-xl font-medium">
@@ -82,7 +90,7 @@ const CreateGroup = () => {
                 value={newGroupName}
                 placeholder="Un joli petit nom pour votre groupe..."
                 onChange={(e) => setNewGroupName(e.target.value)}
-                className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+                className="focus:border-indigo-500 mt-1 block w-full rounded-md shadow-sm sm:text-sm"
               />
             </div>
             <div className="mt-4">
@@ -100,7 +108,7 @@ const CreateGroup = () => {
               <label className="text-gray-700 block text-xl font-medium">
                 Contacts à ajouter :
               </label>
-              <div className="border-gray-300 mt-1 h-52 overflow-y-auto rounded-md border p-2">
+              <div className="border-gray-300 bg-surface mt-1 h-44 overflow-y-auto rounded-md border p-2">
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : (
@@ -115,15 +123,13 @@ const CreateGroup = () => {
                             {member.user.name}
                           </span>
                         </div>
-                        <label className="text-gray-700 block text-xl font-medium">
-                          Checkbox Label:
-                        </label>
+                        
                         <input
                           type="checkbox"
-                          title="checkboxx"
+                          title="checkbox"
                           checked={selectedContacts.includes(member.userId)}
                           onChange={() => handleCheckboxChange(member.userId)}
-                          className="border-gray-300 mb-2 h-5 w-5 rounded"
+                          className="border-gray-300 mb-3 h-5 w-5 rounded"
                         />
                       </div>
                     ))

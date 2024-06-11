@@ -6,6 +6,11 @@ import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
 import { env } from "~/env";
 import { api, type RouterOutputs } from "~/trpc/react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { colors } from "@mui/material";
+import { Router } from "next/router";
+import { root } from "postcss";
 
 function formatNotifications(
   notifications: RouterOutputs["notification"]["getNotifications"],
@@ -37,17 +42,15 @@ const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
 
 export default function Notifications() {
   const { data: session } = useSession();
+  const userIdNbr = session?.user.id;
   const [notifications, setNotifications] = useState<
     RouterOutputs["notification"]["getNotifications"]
   >([]);
   const [notificationId, setNotificationId] = useState<number>(0);
 
-  const { data: notificationsData } =
-    api.notification.getNotifications.useQuery();
-  const { data: notification } = api.notification.getNotification.useQuery({
-    notifId: notificationId,
-  });
-  const sendNotification = api.notification.sendNotification.useMutation();
+  const { data: notificationsData } = api.notification.getNotifications.useQuery();
+  const { data: notification } = api.notification.getNotification.useQuery({notifId: notificationId});
+  const sendNotification = api.notification.sendNotificationToYourself.useMutation();
 
   useEffect(() => {
     if (notificationsData) {
@@ -85,6 +88,23 @@ export default function Notifications() {
   // have the formatNotifications always up to date
   const formattedNotifications = formatNotifications(notifications);
 
+  const notify = () => toast.error(`TESTING : Julien vous a ajouté à un groupe ! \n` +
+    ' Cliquez ici pour le rejoindre. (need to remove it after completes the notif system)', {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    closeButton: false,
+    icon: ({theme, type}) =>  <span className="material-icons text-[#e74c3c]">
+      report
+    </span>,
+    });
+
+
   return (
     <div className="bg-surface flex h-screen flex-col">
       {/* Header de la page notif */}
@@ -97,7 +117,8 @@ export default function Notifications() {
         </div>
         <div className="flex justify-around space-x-4 pr-1 text-on-surface-variant">
           <Link
-            href="notification"
+            href="/app"
+            replace={true}
             passHref
             className="relative flex items-center justify-center "
           >
@@ -105,7 +126,7 @@ export default function Notifications() {
               style={{ fontSize: 36 }}
               className="material-icons relative text-on-surface-variant"
             >
-              notifications
+              home
             </span>
           </Link>
           <Link
@@ -123,6 +144,8 @@ export default function Notifications() {
       {/* Contenu de la page notif */}
       <main className="bg-surface mt-12 flex-grow overflow-y-auto overflow-x-hidden  px-2 py-4">
         <div className="notifContent">
+
+          {/* Si aucune notification */}
           {formattedNotifications.todaysNotifications.length === 0 &&
             formattedNotifications.yesterdaysNotifications.length === 0 &&
             formattedNotifications.olderNotifications.length === 0 && (
@@ -152,6 +175,7 @@ export default function Notifications() {
                 </div>
               </div>
             )}
+
           {/* Section des notifications */}
           {/* Aujourd'hui */}
           {formattedNotifications.todaysNotifications.length > 0 && (
@@ -162,8 +186,10 @@ export default function Notifications() {
               {formattedNotifications.todaysNotifications.map((notif) => {
 
                 return (
-                  <div
+                  <Link
                   key={notif.id}
+                  replace={true}
+                  href={notif.urlLink || "/notification"}
                   className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base"
                 >
                   <span
@@ -176,7 +202,7 @@ export default function Notifications() {
                     {notif.message.charAt(0).toUpperCase() +
                       notif.message.slice(1)}
                   </div>
-                </div>
+                </Link>
                 )
               })}
             </>
@@ -190,9 +216,11 @@ export default function Notifications() {
               </div>
               <div>
                 {formattedNotifications.yesterdaysNotifications.map((notif) => (
-                  <div
+                  <Link
                     key={notif.id}
-                    className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-inverse-surface"
+                    href={notif.urlLink || "/app/notification"}
+                    replace={true}
+                    className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-surface-container px-3 py-2 text-lg text-inverse-surface"
                   >
                     <span
                       style={{ fontSize: 36 }}
@@ -209,7 +237,7 @@ export default function Notifications() {
                           notif.message.slice(1)}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </>
@@ -227,8 +255,10 @@ export default function Notifications() {
                 .map((notif, index) => {
                   if (index < 5) {
                     return (
-                      <div
+                      <Link
                         key={notif.id}
+                        href={notif.urlLink || "/app/notification"}
+                        replace={true}
                         className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base text-inverse-surface"
                       >
                         <span
@@ -251,7 +281,7 @@ export default function Notifications() {
                                 .replace(/^\w/, (c) => c.toUpperCase())}
                           </span>
                         </div>
-                      </div>
+                      </Link>
                     );
                   } else {
                     return null;
@@ -262,12 +292,13 @@ export default function Notifications() {
         </div>
         {/* Pour du test uniquement */}
         <div>
-            <button className="mt-40" onClick={handleSendNotification}>
+            <button className="mt-40" onClick={() => { handleSendNotification(); notify(); }}>
               Envoyer une notification
             </button>
             <p>session.user.id = {session?.user.id}</p>
-          </div>
-          {/* Fin du test */}
+        </div>
+        <button className="mt-12" onClick={notify}>Notify !</button>
+        {/* Fin du test */}
 
         {/* Fin de la section des notifications */}
 
