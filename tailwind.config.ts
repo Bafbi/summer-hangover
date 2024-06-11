@@ -1,6 +1,7 @@
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 import { withMaterialColors } from "tailwind-material-colors";
+import { withUt } from "uploadthing/tw";
 
 const config: Config = {
   content: ["./src/**/*.tsx"],
@@ -38,7 +39,7 @@ const config: Config = {
       colors: {
         positif: "#a2d69c",
         negatif: "#d77070",
-      }
+      },
     },
   },
   plugins: [
@@ -49,7 +50,7 @@ const config: Config = {
   ],
 } satisfies Config;
 
-module.exports = withMaterialColors(
+const materialColor = withMaterialColors(
   config,
   {
     // Your base colors as HEX values. 'primary' is required.
@@ -65,4 +66,7 @@ module.exports = withMaterialColors(
     extend: false,
   },
 );
+
+export default withUt(materialColor);
+
 // tailwind.config.js
