@@ -3,28 +3,51 @@ import Link from "next/link";
 import { Badge } from "@mui/material";
 import { api, type RouterOutputs } from "~/trpc/react";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import router from "next/router";
 
 export default function AppHeader() {
+  const { data: session } = useSession();
+  const userIdNbr = session?.user?.id;
 
   const [notifications, setNotifications] = useState<
     RouterOutputs["notification"]["getNotifications"]
   >([]);
 
-  const { data: notificationsData } =
-    api.notification.getNotifications.useQuery();
+  const [unreadNotifications, setUnreadNotifications] = useState<
+    RouterOutputs["notification"]["getUnreadNotifications"]
+  >([]);
 
-  const setAllNotifAsRead = api.notification.changeNotificationStatus.useMutation();
+  const { data: notificationsData } = api.notification.getNotifications.useQuery();
+  // const { data: unreadNotificationsData } = api.notification.getUnreadNotifications.useQuery();
+  
+  const setAllNotifAsReaded = api.notification.setAllNotifAsReaded.useMutation({
+    onSuccess: () => {
+      setUnreadNotifications([]);
+      refetchNotifications();
+      refetchUnreadNotifications();
+    },
+  });
+
+  const refetchNotifications = api.notification.getNotifications.useQuery().refetch;
+  const refetchUnreadNotifications = api.notification.getUnreadNotifications.useQuery().refetch;
 
   useEffect(() => {
     if (notificationsData) {
       setNotifications(notificationsData);
+      const unreadNotificationsData = notificationsData.filter((notif) => notif.isRead === false);
+      setUnreadNotifications(unreadNotificationsData);
     }
   }, [notificationsData]);
 
-
-  // Notif à afficher
-  const unreadNotifications = notifications.filter((notif) => notif.isRead === false);
-
+  const handleNotificationClick = () => {
+    if (userIdNbr !== undefined) {
+      console.log(`Marking notif as read for userId: ${userIdNbr}`);
+      setAllNotifAsReaded.mutate({ userId: userIdNbr });
+    } else {
+      console.error("ERROR User ID is not valid");
+    }
+  };
 
   return (
     <div className="bg-surface border-b border-inverse-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between px-4">
@@ -35,29 +58,21 @@ export default function AppHeader() {
       </div>
       <div className="flex justify-around space-x-4 pr-1 text-on-surface-variant">
         <Link
-          href="app/notification"
-          passHref
+          href={"/app/notification"}
+          replace={true}
           className="relative flex items-center"
+          onClick={handleNotificationClick}
         >
           <Badge badgeContent={unreadNotifications.length} overlap="circular" color="error" sx={{ fontSize: 36 }}>
-            {unreadNotifications.length <= 0 && (
-              <span
-                style={{ fontSize: 36 }}
-                className="material-icons relative text-on-secondary-container">
-                  notifications
-              </span>
-            )}
-            {unreadNotifications.length > 0 && (
-              <span
-                style={{ fontSize: 36 }}
-                className="material-icons relative text-on-secondary-container">
-                  notifications
-              </span>
-            )}
+            <span
+              style={{ fontSize: 36 }}
+              className="material-icons relative text-on-secondary-container">
+              notifications
+            </span>
           </Badge>
         </Link>
         <Link
-          href="app/profile"
+          href="/app/profile"
           passHref
           className="relative flex items-center justify-center "
         >

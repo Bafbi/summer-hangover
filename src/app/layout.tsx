@@ -4,6 +4,10 @@ import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import SessionWrapper from "./_components/session_wrapper";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import NotifWrapper from "./app/(main)/_components/notifWrapper";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -16,6 +20,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <head>
@@ -27,7 +32,28 @@ export default function RootLayout({
 
       <body className="bg-surface">
         <SessionWrapper>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              limit={1}
+              theme="light"
+              style={{ marginTop: "5rem"}}
+              toastStyle={{ 
+                backgroundColor: "#F9EBE1", marginLeft: "1rem", marginRight: "1rem",
+                borderRadius: "0.5rem", color: "#524437", fontFamily: "var(--font-geist-sans)"
+              }}
+            />
+            <NotifWrapper />
+              {children}
+          </TRPCReactProvider>
         </SessionWrapper>
       </body>
     </html>
