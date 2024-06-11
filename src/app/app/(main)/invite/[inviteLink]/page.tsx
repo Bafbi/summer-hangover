@@ -124,7 +124,7 @@ export default function InvitePageClient({ params }: { params: { groupId: number
           <Link
             href={"/app"}
             replace={true}
-            className={`bg-primary-container my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
+            className={`bg-error-container my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
             space-x-0 rounded-r-xl p-4 transition-transform hover:scale-105`}
           >
             <span className="text-md font-semibold">Décliner l'invitation</span>

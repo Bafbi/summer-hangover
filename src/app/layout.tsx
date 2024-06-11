@@ -57,7 +57,6 @@ export default function RootLayout({
               }}
             />
             <NotifWrapper />
-              {children}
             <NextSSRPlugin
               /**
                * The `extractRouterConfig` will extract **only** the route configs
