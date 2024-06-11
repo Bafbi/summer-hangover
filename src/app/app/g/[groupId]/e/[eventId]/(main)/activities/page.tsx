@@ -44,14 +44,16 @@ export default function Home({
   const router = useRouter();
   const addFavorite = api.activity.addFavorite.useMutation({
     onSuccess: () => {
-      router.refresh();
+      console.log("Favorite added");
+      
+      location.reload();
     },
     onError: () => {
       setFavorite(null);
     },
   });
 
-//return the activity with the most votes
+
   
   
 
@@ -123,6 +125,7 @@ export default function Home({
               onTouchEnd={() => {
                 if (timeout.current !== null) {
                   clearTimeout(timeout.current);
+                  
                   setFavorite(activity.id);
                   addFavorite.mutate({
                     groupId: activity.groupId,
