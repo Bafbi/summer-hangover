@@ -17,7 +17,20 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
   const topSpends = api.allOfFame.topSpend.useQuery({
     groupId: +params.groupId,
   });
+
   const mostParticipant = api.allOfFame.mostParticipant.useQuery({
+    groupId: +params.groupId,
+  });
+
+  const mostMessages = api.allOfFame.mostMessages.useQuery({
+    groupId: +params.groupId,
+  });
+
+  const mostExpences = api.allOfFame.mostExpences.useQuery({
+    groupId: +params.groupId,
+  });
+
+  const mostExpencesAmount = api.allOfFame.mostExpencesAmount.useQuery({
     groupId: +params.groupId,
   });
 
@@ -27,16 +40,16 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
 
   
   useEffect(() => {
-    if (topSpends.data) {
+    if (topSpends.data && mostParticipant.data && mostMessages.data && mostExpences.data && mostExpencesAmount.data) {
       const initialCards: Omit<Card, "isFlipped">[] = [
         {
           id: 1,
           question: "Qui a fais la plus grosse dépense ?",
-          answer: `${topSpends.data.user.name} with ${topSpends.data.amount}€`,
+          answer: `${topSpends.data.username} with ${topSpends.data.price}€`,
         },
-        { id: 2, question: "Question 2 ?", answer: "2" },
-        { id: 3, question: "Question 3 ?", answer: "3" },
-        { id: 4, question: "Question 4 ?", answer: "4" },
+        { id: 2, question: "Qui est le plus sorti ?", answer: `${mostParticipant.data[0]?.user.name}` },
+        { id: 3, question: "Qui a envoyé le plus de messages ?", answer: `${mostMessages.data[0]?.user.name}`},
+        { id: 4, question: "Qui a le plus de tout les events ?", answer: `${mostExpences.data[0]?.user.name} with ${mostExpencesAmount.data[0]?.sum}€`},
         { id: 5, question: "Question 5 ?", answer: "5" },
       ];
       setCards(initialCards.map((card) => ({ ...card, isFlipped: false })));
