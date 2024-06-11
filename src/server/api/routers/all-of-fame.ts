@@ -35,6 +35,7 @@ export const allOfFameRouter = createTRPCRouter({
         .select({ user: users, count: count(eventsParticipants.eventId) })
         .from(users)
         .innerJoin(eventsParticipants, eq(users.id, eventsParticipants.userId))
+        .where(eq(eventsParticipants.groupId, input.groupId))
         .groupBy(users.id);
     }),
 });
