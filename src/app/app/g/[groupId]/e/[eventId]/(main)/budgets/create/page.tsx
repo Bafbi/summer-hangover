@@ -18,7 +18,7 @@ const CreateTricount = ({
 
   const createTricount = api.tricount.createTricount.useMutation({
     onSuccess: () => {
-      router.refresh();
+      router.back();
       setTricountLabel("");
       setTricountPrice("");
     },
