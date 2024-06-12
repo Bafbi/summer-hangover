@@ -36,6 +36,40 @@ function formatNotifications(
   };
 }
 
+export const notificationType = [
+  "INVITED_TO_GROUP",
+  "NEW_EVENT_TO_GROUP",
+  "NEW_ACTIVITY_TO_EVENT",
+  "NEW_MESSAGES_TO_GROUP",
+  "NEW_MESSAGES_TO_EVENT",
+  "LAST_ONE_TO_VOTE",
+  "VOTE_REMINDER",
+  "EXPENSES_REMINDER",
+] as const;
+
+function chooseLogo(notifType: typeof notificationType[number]) {
+  switch (notifType) {
+    case "INVITED_TO_GROUP":
+      return "group_add";
+    case "NEW_EVENT_TO_GROUP":
+      return "event";
+    case "NEW_ACTIVITY_TO_EVENT":
+      return "nature_people";
+    case "NEW_MESSAGES_TO_GROUP":
+      return "chat";
+    case "NEW_MESSAGES_TO_EVENT":
+      return "forum";
+    case "LAST_ONE_TO_VOTE":
+      return "how_to_vote";
+    case "VOTE_REMINDER":
+      return "how_to_vote";
+    case "EXPENSES_REMINDER":
+      return "attach_money";
+    default:
+      return "report";
+  }
+}
+
 const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
   cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
 });
@@ -82,7 +116,7 @@ export default function Notifications() {
   const handleSendNotification = () => {
     if (!session) return;
     const message = "Julien vous a invité dans un groupe. Cliquer pour le rejoindre";
-    sendNotification.mutate({ message, type: "INVITED_TO_GROUP" });
+    sendNotification.mutate({ message, type: "NEW_ACTIVITY_TO_EVENT" });
   };
 
   // have the formatNotifications always up to date
@@ -183,7 +217,7 @@ export default function Notifications() {
               <div className="bg-surface-variant mb-4 mt-6 flex h-10 flex-col items-center rounded-md">
                 <h1 className="pt-1 text-2xl font-semibold">{"Aujourd'hui"}</h1>
               </div>
-              {formattedNotifications.todaysNotifications.map((notif) => {
+              {formattedNotifications.todaysNotifications.slice().reverse().map((notif) => {
 
                 return (
                   <Link
@@ -194,9 +228,9 @@ export default function Notifications() {
                 >
                   <span
                     style={{ fontSize: 36 }}
-                    className="material-icons pl-1 text-error"
+                    className={`material-icons pl-1 ${notif.isRead ? 'text-on-secondary-container' : 'text-error'}`}
                   >
-                    report
+                    {chooseLogo(notif.notifType)}
                   </span>
                   <div className="flex items-center space-x-2">
                     {notif.message.charAt(0).toUpperCase() +
@@ -215,7 +249,7 @@ export default function Notifications() {
                 <h1 className="pt-1 text-2xl font-semibold">Hier</h1>
               </div>
               <div>
-                {formattedNotifications.yesterdaysNotifications.map((notif) => (
+                {formattedNotifications.yesterdaysNotifications.slice().reverse().map((notif) => (
                   <Link
                     key={notif.id}
                     href={notif.urlLink || "/app/notification"}
@@ -224,9 +258,9 @@ export default function Notifications() {
                   >
                     <span
                       style={{ fontSize: 36 }}
-                      className="material-icons pl-1 text-on-surface-variant"
+                      className={`material-icons pl-1 ${notif.isRead ? 'text-on-secondary-container' : 'text-error'}`}
                     >
-                      report
+                      {chooseLogo(notif.notifType)}
                     </span>
                     <div
                       key={notif.id}
@@ -263,9 +297,9 @@ export default function Notifications() {
                       >
                         <span
                           style={{ fontSize: 36 }}
-                          className="material-icons pl-1 text-on-secondary-container"
+                          className={`material-icons pl-1 ${notif.isRead ? 'text-on-secondary-container' : 'text-error'}`}
                         >
-                          report
+                          {chooseLogo(notif.notifType)}
                         </span>
                         <div>
                           {notif.message}

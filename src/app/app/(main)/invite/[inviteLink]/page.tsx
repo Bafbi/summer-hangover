@@ -11,13 +11,27 @@ export default function InvitePageClient({ params }: { params: { groupId: number
   const router = useRouter();
   const { data: session } = useSession();
 
+  // Pour afficher des infos sur le groupe
   const [groupInfo, setGroupInfo] = useState<{
-    id: number; name: string; description: string | null; createdAt: Date;
+    id: number; name: string; description: string | null; createdAt: Date; inviteLink: string;
     userAdmin: string; createdBy: { name: string }; members: { user: { name: string } }[];
   } | null>(null);
 
   const groupInfoQuery = api.group.getGroupByInviteLink.useQuery({ inviteLink: params.inviteLink });
-  console.log(groupInfoQuery);
+
+
+  // Pour afficher différent contenue selon que l'on ai déjà rejoins le groupe ou non
+  const [hasJoined, setHasJoined] = useState(false);
+  const userAlreadyInGroup = groupInfo?.members.find((member) => member.user.name === session?.user?.name);
+  
+  useEffect(() => {
+    if (userAlreadyInGroup) {
+      setHasJoined(true);
+    }
+  }, [userAlreadyInGroup]);
+
+  console.log("invite link : ", groupInfo?.inviteLink);
+  const customInviteLink = "/app/g/" + groupInfo?.id + "/chat";
 
   useEffect(() => {
     if (groupInfoQuery.data) {
@@ -30,6 +44,7 @@ export default function InvitePageClient({ params }: { params: { groupId: number
   const handleAccept =  () => {
     if (!groupInfo) return "error : invalid group id - cannot join group";
     inviteMutation.mutate({ groupId: groupInfo?.id || 0, userIds: [session?.user?.id || "0"] });
+    router.push("/app");
   }
 
 
@@ -87,50 +102,104 @@ export default function InvitePageClient({ params }: { params: { groupId: number
             </h1>
           </div>
         </div>
-        {/* Div de formulaire */}
-        <div
-          className="mx-7 mt-10 flex-col items-center justify-between gap-4
-          rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-on-surface-variant">
-          <p className="text-wrap text-center text-lg font-semibold">
-            {groupInfo && (
-                <>
-                  {`L'utilisateur `}
-                  <span className="font-bold">{groupInfo.createdBy.name}</span>
-                  {` vous a invité à rejoindre le groupe `}
-                  <span className="font-bold underline">{groupInfo.name}</span>
-                  {` !`}
-                  <br /><br/>
-                  <span className="font-bold text-xl">{`Que voulez-vous faire ?`}</span>
-                </>
-              )}
-          </p>
-          <p className="text-wrap text-center mt-1 text-xs px-6">
-            {
-              `Il sera toujours possible de changer d'avis plus tard en consultant vos notifications.`
-            }
-          </p>
-        </div>
 
-        {/* Bouton accepter et refuser */}
-        <div className='flex-col my-10'>
-          <button
-            onClick={handleAccept}
-            className={`bg-primary-container ml-auto my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
-            space-x-0 rounded-l-xl p-4 transition-transform hover:scale-105`}
-          >
-            <span className="material-icons ">thumb_up</span>
-            <span className="text-md font-semibold">Accepter l'invitation</span>
-          </button>
-          <Link
-            href={"/app"}
-            replace={true}
-            className={`bg-error-container my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
-            space-x-0 rounded-r-xl p-4 transition-transform hover:scale-105`}
-          >
-            <span className="text-md font-semibold">Décliner l'invitation</span>
-            <span className="material-icons ">thumb_down</span>
-          </Link>
-        </div>
+
+        {/* Div de formulaire */}
+        {/* Si l'utilisateur n'a pas encore accepté l'invitation */}
+        {!hasJoined && ( 
+          <>
+              <div
+              className="mx-7 mt-10 flex-col items-center justify-between gap-4
+              rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-on-surface-variant">
+              <p className="text-wrap text-center text-lg font-semibold">
+                {groupInfo && (
+                    <>
+                      {`L'utilisateur `}
+                      <span className="font-bold">{groupInfo.createdBy.name}</span>
+                      {` vous a invité à rejoindre le groupe `}
+                      <span className="font-bold underline">{groupInfo.name}</span>
+                      {` !`}
+                      <br /><br/>
+                      <span className="font-bold text-xl">{`Que voulez-vous faire ?`}</span>
+                    </>
+                  )}
+              </p>
+              <p className="text-wrap text-center mt-1 text-xs px-6">
+                {
+                  `Il sera toujours possible de changer d'avis plus tard en consultant vos notifications.`
+                }
+              </p>
+            </div>
+
+            {/* Bouton accepter et refuser */}
+            <div className='flex-col my-10'>
+              <button
+                onClick={handleAccept}
+                className={`bg-primary-container ml-auto my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
+                space-x-0 rounded-l-xl p-4 transition-transform hover:scale-105`}
+              >
+                <span className="material-icons ">thumb_up</span>
+                <span className="text-md font-semibold">Accepter l'invitation</span>
+              </button>
+              <Link
+                href={"/app"}
+                replace={true}
+                className={`bg-error-container my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
+                space-x-0 rounded-r-xl p-4 transition-transform hover:scale-105`}
+              >
+                <span className="text-md font-semibold">Décliner l'invitation</span>
+                <span className="material-icons ">thumb_down</span>
+              </Link>
+            </div>
+          </>
+        )}
+        {/* Si l'utilisateur a déjà accepté l'invitation et qu'il reveint qq même sur la notification */}
+        {hasJoined && (
+          <>
+              <div
+              className="mx-7 mt-10 flex-col items-center justify-between gap-4
+              rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-on-surface-variant">
+              <p className="text-wrap text-center text-lg font-semibold">
+                {groupInfo && (
+                    <>
+                      {`Vous avez déjà rejoins le groupe `}
+                      <span className="font-bold"> {groupInfo.name}</span>
+                      {`avec succès ! `}
+                      <br /><br/>
+                      <span className="font-bold text-xl">{`Que voulez-vous faire ?`}</span>
+                    </>
+                  )}
+              </p>
+              <p className="text-wrap text-center mt-1 text-xs px-6">
+                {
+                  `Vous pouvez quitter un groupe en allant dans ses paramètres.`
+                }
+              </p>
+            </div>
+
+            {/* Bouton accepter et refuser */}
+            <div className='flex-col my-10'>
+              <Link
+                href={customInviteLink || "/app"}
+                replace={true}
+                className={`bg-primary-container ml-auto my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
+                space-x-0 rounded-l-xl p-4 transition-transform hover:scale-105`}
+              >
+                <span className="material-icons ">groups</span>
+                <span className="text-md font-semibold">Acceder au groupe</span>
+              </Link>
+              <Link
+                href={"/app"}
+                replace={true}
+                className={`bg-error-container my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between 
+                space-x-0 rounded-r-xl p-4 transition-transform hover:scale-105`}
+              >
+                <span className="text-md font-semibold">Retour au menu</span>
+                <span className="material-icons ">arrow_back</span>
+              </Link>
+            </div>
+          </>
+        )}
       </main>
     </>
   );

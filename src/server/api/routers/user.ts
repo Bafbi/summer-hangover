@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
+  
   getContacts: protectedProcedure.query(async ({ ctx }) => {
     const contactQuery = await ctx.db.query.users.findFirst({
       columns: {},

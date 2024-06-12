@@ -34,7 +34,7 @@ export const posts = createTable(
 
 export const users = createTable("user", {
   id: text("id", { length: 255 }).primaryKey(),
-  name: text("name", { length: 255 }).notNull(),
+  name: text("name", { length: 255 }).notNull().unique(),
   firstName: text("firstName", { length: 255 }),
   lastName: text("lastName", { length: 255 }),
   age: int("age"),

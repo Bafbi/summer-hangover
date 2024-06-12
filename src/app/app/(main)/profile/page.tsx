@@ -13,6 +13,14 @@ export default function Profile() {
   const updateProfile = api.profile.updateProfile.useMutation();
 
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [profileInfos, setProfileInfos] = useState({
+    name: profile?.name,
+    description: profile?.description,
+    firstName: profile?.firstName,
+    lastName: profile?.lastName,
+  });
+
+  const { data: profileData } = api.profile.getProfile.useQuery();
 
   const {
     register,
@@ -27,17 +35,12 @@ export default function Profile() {
     },
   });
 
-  const onSubmit = (data: {
-    name: string;
-    description: string;
-    firstName: string;
-    lastName: string;
-  }) => {
+  const onSubmit = (data: { name?: string; description?: string | null; firstName?: string | null; lastName?: string | null; }) => {
     updateProfile.mutate({
-      name: data.name,
-      description: data.description,
-      firstName: data.firstName,
-      lastName: data.lastName,
+      name: data.name || '',
+      description: data.description || '',
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
     });
   };
 
@@ -61,10 +64,7 @@ export default function Profile() {
               width={160}
               height={160}
             />
-            <button className="change-photo-button absolute bottom-0 right-0 rounded-full bg-inverse-primary px-2 pt-2 text-on-surface">
-              <span style={{ fontSize: 28 }} className="material-icons">
-                file_upload
-              </span>
+            <button className="change-photo-button absolute bottom-0 right-1 rounded-3xl bg-inverse-primary text-on-surface">
               <UploadButton
                 endpoint="updateProfilePicture"
                 onClientUploadComplete={(res) => {
