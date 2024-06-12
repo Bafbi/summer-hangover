@@ -30,7 +30,7 @@ export  function ActivityCard({
 ) {
 
   const vote =  api.activity.getVotes.useQuery({groupId: activity.groupId, eventId: activity.eventId,activityId: activity.id});
-
+  const isWinner =  api.activity.isFavorite.useQuery({groupId: activity.groupId, eventId: activity.eventId,activityId: activity.id});
 
 
 
@@ -42,7 +42,7 @@ export  function ActivityCard({
   return (
     <>
       <div
-        className={`bg-surface-variant flex aspect-card min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl  outline-tertiary ${isFavorite ? "outline" : ""}`}
+        className={` flex aspect-card min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl outline-tertiary  ${(timeEndVote && isWinner.data ) ? " bg-winner " : "bg-surface-variant"} ${isFavorite ? "outline" : ""}`}
       >
         <div className="flex flex-col p-2">
           <span className="text-lg font-semibold">{activity.name}</span>

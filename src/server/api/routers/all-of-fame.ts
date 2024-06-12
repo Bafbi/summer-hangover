@@ -77,4 +77,18 @@ export const allOfFameRouter = createTRPCRouter({
         .groupBy(users.id)
         .orderBy(desc(sql`SUM(${expenses.amount})`));
     }),
+
+    // utilisateur qui à proposé le plus d'actvitée
+
+    mostActivities: protectedProcedure
+    .input(z.object({ groupId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db
+        .select({ user: users, count: count(events.id) })
+        .from(users)
+        .innerJoin(events, eq(users.id, events.createdBy))
+        .groupBy(users.id)
+        .orderBy(desc(count(events.id)));
+    }),
+
 });

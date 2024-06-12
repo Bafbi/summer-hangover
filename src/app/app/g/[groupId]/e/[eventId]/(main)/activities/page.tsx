@@ -87,7 +87,7 @@ export default function Home({
               setRemainingTime(`Vote time: ${minutes}m ${seconds}s to vote!`);
             }
           } else {
-            setRemainingTime("Voting has ended");
+            setRemainingTime("Voting has ended" + timeDiff);
           }
           clearInterval(interval);
         }
@@ -105,7 +105,7 @@ export default function Home({
         </div>
         <Link
           href={"newActivity"}
-          className={`bg-primary-container my-4 flex w-5/6 cursor-pointer items-center justify-between space-x-2 rounded-r-xl p-3 transition-transform hover:scale-105 ${isParticipant ? "" : "pointer-events-none opacity-50"}`}
+          className={`bg-primary-container my-4 flex w-5/6 cursor-pointer items-center justify-between space-x-2 rounded-r-xl p-3 transition-transform hover:scale-105 ${(isParticipant || (timeDiff ?? 0) > 0) ? "" : "pointer-events-none opacity-50"}`}
         >
           <span className="text-md font-semibold">Add an activity</span>
           <span className="material-icons ">post_add</span>
