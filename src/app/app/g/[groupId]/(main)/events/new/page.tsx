@@ -26,10 +26,7 @@ function CreateEvent({ params }: { params: { groupId: string } }) {
 
   return (
     <>
-      <Head>
-        <title>{`Créer un nouveau groupe`}</title>
-      </Head>
-      <MainMenuHeader />
+      {/* <MainMenuHeader /> */}
       <div className="flex h-screen">
         <main className="bg-surface flex-grow p-4 text-on-surface-variant ">
           <div className="mb-4 flex justify-center">

@@ -1,57 +1,44 @@
-"use client"
-import { useEffect, useState } from "react";
-import { api } from "~/trpc/react";
+"use client";
+import {
+  PlaceDataProvider,
+  PlaceFieldText,
+  PlacePhotoGallery,
+} from "@googlemaps/extended-component-library/react";
+import { RouterOutputs } from "~/trpc/react";
 
-export type  Activity= {
-  id: number ;
-  name: string;
-  description: string | null;
-  groupId: number;
-  createdBy: string & {
-    
-    name: string;
-   
-};
-  eventId: number ;
-  location: string;
-}
-
-
-export  function ActivityCard({
+export function ActivityCard({
   activity,
   isFavorite,
-  timeEndVote,
 }: {
-  activity: Activity;
+  activity: RouterOutputs["activity"]["getActivities"]["activities"][0];
   isFavorite: boolean;
-  timeEndVote:boolean
-}
-
-) {
-
-  const vote =  api.activity.getVotes.useQuery({groupId: activity.groupId, eventId: activity.eventId,activityId: activity.id});
-
-
-
-
-
-  
-//return true if this activity has most votes
-
-
+}) {
   return (
     <>
       <div
         className={`bg-surface-variant flex aspect-card min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl  outline-tertiary ${isFavorite ? "outline" : ""}`}
       >
         <div className="flex flex-col p-2">
-          <span className="text-lg font-semibold">{activity.name}</span>
-          <span className="text-sm font-medium text-outline">
-            Lieux: {activity.location}
-          </span>
-          <span className="text-sm font-medium text-outline">
-            Number of votes: {vote.data?.count}
-          </span>
+          <div className="flex flex-row items-center">
+            <div className="flex flex-row items-center">
+              <span className="text-lg font-bold">{activity.votes}</span>
+              <span className="material-icons text-winner text-lg font-medium">
+                star
+              </span>
+            </div>
+            <span className="text-lg font-bold">{activity.name}</span>
+          </div>
+
+          <PlaceDataProvider place={activity.location}>
+            <PlaceFieldText
+              field="displayName"
+              className="text-sm font-semibold text-outline underline"
+            ></PlaceFieldText>
+            <PlacePhotoGallery
+              className="pointer-events-none h-16"
+              maxTiles={1}
+            ></PlacePhotoGallery>
+          </PlaceDataProvider>
         </div>
         <div className="bg-secondary-container flex h-10 items-center justify-around gap-1 p-2">
           <span className="text-xs font-semibold">Hold to view details</span>

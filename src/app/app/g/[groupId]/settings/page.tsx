@@ -1,8 +1,9 @@
 import QRCode from "react-qr-code";
-import { CopyToClipboard } from "../_components/copy-to-clipboard";
 import { api } from "~/trpc/server";
 import { notFound } from "next/navigation";
 import { env } from "~/env";
+import { CopyToClipboard } from "~/app/app/(main)/_components/copy-to-clipboard";
+import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
 
 export default async function GroupSettingsPage({
   params,
@@ -16,6 +17,7 @@ export default async function GroupSettingsPage({
 
   return (
     <>
+      <NewFormHeader title={`Settings for ${group.name}`} backLink="chat" />
       <h1>Group settings</h1>
       <div className="flex flex-col space-x-4">
         <div className="flex flex-col space-y-4">

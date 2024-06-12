@@ -9,6 +9,9 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
+import { APILoader } from "@googlemaps/extended-component-library/react";
+import { env } from "~/env";
+import { GoogleMapsAPILoader } from "./_components/googlemaps-api-loader";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -42,6 +45,7 @@ export default function RootLayout({
                */
               routerConfig={extractRouterConfig(ourFileRouter)}
             />
+            <GoogleMapsAPILoader />
             {children}
           </TRPCReactProvider>
         </SessionWrapper>

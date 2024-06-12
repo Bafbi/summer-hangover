@@ -1,4 +1,4 @@
-import Chat from "~/app/_components/chat";
+import Chat from "~/app/app/(main)/_components/chat";
 
 export default function EventMain({
   params,
