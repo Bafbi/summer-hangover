@@ -4,19 +4,21 @@ import {
   PlaceFieldText,
   PlacePhotoGallery,
 } from "@googlemaps/extended-component-library/react";
-import { RouterOutputs } from "~/trpc/react";
+import { type RouterOutputs } from "~/trpc/react";
 
 export function ActivityCard({
   activity,
   isFavorite,
+  isWinner,
 }: {
   activity: RouterOutputs["activity"]["getActivities"]["activities"][0];
   isFavorite: boolean;
+  isWinner: boolean;
 }) {
   return (
     <>
       <div
-        className={`bg-surface-variant flex aspect-card min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl  outline-tertiary ${isFavorite ? "outline" : ""}`}
+        className={` flex aspect-card min-w-32 max-w-96 flex-col justify-between overflow-hidden  rounded-xl outline-tertiary  ${isWinner ? " bg-winner " : "bg-surface-variant"} ${isFavorite ? "outline" : ""}`}
       >
         <div className="flex flex-col p-2">
           <div className="flex flex-row items-center">

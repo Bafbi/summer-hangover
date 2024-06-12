@@ -2,8 +2,8 @@
 import { formatDistanceToNow, isPast } from "date-fns";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { api } from "~/trpc/react";
-import { ActivityCard, type Activity } from "../_components/activity-card";
+import { type RouterOutputs, api } from "~/trpc/react";
+import { ActivityCard } from "../_components/activity-card";
 
 export default function Home({
   params,
@@ -30,9 +30,9 @@ export default function Home({
   });
 
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null,
-  );
+  const [selectedActivity, setSelectedActivity] = useState<
+    RouterOutputs["activity"]["getActivities"]["activities"][0] | null
+  >(null);
   const [favorite, setFavorite] = useState<number | null>(null);
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -114,6 +114,7 @@ export default function Home({
               <ActivityCard
                 isFavorite={favorite === activity.id}
                 activity={activity}
+                isWinner={activities?.vote?.activityId === activity.id}
               />
             </div>
           ))}
