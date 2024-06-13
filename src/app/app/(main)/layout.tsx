@@ -1,5 +1,3 @@
-import AppHeader from "~/app/_components/mainMenuHeader";
-
 export default async function AppLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default async function AppLayout({
 }) {
   return (
     <>
-      <AppHeader />
       <main>{children}</main>
     </>
   );

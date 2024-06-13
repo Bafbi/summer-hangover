@@ -9,6 +9,7 @@ import {
   PlaceOverview,
   PlacePicker,
 } from "@googlemaps/extended-component-library/react";
+import { GoogleMapsAPILoader } from "~/app/_components/googlemaps-api-loader";
 
 function CreateActivity({
   params,
@@ -59,7 +60,8 @@ function CreateActivity({
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       if (!placeOverviewRef.current) return;
-      placeOverviewRef.current.travelOrigin = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      (placeOverviewRef.current as any).travelOrigin = {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       };
@@ -68,6 +70,7 @@ function CreateActivity({
 
   return (
     <>
+      <GoogleMapsAPILoader />
       <NewFormHeader title="Propose an activity" backLink="" />
       <div className="mb-4 flex justify-center">
         <span
@@ -124,10 +127,12 @@ function CreateActivity({
           <PlacePicker
             ref={placePickerRef}
             onPlaceChange={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              placeOverviewRef.current.place = placePickerRef.current.value;
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-              setActivityLocation(placeOverviewRef.current.place.id);
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+              (placeOverviewRef.current as any).place =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                (placePickerRef.current as any).value;
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+              setActivityLocation((placeOverviewRef.current as any).place.id);
             }}
             className="peer bg-surface-container w-full rounded-md border-outline transition focus:border-tertiary focus:ring-tertiary"
           />

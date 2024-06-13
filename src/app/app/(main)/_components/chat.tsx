@@ -103,8 +103,8 @@ export default function Chat({
             key={tmpMessages}
             message={{
               content: tmpMessages,
-              username: session?.user.name,
-              userImage: session?.user.image,
+              username: session?.user.name ?? "",
+              userImage: session?.user.image ?? "",
             }}
             isSelf={true}
           />

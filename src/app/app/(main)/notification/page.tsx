@@ -73,8 +73,6 @@ export default function Notifications() {
   const { data: notification } = api.notification.getNotification.useQuery({
     notifId: notificationId,
   });
-  const sendNotification =
-    api.notification.sendNotificationToYourself.useMutation();
 
   useEffect(() => {
     if (notificationsData) {
@@ -102,13 +100,6 @@ export default function Notifications() {
       pusher.unsubscribe(`notifications-${userId}`);
     };
   }, [session]);
-
-  const handleSendNotification = () => {
-    if (!session) return;
-    const message =
-      "Julien vous a invité dans un groupe. Cliquer pour le rejoindre";
-    sendNotification.mutate({ message, type: "NEW_ACTIVITY_TO_EVENT" });
-  };
 
   // have the formatNotifications always up to date
   const formattedNotifications = formatNotifications(notifications);
@@ -325,19 +316,7 @@ export default function Notifications() {
             </>
           )}
         </div>
-        {/* Pour du test uniquement */}
-        <div>
-          <button
-            className="mt-40"
-            onClick={() => {
-              handleSendNotification();
-              notify();
-            }}
-          >
-            Envoyer une notification
-          </button>
-          <p>session.user.id = {session?.user.id}</p>
-        </div>
+
         <button className="mt-12" onClick={notify}>
           Notify !
         </button>

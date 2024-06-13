@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 
-export async function ServiceWorkerRegister() {
+export function ServiceWorkerRegister() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -28,7 +28,11 @@ export async function ServiceWorkerRegister() {
     }
   };
 
-  await requestPermission();
+  useEffect(() => {
+    async () => {
+      await requestPermission();
+    };
+  }, []);
 
   return null;
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, type RouterOutputs } from "~/trpc/react";
 
-export default function AppHeader() {
+export function AppHeader() {
   const { data: session } = useSession();
   const userIdNbr = session?.user?.id;
 

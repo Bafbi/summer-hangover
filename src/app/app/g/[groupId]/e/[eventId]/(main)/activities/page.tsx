@@ -2,6 +2,7 @@
 import { formatDistanceToNow, isPast } from "date-fns";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { GoogleMapsAPILoader } from "~/app/_components/googlemaps-api-loader";
 import { api, type RouterOutputs } from "~/trpc/react";
 import { ActivityCard } from "../_components/activity-card";
 
@@ -73,6 +74,7 @@ export default function Home({
 
   return (
     <>
+      <GoogleMapsAPILoader />
       <main className="bg-surface">
         <div className="bg-secondary-container mx-4 flex h-9 items-center justify-center rounded">
           <span className="font-bold">{remainingTime}</span>

@@ -14,7 +14,7 @@ import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
 import { ServiceWorkerRegister } from "./app/(main)/_components/serviceWorkerRegister";
-import { GoogleMapsAPILoader } from "./_components/googlemaps-api-loader";
+// import { GoogleMapsAPILoader } from "./_components/googlemaps-api-loader";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -72,7 +72,7 @@ export default function RootLayout({
                */
               routerConfig={extractRouterConfig(ourFileRouter)}
             />
-            <GoogleMapsAPILoader />
+            {/* <GoogleMapsAPILoader /> */}
             {children}
           </TRPCReactProvider>
         </SessionWrapper>

@@ -30,16 +30,13 @@ export default function NotifWrapper() {
         setNotifId(data.notifId);
         // Notification push
         if (Notification.permission === "granted") {
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          navigator.serviceWorker.ready.then((registration) => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            registration.showNotification("New Notification", {
-              body: data.message,
-              icon: "/summer-hangover-icon.png",
-              data: {
-                url: data.urlLink,
-              },
-            });
+          const registration = await navigator.serviceWorker.ready;
+          await registration.showNotification("New Notification", {
+            body: data.message,
+            icon: "/summer-hangover-icon.png",
+            data: {
+              url: data.urlLink,
+            },
           });
         }
       },
