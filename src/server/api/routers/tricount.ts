@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -25,21 +25,36 @@ export const tricountRouter = createTRPCRouter({
         label: input.label,
       });
     }),
-    
-  getExpenses: protectedProcedure.input(z.object({ groupId: z.number(), eventId: z.number() })).query(({ ctx, input }) => {
-    return ctx.db.query.expenses.findMany({
-      where: (expenses, { eq, and }) => and(eq(expenses.groupId, input.groupId), eq(expenses.eventId, input.eventId)),
-      with: {
-        user: true,
-      }
-    });
-  }),
+
+  getExpenses: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.expenses.findMany({
+        where: (expenses, { eq, and }) =>
+          and(
+            eq(expenses.groupId, input.groupId),
+            eq(expenses.eventId, input.eventId),
+          ),
+        with: {
+          user: true,
+        },
+      });
+    }),
 
   // delete an expense
 
-  deleteExpense: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
-    return ctx.db.delete(expenses).where(and(eq(expenses.id, input.id), eq(expenses.userId, ctx.session.user.id)));
-  }),
+  deleteExpense: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db
+        .delete(expenses)
+        .where(
+          and(
+            eq(expenses.id, input.id),
+            eq(expenses.userId, ctx.session.user.id),
+          ),
+        );
+    }),
 
   // calculate balance between all users
 
@@ -72,16 +87,22 @@ export const tricountRouter = createTRPCRouter({
       );
       const avgAmount = totalAmount / Object.keys(totals).length;
 
-    const balances = Object.entries(totals).map(([userId, total]) => ({
-      userId: userId,
-      balance: total - avgAmount,
-      userName: expenses.find(expense => expense.userId === userId)?.user.name || "Unknown"
-    }));
+      const balances = Object.entries(totals).map(([userId, total]) => ({
+        userId: userId,
+        balance: total - avgAmount,
+        userName:
+          expenses.find((expense) => expense.userId === userId)?.user.name ??
+          "Unknown",
+      }));
 
-    const BalanceSauv = structuredClone(balances);
+      const BalanceSauv = structuredClone(balances);
 
-    const payees = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
-    const payers = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
+      const payees = balances
+        .filter((b) => b.balance > 0)
+        .sort((a, b) => b.balance - a.balance);
+      const payers = balances
+        .filter((b) => b.balance < 0)
+        .sort((a, b) => a.balance - b.balance);
 
       const transactions = [];
 
@@ -91,27 +112,27 @@ export const tricountRouter = createTRPCRouter({
 
         const amount = Math.min(payee.balance, -payer.balance);
 
-      transactions.push({
-        from: payer.userName,
-        to: payee.userName,
-        amount: amount
-      });
-      
-      console.log(BalanceSauv);
+        transactions.push({
+          from: payer.userName,
+          to: payee.userName,
+          amount: amount,
+        });
 
-      payee.balance -= amount;
-      payer.balance += amount;
+        console.log(BalanceSauv);
 
-      console.log(BalanceSauv);
+        payee.balance -= amount;
+        payer.balance += amount;
+
+        console.log(BalanceSauv);
 
         if (payee.balance === 0) {
           payees.shift();
         }
 
-      if (payer.balance === 0) {
-        payers.shift();
+        if (payer.balance === 0) {
+          payers.shift();
+        }
       }
-    }
-    return {transactions, balance: BalanceSauv};
-  }),
+      return { transactions, balance: BalanceSauv };
+    }),
 });

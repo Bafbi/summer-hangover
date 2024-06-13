@@ -1,8 +1,6 @@
 "use client";
-import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import { api } from "~/trpc/react";
 
 function CreateEvent({ params }: { params: { groupId: string } }) {

@@ -1,4 +1,3 @@
-import { info, table } from "console";
 import { relations, sql } from "drizzle-orm";
 import {
   index,
@@ -80,9 +79,7 @@ export const notifications = createTable(
       .notNull()
       .references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(
-      sql`(strftime('%s', 'now'))`,
-    ),
+    createdAt: int("createdAt", { mode: "timestamp" }),
     isRead: int("isRead", { mode: "boolean" }).default(false),
     notifType: text("notifType", { enum: notificationType }).notNull(),
     urlLink: text("url", { length: 255 }),

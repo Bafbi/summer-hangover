@@ -2,12 +2,11 @@
 
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import DefaultProfile from "public/profileLogo.png";
 import Pusher from "pusher-js";
 import { useEffect, useRef, useState } from "react";
 import { env } from "~/env";
-import { type RouterOutputs, api } from "~/trpc/react";
-import DefaultProfile from "public/profileLogo.png";
-import { Session } from "next-auth";
+import { api, type RouterOutputs } from "~/trpc/react";
 
 const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
   cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,

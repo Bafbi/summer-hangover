@@ -1,9 +1,9 @@
 "use client";
+import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
-import { format } from "date-fns";
 
 type Event = {
   date: Date;
@@ -17,7 +17,6 @@ type Event = {
   participants: { userId: string; groupId: number; eventId: number }[];
 };
 
-
 export function EventCard({ event }: { event: Event }) {
   const session = useSession();
   const isCurrentUserParticipant =
@@ -30,7 +29,6 @@ export function EventCard({ event }: { event: Event }) {
   const invitation = api.event.acceptOrDeclineEvent.useMutation({
     onSuccess: () => {
       console.log("Invitation accepted");
-      
     },
     onError: () => {
       setNewInvitation(false);
@@ -57,12 +55,12 @@ export function EventCard({ event }: { event: Event }) {
         >
           {event.name}
         </Link>
-        {(
+        {
           <label className="flex items-center space-x-2">
             <span>{"Dispo: "}</span>
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 text-primary bg-surface-container border-primary-container "
+              className="form-checkbox bg-surface-container h-5 w-5 border-primary-container text-primary "
               checked={newInvitation}
               onChange={(e) => {
                 setNewInvitation(e.target.checked);
@@ -74,10 +72,10 @@ export function EventCard({ event }: { event: Event }) {
               }}
             />
           </label>
-        )}
+        }
         <div
           className={`bg-surface-variant my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${
-            isExpanded ? "w-full mx-2" : ""
+            isExpanded ? "mx-2 w-full" : ""
           }`}
           style={{
             minHeight: "60px",
@@ -93,4 +91,3 @@ export function EventCard({ event }: { event: Event }) {
     </>
   );
 }
-         

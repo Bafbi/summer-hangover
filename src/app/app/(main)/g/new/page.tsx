@@ -1,14 +1,11 @@
 "use client";
 
-import React, { use, useState } from "react";
-import MainMenuFooter from "~/app/_components/mainMenuFooter";
-import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import Head from "next/head";
 import Link from "next/link";
-import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from 'uuid';
-import { notificationType } from "~/server/db/schema";
+import React, { useState } from "react";
+import MainMenuHeader from "~/app/_components/mainMenuHeader";
+import { api } from "~/trpc/react";
 
 const CreateGroup = () => {
   const [newGroupName, setNewGroupName] = useState("");
@@ -51,7 +48,7 @@ const CreateGroup = () => {
     console.log("Creating group with the following data:", newGroupData);
 
     createGroup.mutate(newGroupData);
-    /* 
+    /*
     sendNotificationToUsers.mutate({
       message: `Vous avez été invité à rejoindre le groupe ${newGroupName}.
       Cliquez ici pour le rejoindre. ${inviteLink}`,
@@ -114,16 +111,22 @@ const CreateGroup = () => {
                 ) : (
                   contactData?.groups.flatMap((group) =>
                     group.members.map((member) => (
-                      <div key={member.userId} className="flex items-center justify-between">
+                      <div
+                        key={member.userId}
+                        className="flex items-center justify-between"
+                      >
                         <div className="flex items-center pb-3">
-                          <span style={{ fontSize: 38 }} className="material-icons">
+                          <span
+                            style={{ fontSize: 38 }}
+                            className="material-icons"
+                          >
                             account_box
                           </span>
                           <span className="ml-2 text-xl font-semibold">
                             {member.user.name}
                           </span>
                         </div>
-                        
+
                         <input
                           type="checkbox"
                           title="checkbox"
@@ -132,7 +135,7 @@ const CreateGroup = () => {
                           className="border-gray-300 mb-3 h-5 w-5 rounded"
                         />
                       </div>
-                    ))
+                    )),
                   )
                 )}
               </div>
@@ -140,7 +143,7 @@ const CreateGroup = () => {
             <div className="mt-8 flex justify-center">
               <button
                 type="submit"
-                className=" bg-white/10 px-10 py-3 font-semibold transition border-2 rounded-3xl"
+                className=" rounded-3xl border-2 bg-white/10 px-10 py-3 font-semibold transition"
                 disabled={createGroup.isPending}
               >
                 {createGroup.isPending ? "Submitting..." : "Submit"}

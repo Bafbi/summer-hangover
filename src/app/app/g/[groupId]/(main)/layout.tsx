@@ -1,20 +1,24 @@
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next/types";
+import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/trpc/server";
 import { GroupFooter } from "./_components/footer";
 import { GroupHeader } from "./_components/header";
-import { api } from "~/trpc/server";
-import { notFound, redirect } from "next/navigation";
-import Error from "next/error";
-import { getServerAuthSession } from "~/server/auth";
 
 export async function generateMetadata({
   params,
 }: {
   params: { groupId: string };
 }): Promise<Metadata> {
-  const { groupId } = params;
+  const group = await api.group.getGroupById({ id: +params.groupId });
+  if (group === undefined) {
+    return {
+      title: "Groupe non trouvé",
+    };
+  }
 
   return {
-    title: `Groupe ${groupId}`,
+    title: `Summer-Hangover | ${group.name}`,
   };
 }
 

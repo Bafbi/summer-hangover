@@ -2,7 +2,7 @@
 import { formatDistanceToNow, isPast } from "date-fns";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { type RouterOutputs, api } from "~/trpc/react";
+import { api, type RouterOutputs } from "~/trpc/react";
 import { ActivityCard } from "../_components/activity-card";
 
 export default function Home({
@@ -68,6 +68,7 @@ export default function Home({
     return () => {
       clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
 
   return (

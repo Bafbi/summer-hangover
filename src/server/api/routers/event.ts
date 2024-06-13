@@ -1,4 +1,5 @@
 import { randomInt } from "crypto";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -54,11 +55,15 @@ export const eventRouter = createTRPCRouter({
           eventId: input.eventId,
         });
       } else {
-        await ctx.db.delete(eventsParticipants).values({
-          userId: ctx.session.user.id,
-          groupId: input.groupId,
-          eventId: input.eventId,
-        });
+        await ctx.db
+          .delete(eventsParticipants)
+          .where(
+            and(
+              eq(eventsParticipants.userId, ctx.session.user.id),
+              eq(eventsParticipants.groupId, input.groupId),
+              eq(eventsParticipants.eventId, input.eventId),
+            ),
+          );
       }
     }),
 

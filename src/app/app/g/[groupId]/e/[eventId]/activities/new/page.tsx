@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
@@ -7,8 +6,8 @@ import { api } from "~/trpc/react";
 // import "~/styles/google-component.css";
 
 import {
-  PlacePicker,
   PlaceOverview,
+  PlacePicker,
 } from "@googlemaps/extended-component-library/react";
 
 function CreateActivity({
@@ -125,7 +124,9 @@ function CreateActivity({
           <PlacePicker
             ref={placePickerRef}
             onPlaceChange={() => {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               placeOverviewRef.current.place = placePickerRef.current.value;
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
               setActivityLocation(placeOverviewRef.current.place.id);
             }}
             className="peer bg-surface-container w-full rounded-md border-outline transition focus:border-tertiary focus:ring-tertiary"

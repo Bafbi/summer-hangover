@@ -1,5 +1,5 @@
 import { randomInt } from "crypto";
-import { count, desc, eq, is } from "drizzle-orm";
+import { count, desc, eq, and } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";

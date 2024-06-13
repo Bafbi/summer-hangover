@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import "./style.css"; // Assurez-vous que le chemin est correct
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
+import "./style.css"; // Assurez-vous que le chemin est correct
 
 // Type pour une carte
 interface Card {
@@ -38,27 +38,54 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
     groupId: +params.groupId,
   });
 
-
-
   const [cards, setCards] = useState<Card[]>([]);
 
-  
   useEffect(() => {
-    if (topSpends.data && mostParticipant.data && mostMessages.data && mostExpences.data && mostExpencesAmount.data && mostActivities.data) {
+    if (
+      topSpends.data &&
+      mostParticipant.data &&
+      mostMessages.data &&
+      mostExpences.data &&
+      mostExpencesAmount.data &&
+      mostActivities.data
+    ) {
       const initialCards: Omit<Card, "isFlipped">[] = [
         {
           id: 1,
           question: "Qui a fais la plus grosse dépense ?",
           answer: `${topSpends.data.username} with ${topSpends.data.price}€`,
         },
-        { id: 2, question: "Qui est le plus sorti ?", answer: `${mostParticipant.data[0]?.user.name}` },
-        { id: 3, question: "Qui a envoyé le plus de messages ?", answer: `${mostMessages.data[0]?.user.name}`},
-        { id: 4, question: "Qui a le plus dépensé de tout les events ?", answer: `${mostExpences.data[0]?.user.name} with ${mostExpencesAmount.data[0]?.sum}€`},
-        { id: 5, question: "Qui a suggéré le plus d'activités ?", answer: `${mostActivities.data[0]?.user.name}`},
+        {
+          id: 2,
+          question: "Qui est le plus sorti ?",
+          answer: `${mostParticipant.data[0]?.user.name}`,
+        },
+        {
+          id: 3,
+          question: "Qui a envoyé le plus de messages ?",
+          answer: `${mostMessages.data[0]?.user.name}`,
+        },
+        {
+          id: 4,
+          question: "Qui a le plus dépensé de tout les events ?",
+          answer: `${mostExpences.data[0]?.user.name} with ${mostExpencesAmount.data[0]?.sum}€`,
+        },
+        {
+          id: 5,
+          question: "Qui a suggéré le plus d'activités ?",
+          answer: `${mostActivities.data[0]?.user.name}`,
+        },
       ];
       setCards(initialCards.map((card) => ({ ...card, isFlipped: false })));
     }
-  }, [topSpends.data]);
+  }, [
+    mostActivities.data,
+    mostExpences.data,
+    mostExpencesAmount.data,
+    mostMessages.data,
+    mostParticipant.data,
+    topSpends.data,
+  ]);
 
   const handleFlip = (id: number) => {
     setCards(
