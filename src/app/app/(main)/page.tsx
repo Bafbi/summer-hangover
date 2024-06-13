@@ -8,7 +8,7 @@ export default async function GroupsPage() {
     <>
       <div className="flex h-screen flex-col">
         <div className="mb-18 bg-surface mt-16 flex-grow overflow-y-auto p-4">
-          {groups?.map((group) => (
+          {groups?.slice().reverse().map((group) => (
             <Link
               key={group.id}
               href={`/app/g/${group.id}`}

@@ -13,7 +13,8 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
-import { GoogleMapsAPILoader } from "~/app/_components/googlemaps-api-loader";
+import { ServiceWorkerRegister } from "./app/(main)/_components/serviceWorkerRegister";
+import { GoogleMapsAPILoader } from "./_components/googlemaps-api-loader";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
 
       <body className="bg-surface">
+        <ServiceWorkerRegister />
         <SessionWrapper>
           <TRPCReactProvider>
             <ToastContainer

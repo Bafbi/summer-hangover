@@ -46,9 +46,15 @@ export async function sendNotificationToUsersFunction(input: {
   if (notifIds) {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     input.userIds.forEach(async (userId, index) => {
-      await pusher.trigger(`notifications-${userId}`, "new-notification", {
-        notifId: notifIds[index]?.id,
-      });
+      await pusher.trigger(
+        `notifications-${userId}`,
+        "new-notification",
+        {
+          notifId: notifIds[index]?.id,
+          message: input.message,
+          urlLink: input.urlLink,
+        },
+      );
     });
   }
 }
@@ -61,6 +67,7 @@ export const notificationRouter = createTRPCRouter({
       z.object({
         message: z.string(),
         type: z.enum(notificationType),
+        urlLink: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -72,6 +79,7 @@ export const notificationRouter = createTRPCRouter({
           createdAt: new Date(),
           isRead: false,
           notifType: input.type,
+          urlLink: input.urlLink,
         })
         .returning({ id: notifications.id });
 
@@ -84,6 +92,8 @@ export const notificationRouter = createTRPCRouter({
         "new-notification",
         {
           notifId,
+          message: input.message,
+          urlLink: input.urlLink,
         },
       );
     }),
@@ -95,6 +105,7 @@ export const notificationRouter = createTRPCRouter({
         message: z.string(),
         userIds: z.string().array(),
         type: z.enum(notificationType),
+        urlLink: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -107,6 +118,7 @@ export const notificationRouter = createTRPCRouter({
             createdAt: new Date(),
             isRead: false,
             notifType: input.type,
+            urlLink: input.urlLink,
           })),
         )
         .returning({ id: notifications.id });
@@ -116,9 +128,15 @@ export const notificationRouter = createTRPCRouter({
       if (notifIds) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         input.userIds.forEach(async (userId, index) => {
-          await pusher.trigger(`notifications-${userId}`, "new-notification", {
-            notifId: notifIds[index]?.id,
-          });
+          await pusher.trigger(
+            `notifications-${userId}`,
+            "new-notification",
+            {
+              notifId: notifIds[index]?.id,
+              message: input.message,
+              urlLink: input.urlLink,
+            },
+          );
         });
       }
     }),

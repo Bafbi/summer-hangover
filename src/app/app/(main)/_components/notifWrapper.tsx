@@ -24,34 +24,45 @@ export default function NotifWrapper() {
 
     const channel = pusher.subscribe(`notifications-${session.user.id}`);
 
-    channel.bind("new-notification", async (data: { notifId: number }) => {
-      setNotifId(data.notifId);
-    });
+        channel.bind("new-notification", async (data: { notifId: number, message: string, urlLink: string }) => {
+            setNotifId(data.notifId);
+            // Notification push
+            if (Notification.permission === 'granted') {
+                navigator.serviceWorker.ready.then(registration => {
+                  registration.showNotification('New Notification', {
+                    body: data.message,
+                    icon: "/summer-hangover-icon.png",
+                    data: {
+                      url: data.urlLink
+                    }
+                  });
+                });
+              }
+        });
 
-    return () => {
-      pusher.unsubscribe(`notifications-${session.user.id}`);
-    };
-  }, [session]);
-  //`${newNotification.message}`
-  useEffect(() => {
-    if (newNotification) {
-      setNotifId(0);
-      toast.error(
-        <ToastLink
-          url={newNotification.urlLink ?? "error url type"}
-          message={newNotification.message}
-        />,
-        {
-          position: "top-center",
-          autoClose: 6000,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          closeButton: false,
-        },
-      );
-    }
-  }, [newNotification]);
+        return () => {
+            pusher.unsubscribe(`notifications-${session.user.id}`);
+        };
+    }, [session]);
+
+
+    useEffect(() => {
+        if (newNotification) {
+            setNotifId(0);
+            toast.error(<ToastLink 
+                url={newNotification.urlLink || 'error url type'} 
+                message={newNotification.message || 'error message type'}
+                />, {
+                    position: "top-center",
+                    autoClose: 6000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    closeButton: false,
+                }
+            );
+        }
+    }, [newNotification]);
 
   return null;
 }
