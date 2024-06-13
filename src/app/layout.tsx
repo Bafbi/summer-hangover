@@ -13,6 +13,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
+import { ServiceWorkerRegister } from "./app/(main)/_components/serviceWorkerRegister";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
 
       <body className="bg-surface">
+        <ServiceWorkerRegister />
         <SessionWrapper>
           <TRPCReactProvider>
             <ToastContainer

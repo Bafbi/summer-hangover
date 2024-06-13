@@ -1,6 +1,4 @@
-import { info } from "console";
 import { eq, and } from "drizzle-orm";
-import { url } from "inspector";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
@@ -49,6 +47,8 @@ export async function sendNotificationToUsersFunction(input: { message: string, 
         "new-notification",
         {
           notifId: notifIds[index]?.id,
+          message: input.message,
+          urlLink: input.urlLink,
         },
       );
     });
@@ -65,6 +65,7 @@ export const notificationRouter = createTRPCRouter({
       z.object({
         message: z.string(),
         type: z.enum(notificationType),
+        urlLink: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -76,6 +77,7 @@ export const notificationRouter = createTRPCRouter({
           createdAt: new Date(),
           isRead: false,
           notifType: input.type,
+          urlLink: input.urlLink,
         })
         .returning({ id: notifications.id });
 
@@ -88,6 +90,8 @@ export const notificationRouter = createTRPCRouter({
         "new-notification",
         {
           notifId,
+          message: input.message,
+          urlLink: input.urlLink,
         },
       );
     }),
@@ -99,6 +103,7 @@ export const notificationRouter = createTRPCRouter({
         message: z.string(),
         userIds: z.string().array(),
         type: z.enum(notificationType),
+        urlLink: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -111,6 +116,7 @@ export const notificationRouter = createTRPCRouter({
             createdAt: new Date(),
             isRead: false,
             notifType: input.type,
+            urlLink: input.urlLink,
           })),
         )
         .returning({ id: notifications.id });
@@ -124,6 +130,8 @@ export const notificationRouter = createTRPCRouter({
             "new-notification",
             {
               notifId: notifIds[index]?.id,
+              message: input.message,
+              urlLink: input.urlLink,
             },
           );
         });

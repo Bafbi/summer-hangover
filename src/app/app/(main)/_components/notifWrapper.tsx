@@ -15,7 +15,6 @@ const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
 export default function NotifWrapper() {
     const { data: session } = useSession();
     const [notifId, setNotifId] = useState(0);
-
     const { data: newNotification } = api.notification.getNotification.useQuery({ notifId: notifId });
 
     useEffect(() => {
@@ -23,15 +22,28 @@ export default function NotifWrapper() {
 
         const channel = pusher.subscribe(`notifications-${session.user.id}`);
 
-        channel.bind("new-notification", async (data: { notifId: number }) => {
+        channel.bind("new-notification", async (data: { notifId: number, message: string, urlLink: string }) => {
             setNotifId(data.notifId);
+            // Notification push
+            if (Notification.permission === 'granted') {
+                navigator.serviceWorker.ready.then(registration => {
+                  registration.showNotification('New Notification', {
+                    body: data.message,
+                    icon: "/summer-hangover-icon.png",
+                    data: {
+                      url: data.urlLink
+                    }
+                  });
+                });
+              }
         });
 
         return () => {
             pusher.unsubscribe(`notifications-${session.user.id}`);
         };
     }, [session]);
-    //`${newNotification.message}`
+
+
     useEffect(() => {
         if (newNotification) {
             setNotifId(0);
