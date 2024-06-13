@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import SessionWrapper from "./_components/session_wrapper";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import NotifWrapper from "./app/(main)/_components/notifWrapper";
@@ -14,6 +14,7 @@ import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
 import { ServiceWorkerRegister } from "./app/(main)/_components/serviceWorkerRegister";
+import { GoogleMapsAPILoader } from "./_components/googlemaps-api-loader";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -68,6 +69,7 @@ export default function RootLayout({
                */
               routerConfig={extractRouterConfig(ourFileRouter)}
             />
+            <GoogleMapsAPILoader />
             {children}
           </TRPCReactProvider>
         </SessionWrapper>

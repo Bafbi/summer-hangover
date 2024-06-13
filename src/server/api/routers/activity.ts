@@ -1,20 +1,19 @@
 import { randomInt } from "crypto";
-import { count, is,eq, desc } from "drizzle-orm";
-import { get } from "http";
+import { count, desc, eq, is } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { activities, votesActivities } from "~/server/db/schema";
+import { activities, users, votesActivities } from "~/server/db/schema";
 
 export const activityRouter = createTRPCRouter({
   createActivity: protectedProcedure
     .input(
       z.object({
-        groupId: z.number(),
-        name: z.string(),
-        description: z.string().optional(),
-        location: z.string(),
-        eventId: z.number(),
+        groupId: z.number().min(1),
+        eventId: z.number().min(1),
+        name: z.string().min(1),
+        description: z.string().min(1).optional(),
+        location: z.string().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -32,14 +31,31 @@ export const activityRouter = createTRPCRouter({
   getActivities: protectedProcedure
     .input(z.object({ groupId: z.number(), eventId: z.number() }))
     .query(async ({ ctx, input }) => {
-      const activities = await ctx.db.query.activities.findMany({
-        where: (activities, { eq, and }) =>
+      const activitiesSelect = await ctx.db
+        .select({
+          id: activities.id,
+          name: activities.name,
+          description: activities.description,
+          location: activities.location,
+          createdBy: users,
+          votes: count(votesActivities.userId),
+          eventId: activities.eventId,
+          groupId: activities.groupId,
+        })
+        .from(activities)
+        .where(
           and(
             eq(activities.groupId, input.groupId),
             eq(activities.eventId, input.eventId),
           ),
-        with: { createdBy: true },
-      });
+        )
+        .innerJoin(users, eq(activities.createdBy, users.id))
+        .leftJoin(
+          votesActivities,
+          eq(activities.id, votesActivities.activityId),
+        )
+        .groupBy(activities.id);
+
       const vote = await ctx.db.query.votesActivities.findFirst({
         where: (votesActivities, { eq, and }) =>
           and(
@@ -50,7 +66,7 @@ export const activityRouter = createTRPCRouter({
             eq(votesActivities.userId, ctx.session.user.id),
           ),
       });
-      return { activities, vote };
+      return { activities: activitiesSelect, vote };
     }),
 
   addFavorite: protectedProcedure
@@ -105,26 +121,26 @@ export const activityRouter = createTRPCRouter({
       return { count };
     }),
 
-
-    isFavorite: protectedProcedure
-      .input(
-        z.object({
-          groupId: z.number(),
-          eventId: z.number(),
-          activityId: z.number(),
-        }),
-      )
-      .query(async ({ ctx, input }) => {
-        const fav = await ctx.db
-          .select({ activity: activities, count: count(votesActivities.userId) })
-          .from(activities)
-          .innerJoin(votesActivities, eq(activities.id, votesActivities.activityId))
-          .groupBy(activities.id)
-          .orderBy(desc(count(votesActivities.userId)))
-          .limit(1);
-        console.log(fav[0]);
-        return fav[0]?.activity.id=== input.activityId;
-       
+  isFavorite: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        eventId: z.number(),
+        activityId: z.number(),
       }),
-
-  })
+    )
+    .query(async ({ ctx, input }) => {
+      const fav = await ctx.db
+        .select({ activity: activities, count: count(votesActivities.userId) })
+        .from(activities)
+        .innerJoin(
+          votesActivities,
+          eq(activities.id, votesActivities.activityId),
+        )
+        .groupBy(activities.id)
+        .orderBy(desc(count(votesActivities.userId)))
+        .limit(1);
+      console.log(fav[0]);
+      return fav[0]?.activity.id === input.activityId;
+    }),
+});

@@ -15,6 +15,7 @@
     "@auth/drizzle-adapter": "^0.7.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@googlemaps/extended-component-library": "^0.6.11",
     "@libsql/client": "^0.6.0",
     "@mui/material": "^5.15.19",
     "@t3-oss/env-nextjs": "^0.10.1",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.56.2",
+    "@types/google.maps": "^3.55.9",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",

@@ -37,7 +37,7 @@ export default async function ActiviteLayout({
     <div className="bg-surface flex min-h-screen flex-col">
       <GroupHeader group={group} />
       <main className="flex flex-grow flex-col">{children}</main>
-      <GroupFooter basePath={`/app/g/${params.groupId}/`} />
+      <GroupFooter />
     </div>
   );
 }

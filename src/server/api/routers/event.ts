@@ -100,4 +100,18 @@ export const eventRouter = createTRPCRouter({
 
       return participation !== undefined;
     }),
+
+  getEndVoteDate: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const event = await ctx.db.query.events.findFirst({
+        columns: {
+          endVoteDate: true,
+        },
+        where: (events, { eq, and }) =>
+          and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)),
+      });
+      console.log(event);
+      return event?.endVoteDate;
+    }),
 });

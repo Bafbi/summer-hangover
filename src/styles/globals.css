@@ -2,25 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @keyframes shake {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(-5deg); }
-    50% { transform: rotate(0deg); }
-    75% { transform: rotate(5deg); }
-    100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .animate-shake {
-    animation: shake 0.5s infinite;
+  25% {
+    transform: rotate(-5deg);
   }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
 
-@keyframes pulse {
-    0% { transform: scale(0.95); opacity: 0.7; }
-    70% { transform: scale(1.1); opacity: 0; }
-    100% { transform: scale(0.95); opacity: 0; }
-}   
+.animate-shake {
+  animation: shake 0.5s infinite;
+}
 
-.animate-pulse {
-    animation: pulse 2s infinite;
+body {
+  --gmpx-color-surface: rgb(
+    var(--color-surface-container) /
+      var(--opacity-surface-container, var(--tw-bg-opacity))
+  );
+  --gmpx-color-on-surface: rgb(
+    var(--color-on-surface-container) /
+      var(--opacity-on-surface-container, var(--tw-text-opacity))
+  );
+  --gmpx-color-on-surface-variant: rgb(
+    var(--color-on-surface-variant) /
+      var(--opacity-on-surface-variant, var(--tw-text-opacity))
+  );
+  --gmpx-color-primary: rgb(
+    var(--color-primary) / var(--opacity-primary, var(--tw-text-opacity))
+  );
+  --gmpx-color-outline: rgb(
+    var(--color-outline) / var(--opacity-outline, var(--tw-text-opacity))
+  );
 }
