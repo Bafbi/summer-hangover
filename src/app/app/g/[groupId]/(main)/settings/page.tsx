@@ -1,18 +1,23 @@
 import QRCode from "react-qr-code";
 import { CopyToClipboard } from "../_components/copy-to-clipboard";
 import { api } from "~/trpc/server";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { env } from "~/env";
+import { useState } from "react";
 
 export default async function GroupSettingsPage({
   params,
 }: {
   params: { groupId: string };
 }) {
+
   const group = await api.group.getGroupById({ id: +params.groupId });
   if (group === undefined) notFound();
 
   const inviteLink = `${env.PUBLIC_HOSTNAME}/app/invite/${group.inviteLink}`;
+
+  const router = useRouter();
+
 
   return (
     <>
@@ -33,7 +38,7 @@ export default async function GroupSettingsPage({
           <h2>Members</h2>
           <ul>
             {group.members.map((member) => (
-              <li key={member.userId}>
+              <li key={member.userId} className="flex justify-between items-center">
                 <span>{member.user.name}</span>
               </li>
             ))}

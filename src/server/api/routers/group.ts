@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers, notificationType } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
-import { desc } from "drizzle-orm";
+import { desc, eq , and } from "drizzle-orm";
 import { get } from "http";
 
 export const groupRouter = createTRPCRouter({
@@ -140,4 +140,20 @@ export const groupRouter = createTRPCRouter({
         }));
         await ctx.db.insert(groupsMembers).values(usersToInsert);
       }),
+
+    // remove one user from group (admin permission)
+
+    removeUserFromGroup: protectedProcedure
+      .input(
+        z.object({
+          groupId: z.number(),
+          userId: z.string(),
+        }),
+      )
+      .mutation(async ({ ctx, input }) => {
+        await ctx.db
+          .delete(groupsMembers)
+          .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, input.userId)));
+      }),
+        
 });
