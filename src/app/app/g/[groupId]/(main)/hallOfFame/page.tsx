@@ -57,7 +57,7 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
         },
         {
           id: 2,
-          question: "Qui est le plus sorti ?",
+          question: "à trouver ici ",
           answer: `${mostParticipant.data[0]?.user.name}`,
         },
         {
@@ -72,7 +72,7 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
         },
         {
           id: 5,
-          question: "Qui a suggéré le plus d'activités ?",
+          question: "Qui a proposé le plus de date d'event ?",
           answer: `${mostActivities.data[0]?.user.name}`,
         },
       ];

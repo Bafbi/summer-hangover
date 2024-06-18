@@ -10,6 +10,7 @@ import {
 } from "~/server/db/schema";
 
 export const allOfFameRouter = createTRPCRouter({
+
   topSpend: protectedProcedure
     .input(z.object({ groupId: z.number() }))
     .query(async ({ ctx, input }) => {
@@ -41,38 +42,39 @@ export const allOfFameRouter = createTRPCRouter({
 
   // user with the most messages in a group
   mostMessages: protectedProcedure
-    .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx }) => {
-      return ctx.db
-        .select({ user: users, count: count(messages.id) })
-        .from(users)
-        .innerJoin(messages, eq(users.id, messages.userId))
-        .groupBy(users.id)
-        .orderBy(desc(count(messages.id)));
-    }),
+      .input(z.object({ groupId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return ctx.db
+          .select({ user: users, count: count(messages.id) })
+          .from(users)
+          .innerJoin(messages, eq(users.id, messages.userId))
+          .where(eq(messages.groupId, input.groupId))
+          .groupBy(users.id)
+          .orderBy(desc(count(messages.id)));
+      }),
 
   // user with most expences in a group with all events
-
   mostExpences: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx }) => {
+    .query(async ({ ctx, input }) => {
       return ctx.db
         .select({ user: users, count: count(expenses.id) })
         .from(users)
         .innerJoin(expenses, eq(users.id, expenses.userId))
+        .where(eq(expenses.groupId, input.groupId))
         .groupBy(users.id)
         .orderBy(desc(count(expenses.id)));
     }),
-
   // MostExpencesAmount
 
   mostExpencesAmount: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx }) => {
+    .query(async ({ ctx, input }) => {
       return ctx.db
         .select({ user: users, sum: sum(expenses.amount) })
         .from(users)
         .innerJoin(expenses, eq(users.id, expenses.userId))
+        .where(eq(expenses.groupId, input.groupId))
         .groupBy(users.id)
         .orderBy(desc(sum(expenses.amount)));
     }),
@@ -81,11 +83,12 @@ export const allOfFameRouter = createTRPCRouter({
 
   mostActivities: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx }) => {
+    .query(async ({ ctx, input}) => {
       return ctx.db
         .select({ user: users, count: count(events.id) })
         .from(users)
         .innerJoin(events, eq(users.id, events.createdBy))
+        .where(eq(events.groupId, input.groupId))
         .groupBy(users.id)
         .orderBy(desc(count(events.id)));
     }),
