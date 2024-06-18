@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
@@ -27,13 +26,13 @@ function CreateActivity({
 
   return (
     <>
-      <NewFormHeader title="Propose an activity" backLink="activities" />
+      <NewFormHeader title="Organize an event" backLink="activities" />
       <div className="mb-4 flex justify-center">
         <span
           style={{ fontSize: 80 }}
           className="material-icons rounded-full border-2 border-surface-variant p-4 text-4xl text-secondary"
         >
-          celebration
+          event
         </span>
       </div>
       <form

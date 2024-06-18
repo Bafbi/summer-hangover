@@ -1,12 +1,12 @@
-import { and, count, eq, sql, desc, asc } from "drizzle-orm";
+import { count, desc, eq, sum } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   events,
   eventsParticipants,
   expenses,
+  messages,
   users,
-messages,
 } from "~/server/db/schema";
 
 export const allOfFameRouter = createTRPCRouter({
@@ -14,14 +14,13 @@ export const allOfFameRouter = createTRPCRouter({
     .input(z.object({ groupId: z.number() }))
     .query(async ({ ctx, input }) => {
       const topSpend = await ctx.db.query.expenses.findFirst({
-        where: (expenses, { eq, and }) => eq(expenses.groupId, input.groupId),
+        where: (expenses, { eq }) => eq(expenses.groupId, input.groupId),
         with: {
           user: true,
         },
         orderBy: (expenses, { desc }) => [desc(expenses.amount)],
       });
       if (!topSpend) {
-        const noTopSpend = structuredClone(topSpend);
         return { price: 0, username: "nobody found" };
       }
 
@@ -31,19 +30,19 @@ export const allOfFameRouter = createTRPCRouter({
   //  user with the most particpiation in events in a group
   mostParticipant: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       return ctx.db
-        .select({ user: users, count: count(eventsParticipants.eventId)})
+        .select({ user: users, count: count(eventsParticipants.eventId) })
         .from(users)
         .innerJoin(eventsParticipants, eq(users.id, eventsParticipants.userId))
         .groupBy(users.id)
         .orderBy(desc(count(eventsParticipants.eventId)));
     }),
 
-    // user with the most messages in a group
-    mostMessages: protectedProcedure
+  // user with the most messages in a group
+  mostMessages: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       return ctx.db
         .select({ user: users, count: count(messages.id) })
         .from(users)
@@ -52,11 +51,11 @@ export const allOfFameRouter = createTRPCRouter({
         .orderBy(desc(count(messages.id)));
     }),
 
-    // user with most expences in a group with all events
+  // user with most expences in a group with all events
 
-    mostExpences: protectedProcedure
+  mostExpences: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       return ctx.db
         .select({ user: users, count: count(expenses.id) })
         .from(users)
@@ -65,24 +64,24 @@ export const allOfFameRouter = createTRPCRouter({
         .orderBy(desc(count(expenses.id)));
     }),
 
-    // MostExpencesAmount
+  // MostExpencesAmount
 
-    mostExpencesAmount: protectedProcedure
+  mostExpencesAmount: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       return ctx.db
-        .select({ user: users, sum: sql`SUM(${expenses.amount})` })
+        .select({ user: users, sum: sum(expenses.amount) })
         .from(users)
         .innerJoin(expenses, eq(users.id, expenses.userId))
         .groupBy(users.id)
-        .orderBy(desc(sql`SUM(${expenses.amount})`));
+        .orderBy(desc(sum(expenses.amount)));
     }),
 
-    // utilisateur qui à proposé le plus d'actvitée
+  // utilisateur qui à proposé le plus d'actvitée
 
-    mostActivities: protectedProcedure
+  mostActivities: protectedProcedure
     .input(z.object({ groupId: z.number() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       return ctx.db
         .select({ user: users, count: count(events.id) })
         .from(users)
@@ -90,5 +89,4 @@ export const allOfFameRouter = createTRPCRouter({
         .groupBy(users.id)
         .orderBy(desc(count(events.id)));
     }),
-
 });

@@ -2,17 +2,19 @@ import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { TRPCReactProvider } from "~/trpc/react";
-import SessionWrapper from "./_components/session_wrapper";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import SessionWrapper from "~/app/_components/session_wrapper";
 
-import NotifWrapper from "./app/(main)/_components/notifWrapper";
+import NotifWrapper from "~/app/app/(main)/_components/notifWrapper";
 
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
+import { ServiceWorkerRegister } from "./app/(main)/_components/serviceWorkerRegister";
+// import { GoogleMapsAPILoader } from "./_components/googlemaps-api-loader";
 
 export const metadata = {
   title: "Summer-Hangover",
@@ -25,7 +27,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <head>
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
 
       <body className="bg-surface">
+        <ServiceWorkerRegister />
         <SessionWrapper>
           <TRPCReactProvider>
             <ToastContainer
@@ -50,10 +52,14 @@ export default function RootLayout({
               pauseOnHover
               limit={1}
               theme="light"
-              style={{ marginTop: "5rem"}}
-              toastStyle={{ 
-                backgroundColor: "#F9EBE1", marginLeft: "1rem", marginRight: "1rem",
-                borderRadius: "0.5rem", color: "#524437", fontFamily: "var(--font-geist-sans)"
+              style={{ marginTop: "5rem" }}
+              toastStyle={{
+                backgroundColor: "#F9EBE1",
+                marginLeft: "1rem",
+                marginRight: "1rem",
+                borderRadius: "0.5rem",
+                color: "#524437",
+                fontFamily: "var(--font-geist-sans)",
               }}
             />
             <NotifWrapper />
@@ -66,6 +72,7 @@ export default function RootLayout({
                */
               routerConfig={extractRouterConfig(ourFileRouter)}
             />
+            {/* <GoogleMapsAPILoader /> */}
             {children}
           </TRPCReactProvider>
         </SessionWrapper>

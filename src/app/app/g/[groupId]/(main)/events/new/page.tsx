@@ -1,8 +1,6 @@
 "use client";
-import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import MainMenuHeader from "~/app/_components/mainMenuHeader";
 import { api } from "~/trpc/react";
 
 function CreateEvent({ params }: { params: { groupId: string } }) {
@@ -26,10 +24,7 @@ function CreateEvent({ params }: { params: { groupId: string } }) {
 
   return (
     <>
-      <Head>
-        <title>{`Créer un nouveau groupe`}</title>
-      </Head>
-      <MainMenuHeader />
+      {/* <MainMenuHeader /> */}
       <div className="flex h-screen">
         <main className="bg-surface flex-grow p-4 text-on-surface-variant ">
           <div className="mb-4 flex justify-center">

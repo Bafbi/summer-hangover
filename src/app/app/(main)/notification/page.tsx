@@ -4,13 +4,11 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { env } from "~/env";
+import { type notificationType } from "~/server/api/routers/notifications";
 import { api, type RouterOutputs } from "~/trpc/react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { colors } from "@mui/material";
-import { Router } from "next/router";
-import { root } from "postcss";
 
 function formatNotifications(
   notifications: RouterOutputs["notification"]["getNotifications"],
@@ -36,21 +34,45 @@ function formatNotifications(
   };
 }
 
+function chooseLogo(notifType: (typeof notificationType)[number]) {
+  switch (notifType) {
+    case "INVITED_TO_GROUP":
+      return "group_add";
+    case "NEW_EVENT_TO_GROUP":
+      return "event";
+    case "NEW_ACTIVITY_TO_EVENT":
+      return "nature_people";
+    case "NEW_MESSAGES_TO_GROUP":
+      return "chat";
+    case "NEW_MESSAGES_TO_EVENT":
+      return "forum";
+    case "LAST_ONE_TO_VOTE":
+      return "how_to_vote";
+    case "VOTE_REMINDER":
+      return "how_to_vote";
+    case "EXPENSES_REMINDER":
+      return "attach_money";
+    default:
+      return "report";
+  }
+}
+
 const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
   cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
 });
 
 export default function Notifications() {
   const { data: session } = useSession();
-  const userIdNbr = session?.user.id;
   const [notifications, setNotifications] = useState<
     RouterOutputs["notification"]["getNotifications"]
   >([]);
   const [notificationId, setNotificationId] = useState<number>(0);
 
-  const { data: notificationsData } = api.notification.getNotifications.useQuery();
-  const { data: notification } = api.notification.getNotification.useQuery({notifId: notificationId});
-  const sendNotification = api.notification.sendNotificationToYourself.useMutation();
+  const { data: notificationsData } =
+    api.notification.getNotifications.useQuery();
+  const { data: notification } = api.notification.getNotification.useQuery({
+    notifId: notificationId,
+  });
 
   useEffect(() => {
     if (notificationsData) {
@@ -79,37 +101,37 @@ export default function Notifications() {
     };
   }, [session]);
 
-  const handleSendNotification = () => {
-    if (!session) return;
-    const message = "Julien vous a invité dans un groupe. Cliquer pour le rejoindre";
-    sendNotification.mutate({ message, type: "INVITED_TO_GROUP" });
-  };
-
   // have the formatNotifications always up to date
   const formattedNotifications = formatNotifications(notifications);
 
-  const notify = () => toast.error(`TESTING : Julien vous a ajouté à un groupe ! \n` +
-    ' Cliquez ici pour le rejoindre. (need to remove it after completes the notif system)', {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-    closeButton: false,
-    icon: ({theme, type}) =>  <span className="material-icons text-[#e74c3c]">
-      report
-    </span>,
-    });
-
+  const notify = () =>
+    toast.error(
+      `TESTING : Julien vous a ajouté à un groupe ! \n` +
+        " Cliquez ici pour le rejoindre. (need to remove it after completes the notif system)",
+      {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        closeButton: false,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        icon: ({ theme, type }) => (
+          <span className="material-icons text-[#e74c3c]">report</span>
+        ),
+      },
+    );
 
   return (
     <div className="bg-surface flex h-screen flex-col">
       {/* Header de la page notif */}
-      <div className="bg-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between
-        px-4 text-inverse-primary border-b border-inverse-surface">
+      <div
+        className="bg-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between
+        border-b border-inverse-surface px-4 text-inverse-primary"
+      >
         <div className="flex-1 justify-between text-inverse-surface">
           <p className="text-2xl font-bold text-inverse-surface">
             Notifications
@@ -144,7 +166,6 @@ export default function Notifications() {
       {/* Contenu de la page notif */}
       <main className="bg-surface mt-12 flex-grow overflow-y-auto overflow-x-hidden  px-2 py-4">
         <div className="notifContent">
-
           {/* Si aucune notification */}
           {formattedNotifications.todaysNotifications.length === 0 &&
             formattedNotifications.yesterdaysNotifications.length === 0 &&
@@ -183,28 +204,30 @@ export default function Notifications() {
               <div className="bg-surface-variant mb-4 mt-6 flex h-10 flex-col items-center rounded-md">
                 <h1 className="pt-1 text-2xl font-semibold">{"Aujourd'hui"}</h1>
               </div>
-              {formattedNotifications.todaysNotifications.map((notif) => {
-
-                return (
-                  <Link
-                  key={notif.id}
-                  replace={true}
-                  href={notif.urlLink || "/notification"}
-                  className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base"
-                >
-                  <span
-                    style={{ fontSize: 36 }}
-                    className="material-icons pl-1 text-error"
-                  >
-                    report
-                  </span>
-                  <div className="flex items-center space-x-2">
-                    {notif.message.charAt(0).toUpperCase() +
-                      notif.message.slice(1)}
-                  </div>
-                </Link>
-                )
-              })}
+              {formattedNotifications.todaysNotifications
+                .slice()
+                .reverse()
+                .map((notif) => {
+                  return (
+                    <Link
+                      key={notif.id}
+                      replace={true}
+                      href={notif.urlLink ?? "/notification"}
+                      className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base"
+                    >
+                      <span
+                        style={{ fontSize: 36 }}
+                        className={`material-icons pl-1 ${notif.isRead ? "text-on-secondary-container" : "text-error"}`}
+                      >
+                        {chooseLogo(notif.notifType)}
+                      </span>
+                      <div className="flex items-center space-x-2">
+                        {notif.message.charAt(0).toUpperCase() +
+                          notif.message.slice(1)}
+                      </div>
+                    </Link>
+                  );
+                })}
             </>
           )}
 
@@ -215,30 +238,33 @@ export default function Notifications() {
                 <h1 className="pt-1 text-2xl font-semibold">Hier</h1>
               </div>
               <div>
-                {formattedNotifications.yesterdaysNotifications.map((notif) => (
-                  <Link
-                    key={notif.id}
-                    href={notif.urlLink || "/app/notification"}
-                    replace={true}
-                    className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-surface-container px-3 py-2 text-lg text-inverse-surface"
-                  >
-                    <span
-                      style={{ fontSize: 36 }}
-                      className="material-icons pl-1 text-on-surface-variant"
-                    >
-                      report
-                    </span>
-                    <div
+                {formattedNotifications.yesterdaysNotifications
+                  .slice()
+                  .reverse()
+                  .map((notif) => (
+                    <Link
                       key={notif.id}
-                      className="flex items-center justify-between"
+                      href={notif.urlLink ?? "/app/notification"}
+                      replace={true}
+                      className="bg-surface-container mx-3 my-3 flex items-center justify-between gap-4 rounded-md px-3 py-2 text-lg text-inverse-surface"
                     >
-                      <div className="flex items-center space-x-2 rounded-md px-3 text-base">
-                        {notif.message.charAt(0).toUpperCase() +
-                          notif.message.slice(1)}
+                      <span
+                        style={{ fontSize: 36 }}
+                        className={`material-icons pl-1 ${notif.isRead ? "text-on-secondary-container" : "text-error"}`}
+                      >
+                        {chooseLogo(notif.notifType)}
+                      </span>
+                      <div
+                        key={notif.id}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center space-x-2 rounded-md px-3 text-base">
+                          {notif.message.charAt(0).toUpperCase() +
+                            notif.message.slice(1)}
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
               </div>
             </>
           )}
@@ -257,15 +283,15 @@ export default function Notifications() {
                     return (
                       <Link
                         key={notif.id}
-                        href={notif.urlLink || "/app/notification"}
+                        href={notif.urlLink ?? "/app/notification"}
                         replace={true}
                         className="mx-3 my-3 flex items-center justify-between gap-4 rounded-md bg-on-inverse-surface px-3 py-2 text-base text-inverse-surface"
                       >
                         <span
                           style={{ fontSize: 36 }}
-                          className="material-icons pl-1 text-on-secondary-container"
+                          className={`material-icons pl-1 ${notif.isRead ? "text-on-secondary-container" : "text-error"}`}
                         >
-                          report
+                          {chooseLogo(notif.notifType)}
                         </span>
                         <div>
                           {notif.message}
@@ -290,29 +316,24 @@ export default function Notifications() {
             </>
           )}
         </div>
-        {/* Pour du test uniquement */}
-        <div>
-            <button className="mt-40" onClick={() => { handleSendNotification(); notify(); }}>
-              Envoyer une notification
-            </button>
-            <p>session.user.id = {session?.user.id}</p>
-        </div>
-        <button className="mt-12" onClick={notify}>Notify !</button>
+
+        <button className="mt-12" onClick={notify}>
+          Notify !
+        </button>
         {/* Fin du test */}
 
         {/* Fin de la section des notifications */}
 
-          <div className="mt-6 justify-self-end">
-            <div className="flex items-center justify-center fixed bottom-0 w-full">
-              <Link
-                href="/app"
-                className="my-4 items-center rounded-3xl bg-inverse-primary px-10 py-3
+        <div className="mt-6 justify-self-end">
+          <div className="fixed bottom-0 flex w-full items-center justify-center">
+            <Link
+              href="/app"
+              className="my-4 items-center rounded-3xl bg-inverse-primary px-10 py-3
                 text-xl font-semibold text-inverse-surface"
-              >
-                <span>Retour</span>
-              </Link>
-            </div>
-
+            >
+              <span>Retour</span>
+            </Link>
+          </div>
         </div>
       </main>
     </div>

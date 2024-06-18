@@ -1,41 +1,33 @@
 "use client";
-import Link from "next/link";
 import { Badge } from "@mui/material";
-import { api, type RouterOutputs } from "~/trpc/react";
-import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import router from "next/router";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api, type RouterOutputs } from "~/trpc/react";
 
-export default function AppHeader() {
+export function AppHeader() {
   const { data: session } = useSession();
   const userIdNbr = session?.user?.id;
-
-  const [notifications, setNotifications] = useState<
-    RouterOutputs["notification"]["getNotifications"]
-  >([]);
 
   const [unreadNotifications, setUnreadNotifications] = useState<
     RouterOutputs["notification"]["getUnreadNotifications"]
   >([]);
 
-  const { data: notificationsData } = api.notification.getNotifications.useQuery();
-  // const { data: unreadNotificationsData } = api.notification.getUnreadNotifications.useQuery();
-  
+  const { data: notificationsData, refetch: refetchNotifications } =
+    api.notification.getNotifications.useQuery();
+
   const setAllNotifAsReaded = api.notification.setAllNotifAsReaded.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       setUnreadNotifications([]);
-      refetchNotifications();
-      refetchUnreadNotifications();
+      await refetchNotifications();
     },
   });
 
-  const refetchNotifications = api.notification.getNotifications.useQuery().refetch;
-  const refetchUnreadNotifications = api.notification.getUnreadNotifications.useQuery().refetch;
-
   useEffect(() => {
     if (notificationsData) {
-      setNotifications(notificationsData);
-      const unreadNotificationsData = notificationsData.filter((notif) => notif.isRead === false);
+      const unreadNotificationsData = notificationsData.filter(
+        (notif) => notif.isRead === false,
+      );
       setUnreadNotifications(unreadNotificationsData);
     }
   }, [notificationsData]);
@@ -50,7 +42,7 @@ export default function AppHeader() {
   };
 
   return (
-    <div className="bg-surface border-inverse-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between px-4">
+    <div className="bg-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between border-inverse-surface px-4">
       <div className="flex-1 justify-between text-on-surface">
         <p className="text-2xl font-semibold text-on-surface">
           Summer Hangover
@@ -63,10 +55,16 @@ export default function AppHeader() {
           className="relative flex items-center"
           onClick={handleNotificationClick}
         >
-          <Badge badgeContent={unreadNotifications.length} overlap="circular" color="error" sx={{ fontSize: 36 }}>
+          <Badge
+            badgeContent={unreadNotifications.length}
+            overlap="circular"
+            color="error"
+            sx={{ fontSize: 36 }}
+          >
             <span
               style={{ fontSize: 36 }}
-              className="material-icons relative text-on-secondary-container">
+              className="material-icons relative text-on-secondary-container"
+            >
               notifications
             </span>
           </Badge>

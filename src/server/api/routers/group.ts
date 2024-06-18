@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { groups, groupsMembers, notificationType } from "~/server/db/schema";
+import { groups, groupsMembers } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
 import { desc, eq , and } from "drizzle-orm";
 import { get } from "http";
@@ -29,7 +29,6 @@ export const groupRouter = createTRPCRouter({
         })
         .returning({ groupId: groups.id });
 
-
       if (id[0] == null) return;
       const { groupId } = id[0];
 
@@ -40,8 +39,13 @@ export const groupRouter = createTRPCRouter({
 
       console.log("INVITE LINK : " + inviteId);
       const message = `Vous avez été invité à rejoindre le groupe ${input.name} ! Cliquez ici pour le rejoindre.`;
-      const urlLink = "invite/" + inviteId;
-      await sendNotificationToUsersFunction({ message, userIds: input.members, type: "INVITED_TO_GROUP", urlLink });
+      const urlLink = "/app/invite/" + inviteId;
+      await sendNotificationToUsersFunction({
+        message,
+        userIds: input.members,
+        type: "INVITED_TO_GROUP",
+        urlLink,
+      });
     }),
 
   getGroups: protectedProcedure.query(async ({ ctx }) => {
@@ -101,45 +105,46 @@ export const groupRouter = createTRPCRouter({
       return group;
     }),
 
-    getGroupByInviteLink: protectedProcedure
-      .input(z.object({ inviteLink: z.string() }))
-      .query(async ({ ctx, input }) => {
-        const group = await ctx.db.query.groups.findFirst({
-          where: (groups, { eq }) => eq(groups.inviteLink, input.inviteLink),
-          with: {
-            createdBy: {
-              columns: { name: true },
-            },
-            members: {
-              columns: {},
-              with: {
-                user: {
-                  columns: { name: true },
-                },
+  getGroupByInviteLink: protectedProcedure
+    .input(z.object({ inviteLink: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const group = await ctx.db.query.groups.findFirst({
+        where: (groups, { eq }) => eq(groups.inviteLink, input.inviteLink),
+        with: {
+          createdBy: {
+            columns: { name: true },
+          },
+          members: {
+            columns: {},
+            with: {
+              user: {
+                columns: { name: true },
               },
             },
           },
-        });
-        return group;
+        },
+      });
+      return group;
+    }),
+
+  // Pour inviter des utilisateurs à un groupe
+  // Exemple d'utilisation : api.group.inviteUsersToGroup.mutate({ groupId: 1, userIds: ["1", "2", "3"] });
+  // se déclenche lorsqu'ils acceptent l'invitation
+  inviteUsersToGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        userIds: z.string().array(),
       }),
 
-    // Pour inviter des utilisateurs à un groupe
-    // Exemple d'utilisation : api.group.inviteUsersToGroup.mutate({ groupId: 1, userIds: ["1", "2", "3"] });
-    // se déclenche lorsqu'ils acceptent l'invitation
-    inviteUsersToGroup: protectedProcedure
-      .input(
-        z.object({
-          groupId: z.number(),
-          userIds: z.string().array(),
-        }),
-      )
-      .mutation(async ({ ctx, input }) => {
-        const usersToInsert = input.userIds.map((user) => ({
-          userId: user,
-          groupId: input.groupId,
-        }));
-        await ctx.db.insert(groupsMembers).values(usersToInsert);
-      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const usersToInsert = input.userIds.map((user) => ({
+        userId: user,
+        groupId: input.groupId,
+      }));
+      await ctx.db.insert(groupsMembers).values(usersToInsert);
+    }),
 
     // remove one user from group (admin permission)
 

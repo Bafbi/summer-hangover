@@ -30,7 +30,7 @@ export const userRouter = createTRPCRouter({
         },
       },
     });
-    if (contactQuery == undefined) return null;
+    if (contactQuery == undefined) return undefined;
     const seenUserIds = new Set<string>();
     const filteredGroups = contactQuery.groups.map((group) => ({
       members: group.group.members.filter((member) => {

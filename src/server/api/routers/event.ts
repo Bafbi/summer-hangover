@@ -1,4 +1,5 @@
 import { randomInt } from "crypto";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -54,11 +55,15 @@ export const eventRouter = createTRPCRouter({
           eventId: input.eventId,
         });
       } else {
-        await ctx.db.delete(eventsParticipants).values({
-          userId: ctx.session.user.id,
-          groupId: input.groupId,
-          eventId: input.eventId,
-        });
+        await ctx.db
+          .delete(eventsParticipants)
+          .where(
+            and(
+              eq(eventsParticipants.userId, ctx.session.user.id),
+              eq(eventsParticipants.groupId, input.groupId),
+              eq(eventsParticipants.eventId, input.eventId),
+            ),
+          );
       }
     }),
 
@@ -99,5 +104,19 @@ export const eventRouter = createTRPCRouter({
       console.log(participation);
 
       return participation !== undefined;
+    }),
+
+  getEndVoteDate: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const event = await ctx.db.query.events.findFirst({
+        columns: {
+          endVoteDate: true,
+        },
+        where: (events, { eq, and }) =>
+          and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)),
+      });
+      console.log(event);
+      return event?.endVoteDate;
     }),
 });

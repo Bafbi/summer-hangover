@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { type RouterOutputs } from "~/trpc/react";
 
 export function EventHeader({
@@ -11,9 +10,7 @@ export function EventHeader({
   event: RouterOutputs["event"]["getEventById"];
 }) {
   if (event === undefined) return null;
- 
-    
-  
+
   return (
     <>
       <header className="bg-surface sticky top-0 z-10 ">
@@ -27,7 +24,6 @@ export function EventHeader({
           <Link href={`settings`} className="flex items-center">
             <span className="material-icons cursor-pointer">settings</span>
           </Link>
-          
         </div>
       </header>
     </>
