@@ -1,6 +1,6 @@
 import QRCode from "react-qr-code";
 import { api } from "~/trpc/server";
-import { notFound, useRouter } from "next/navigation";
+import { notFound} from "next/navigation";
 import { env } from "~/env";
 import { useState } from "react";
 import { CopyToClipboard } from "~/app/app/(main)/_components/copy-to-clipboard";
@@ -16,8 +16,6 @@ export default async function GroupSettingsPage({
   if (group === undefined) notFound();
 
   const inviteLink = `${env.PUBLIC_HOSTNAME}/app/invite/${group.inviteLink}`;
-
-  const router = useRouter();
 
 
   return (
