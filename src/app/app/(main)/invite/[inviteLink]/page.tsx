@@ -186,9 +186,11 @@ export default function InvitePageClient({
               <p className="text-wrap text-center text-lg font-semibold">
                 {groupInfo && (
                   <>
-                    {`Vous avez déjà rejoins le groupe `}
-                    <span className="font-bold"> {groupInfo.name}</span>
-                    {`avec succès ! `}
+                    <div>
+                      {"Vous avez déjà rejoins le groupe : "}
+                       <strong className="font-bold underline"> {groupInfo.name}</strong>
+                      {` avec succès ! `}
+                    </div>
                     <br />
                     <br />
                     <span className="text-xl font-bold">{`Que voulez-vous faire ?`}</span>

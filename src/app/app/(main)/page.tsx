@@ -10,7 +10,47 @@ export default async function GroupsPage() {
       <AppHeader />
       <div className="flex h-screen flex-col">
         <div className="mb-18 bg-surface mt-16 flex-grow overflow-y-auto p-4">
-          {groups
+
+          {/* Dans le cas ou l'utilisateur n'a pas encore de groupe, on affiche un fond */}
+          {groups?.length == 0 && (
+            <div className="flex flex-grow flex-col items-center justify-center text-on-surface-variant">
+              <div className="logo justify-center pt-10">
+                <span
+                  style={{ fontSize: 115 }}
+                  className="material-icons items-center justify-between"
+                >
+                  groups
+                </span>
+              </div>
+              <div className="bg-surface-variant mb-0 mt-0 h-20 rounded-md px-9">
+                <p className="pt-2 text-xl font-bold text-center">
+                  Welcome to
+                </p>
+                <p className="pt-2 text-xl font-bold text-center">
+                  Summer Hangover !
+                </p>
+              </div>
+              <div
+                className="mx-7 mb-24 mt-10 flex-col items-center justify-between gap-4
+              rounded-md bg-on-inverse-surface px-3 py-2 text-lg text-on-surface-variant"
+              >
+                <p className="text-wrap text-center text-base font-semibold">
+                  {
+                    "Lorsque vous serez invité à rejoindre un groupe, vous pourrez le voir ici."
+                  }
+                  <br /><br />
+                </p>
+                <p className="text-wrap text-center text-sm font-semibold">
+                  {
+                    "Vous pouvez également créer un groupe en cliquant sur le bouton ci-dessous."
+                  }
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Si l'utilisateur a des groupes  */}
+          {groups?.length != 0 && groups
             ?.slice()
             .reverse()
             .map((group) => (

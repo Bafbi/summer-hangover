@@ -1,7 +1,7 @@
 import { randomInt } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-
+import { sendNotificationToUsersFunction } from "./notifications";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { events, eventsParticipants } from "~/server/db/schema";
 
@@ -37,6 +37,28 @@ export const eventRouter = createTRPCRouter({
       };
 
       await ctx.db.insert(eventsParticipants).values(usersToInsert);
+      const groupName = await ctx.db.query.groups.findFirst({
+        columns: { name: true },
+        where: (groups, { eq }) => eq(groups.id, input.groupId),
+      });
+
+      // retrieve all users from the group
+      const users = await ctx.db.query.groupsMembers.findMany({
+        columns: { userId: true },
+        where: (groupsMembers, { eq }) => eq(groupsMembers.groupId, input.groupId),
+      });
+
+      const filteredUsers = users.filter((user) => user.userId !== ctx.session.user.id);
+
+      const message = `Un nouvel événement a été créé dans le groupe ${groupName?.name} ! Cliquez ici pour le voir.`;
+      const urlLink = `/app/g/${input.groupId}/events`;
+
+      await sendNotificationToUsersFunction({
+        message: message,
+        userIds: filteredUsers.map((user) => user.userId),
+        type: "NEW_EVENT_TO_GROUP",
+        urlLink,
+      });
     }),
 
   acceptOrDeclineEvent: protectedProcedure

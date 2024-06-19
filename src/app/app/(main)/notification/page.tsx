@@ -105,12 +105,12 @@ export default function Notifications() {
   const formattedNotifications = formatNotifications(notifications);
 
   const notify = () =>
-    toast.error(
+    toast.success(
       `TESTING : Julien vous a ajouté à un groupe ! \n` +
-        " Cliquez ici pour le rejoindre. (need to remove it after completes the notif system)",
+        " Cliquez ici pour le rejoindre.",
       {
         position: "top-center",
-        autoClose: 5000,
+        autoClose: 6500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -120,7 +120,7 @@ export default function Notifications() {
         closeButton: false,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         icon: ({ theme, type }) => (
-          <span className="material-icons text-[#e74c3c]">report</span>
+          <span className="material-icons text-on-surface-variant">report</span>
         ),
       },
     );
@@ -196,6 +196,10 @@ export default function Notifications() {
                 </div>
               </div>
             )}
+
+          <button className="mt-12" onClick={notify}>
+            Notify !
+          </button>
 
           {/* Section des notifications */}
           {/* Aujourd'hui */}
@@ -316,10 +320,6 @@ export default function Notifications() {
             </>
           )}
         </div>
-
-        <button className="mt-12" onClick={notify}>
-          Notify !
-        </button>
         {/* Fin du test */}
 
         {/* Fin de la section des notifications */}

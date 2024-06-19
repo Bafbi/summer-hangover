@@ -38,6 +38,20 @@ export default function NotifWrapper() {
               url: data.urlLink,
             },
           });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(async permission => {
+              if (permission === "granted") {
+                const registration = await navigator.serviceWorker.ready;
+                registration.showNotification("New Notification", {
+                  body: data.message,
+                  icon: "/summer-hangover-icon.png",
+                  data: {
+                    url: data.urlLink,
+                  },
+                });
+              }
+            }
+          );
         }
       },
     );
@@ -50,7 +64,7 @@ export default function NotifWrapper() {
   useEffect(() => {
     if (newNotification) {
       setNotifId(0);
-      toast.error(
+      toast.success(
         <ToastLink
           url={newNotification.urlLink ?? "error url type"}
           message={newNotification.message}
