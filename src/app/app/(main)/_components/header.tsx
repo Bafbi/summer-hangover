@@ -1,18 +1,23 @@
+import { useState } from "react";
 import Link from "next/link";
 
 export default function AppHeader() {
+  const [showLogout, setShowLogout] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowLogout(!showLogout);
+  };
+
   return (
     <div className="bg-surface border-b border-inverse-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between px-4">
       <div className="flex-1 justify-between text-on-surface">
-        <p className="text-2xl text-on-surface">
-          Summer Hangover
-        </p>
+        <p className="text-2xl text-on-surface">Summer Hangover</p>
       </div>
       <div className="flex justify-around space-x-7 pr-1 text-on-surface-variant">
         <Link
           href="app/notification"
           passHref
-          className="relative flex items-center justify-center "
+          className="relative flex items-center justify-center"
         >
           <span
             style={{ fontSize: 36 }}
@@ -24,10 +29,19 @@ export default function AppHeader() {
         <Link
           href="app/profile"
           passHref
-          className="relative flex items-center justify-center "
+          className="relative flex items-center justify-center"
         >
           <span style={{ fontSize: 36 }} className="material-icons">
             account_circle
+          </span>
+        </Link>
+        <Link
+          href="/app/signout"
+          passHref
+          className="relative flex items-center justify-center"
+        >
+          <span style={{ fontSize: 36 }} className="material-icons">
+            exit_to_app
           </span>
         </Link>
       </div>

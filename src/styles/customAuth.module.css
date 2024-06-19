@@ -1,0 +1,98 @@
+/* src/styles/customAuth.module.css */
+.customSigninContainer {
+  @apply flex flex-col items-center justify-center min-h-screen p-5 bg-surface;
+}
+
+.logoContainer {
+  @apply mb-5 text-center w-full flex justify-center items-center flex-col;
+}
+
+.logoImage {
+  @apply max-w-[30%] md:max-w-[13%] h-auto;
+}
+
+.logoSeparator {
+  @apply border-b-2 my-5 w-[80%] md:w-full;
+}
+
+.customFormContainer {
+  @apply p-5 rounded-lg shadow-lg mb-5 w-full max-w-md text-center bg-surface-variant;
+}
+
+.customFormButton {
+  @apply mt-2 p-2 bg-primary text-white border-none rounded cursor-pointer w-full text-lg font-semibold transition duration-300;
+}
+
+.errorMessage {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.customFormButton:hover {
+  @apply bg-primary-dark;
+}
+
+.customInput {
+  @apply w-full p-2 mb-2 border border-primary rounded text-base;
+}
+
+.customFileInput {
+  @apply mb-2 text-sm font-bold;
+  font-size: 0.64rem;
+}
+
+.customHeader {
+  @apply text-lg font-bold mb-4 text-primary;
+}
+
+.customLinkButton {
+  @apply mt-2 p-2 bg-transparent text-primary border-none rounded cursor-pointer w-full text-base underline;
+}
+
+.customLinkButton:hover {
+  @apply text-primary-dark;
+}
+
+.providerButton {
+  @apply mt-2 p-2 bg-primary text-white border-none rounded cursor-pointer w-full text-lg font-semibold transition duration-300;
+}
+
+.providerButton:hover {
+  @apply bg-primary-dark;
+}
+
+@media (min-width: 640px) {
+  .customSigninContainer {
+    @apply p-5 items-center;
+  }
+
+  .customFormContainer, .providerButton {
+    @apply text-center;
+  }
+
+  .logoImage {
+    @apply max-w-[13%];
+  }
+
+  .logoSeparator {
+    @apply w-full;
+  }
+}
+
+@media (max-width: 639px) {
+  .customSigninContainer {
+    @apply p-5 items-start;
+  }
+
+  .customFormContainer {
+    @apply text-left self-start;
+  }
+
+  .providerButton {
+    @apply text-center self-center;
+  }
+
+  .logoImage {
+    @apply max-w-[50%];
+  }
+}

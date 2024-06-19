@@ -3,51 +3,63 @@ import { AppHeader } from "~/app/_components/mainMenuHeader";
 import { api } from "~/trpc/server";
 
 export default async function GroupsPage() {
-  const groups = await api.group.getGroups();
+  let groups = [];
+
+  try {
+    const fetchedGroups = await api.group.getGroups();
+    console.debug("Fetched groups:", fetchedGroups);
+    groups = fetchedGroups || []; // Ensure groups is an array
+  } catch (error) {
+    console.error("Error fetching groups:", error);
+  }
 
   return (
     <>
       <AppHeader />
       <div className="flex h-screen flex-col">
         <div className="mb-18 bg-surface mt-16 flex-grow overflow-y-auto p-4">
-          {groups
-            ?.slice()
-            .reverse()
-            .map((group) => (
-              <Link
-                key={group.id}
-                href={`/app/g/${group.id}`}
-                className="bg-surface-variant mb-4 flex h-28 flex-col overflow-hidden rounded-md"
-              >
-                <div
-                  className="bg-secondary-container flex items-center justify-between border-b
-                  border-outline-variant px-1 pb-1 pt-2"
+          {Array.isArray(groups) && groups.length > 0 ? (
+            groups
+              .slice()
+              .reverse()
+              .map((group) => (
+                <Link
+                  key={group.id}
+                  href={`/app/g/${group.id}`}
+                  className="bg-surface-variant mb-4 flex h-28 flex-col overflow-hidden rounded-md"
                 >
-                  <span className="text-xl font-semibold">{group.name}</span>
-                  <span className="text-right">
-                    Par{" "}
-                    <span className="font-semibold">
-                      {group.createdBy.name}
-                    </span>
-                  </span>
-                </div>
-                <div>
-                  <div className="px-1 py-1">
-                    <span
-                      style={{ fontSize: 18 }}
-                      className="material-icons pl-1 pr-2 pt-2"
-                    >
-                      people
-                    </span>
-                    <span className="text-left text-sm text-on-surface-variant">
-                      {group.members
-                        .map((member) => member.user.name)
-                        .join(", ")}
+                  <div
+                    className="bg-secondary-container flex items-center justify-between border-b
+                    border-outline-variant px-1 pb-1 pt-2"
+                  >
+                    <span className="text-xl font-semibold">{group.name}</span>
+                    <span className="text-right">
+                      Par{" "}
+                      <span className="font-semibold">
+                        {group.createdBy.name}
+                      </span>
                     </span>
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div>
+                    <div className="px-1 py-1">
+                      <span
+                        style={{ fontSize: 18 }}
+                        className="material-icons pl-1 pr-2 pt-2"
+                      >
+                        people
+                      </span>
+                      <span className="text-left text-sm text-on-surface-variant">
+                        {group.members
+                          .map((member) => member.user.name)
+                          .join(", ")}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))
+          ) : (
+            <p>Aucun groupe trouvé.</p>
+          )}
         </div>
         <div className="fixed bottom-0 flex w-full items-center justify-center">
           <Link

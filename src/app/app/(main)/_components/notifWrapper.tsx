@@ -1,4 +1,5 @@
 "use client";
+
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Pusher from "pusher-js";
@@ -20,7 +21,7 @@ export default function NotifWrapper() {
   });
 
   useEffect(() => {
-    if (!session) return;
+    if (!session || !session.user) return;
 
     const channel = pusher.subscribe(`notifications-${session.user.id}`);
 
@@ -37,6 +38,20 @@ export default function NotifWrapper() {
             data: {
               url: data.urlLink,
             },
+          });
+        } else {
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+              navigator.serviceWorker.ready.then(registration => {
+                registration.showNotification("New Notification", {
+                  body: data.message,
+                  icon: "/summer-hangover-icon.png",
+                  data: {
+                    url: data.urlLink,
+                  },
+                });
+              });
+            }
           });
         }
       },
