@@ -54,39 +54,28 @@ export function EventCard({ event }: { event: Event }) {
           style={{ minHeight: "60px" }}
         >
           {event.name}
+          <br />
+          {format(event.date, "dd/MM/yyyy")}
         </Link>
         {
-          <label className="flex items-center space-x-2">
-            <span>{"Dispo: "}</span>
-            <input
-              type="checkbox"
-              className="form-checkbox bg-surface-container h-5 w-5 border-primary-container text-primary "
-              checked={newInvitation}
-              onChange={(e) => {
-                setNewInvitation(e.target.checked);
-                invitation.mutate({
-                  groupId: event.groupId,
-                  eventId: event.id,
-                  accepted: e.target.checked,
-                });
-              }}
-            />
-          </label>
+          <>
+            <div className={` my-4 w-1/4 max-w-xs flex-initial min-h-10 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${newInvitation ? 'bg-positif' : 'bg-negatif'}`}>
+              <button
+                onClick={() => {
+                  setNewInvitation(!newInvitation);
+                  invitation.mutate({
+                    groupId: event.groupId,
+                    eventId: event.id,
+                    accepted: newInvitation,
+                  });
+                }}
+              >
+                <span className="px-5">{newInvitation ? 'Accepted' : 'Declined'}</span>
+              </button>
+            </div>
+          </>
         }
-        <div
-          className={`bg-surface-variant my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${
-            isExpanded ? "mx-2 w-full" : ""
-          }`}
-          style={{
-            minHeight: "60px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={handleDateClick}
-        >
-          {isExpanded ? format(event.date, "dd/MM/yyyy") : "Date"}
-        </div>
+       
       </div>
     </>
   );
