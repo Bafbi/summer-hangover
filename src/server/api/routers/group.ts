@@ -1,10 +1,9 @@
+import { and, eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
-import { desc, eq , and } from "drizzle-orm";
-import { get } from "http";
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -136,7 +135,6 @@ export const groupRouter = createTRPCRouter({
         groupId: z.number(),
         userIds: z.string().array(),
       }),
-
     )
     .mutation(async ({ ctx, input }) => {
       const usersToInsert = input.userIds.map((user) => ({
@@ -146,7 +144,7 @@ export const groupRouter = createTRPCRouter({
       await ctx.db.insert(groupsMembers).values(usersToInsert);
     }),
 
-    // remove one user from group (admin permission)
+  // remove one user from group (admin permission)
 
   removeUserFromGroup: protectedProcedure
     .input(
@@ -158,10 +156,15 @@ export const groupRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .delete(groupsMembers)
-        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, input.userId)));
+        .where(
+          and(
+            eq(groupsMembers.groupId, input.groupId),
+            eq(groupsMembers.userId, input.userId),
+          ),
+        );
     }),
 
-    // leave group (user permission)
+  // leave group (user permission)
 
   leaveGroup: protectedProcedure
     .input(
@@ -172,7 +175,11 @@ export const groupRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .delete(groupsMembers)
-        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, ctx.session.user.id)));
+        .where(
+          and(
+            eq(groupsMembers.groupId, input.groupId),
+            eq(groupsMembers.userId, ctx.session.user.id),
+          ),
+        );
     }),
-        
 });

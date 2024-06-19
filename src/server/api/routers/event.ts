@@ -61,6 +61,38 @@ export const eventRouter = createTRPCRouter({
       });
     }),
 
+
+    //Update event
+    updateEvent: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        description: z.string().optional(),
+        date: z.string().datetime(),
+        location: z.string().optional(),
+        groupId: z.number(),
+        eventId: z.number(),
+        endVoteDate: z.string().datetime(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.update(events)
+        .set({
+          name: input.name,
+          description: input.description,
+          date: new Date(input.date),
+          location: input.location,
+          endVoteDate: new Date(input.endVoteDate),
+        })
+        .where(
+          and(
+            eq(events.id, input.eventId),
+            eq(events.groupId, input.groupId),
+          ),
+        );
+    }),
+
+    
   acceptOrDeclineEvent: protectedProcedure
     .input(
       z.object({
@@ -126,6 +158,33 @@ export const eventRouter = createTRPCRouter({
       console.log(participation);
 
       return participation !== undefined;
+    }),
+
+    getParticipant: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const participant = await ctx.db.query.eventsParticipants.findMany({
+        where: (eventParticipants, { eq, and }) =>
+          and(
+            eq(eventParticipants.userId, ctx.session.user.id),
+            eq(eventParticipants.groupId, input.groupId),
+            eq(eventParticipants.eventId, input.eventId),
+          ),
+          with: {user: true},
+      });
+     return participant;
+    }),
+
+  getInfo: protectedProcedure
+    .input(z.object({ groupId: z.number(), eventId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const event = await ctx.db.query.events.findFirst({
+        where: (events, { eq, and }) =>
+          and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)
+          ),
+          with: {createdBy: true},
+      });
+      return event;
     }),
 
   getEndVoteDate: protectedProcedure
