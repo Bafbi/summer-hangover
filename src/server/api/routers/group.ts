@@ -148,17 +148,31 @@ export const groupRouter = createTRPCRouter({
 
     // remove one user from group (admin permission)
 
-    removeUserFromGroup: protectedProcedure
-      .input(
-        z.object({
-          groupId: z.number(),
-          userId: z.string(),
-        }),
-      )
-      .mutation(async ({ ctx, input }) => {
-        await ctx.db
-          .delete(groupsMembers)
-          .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, input.userId)));
+  removeUserFromGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        userId: z.string(),
       }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groupsMembers)
+        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, input.userId)));
+    }),
+
+    // leave group (user permission)
+
+  leaveGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groupsMembers)
+        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, ctx.session.user.id)));
+    }),
         
 });

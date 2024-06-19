@@ -57,8 +57,8 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
         },
         {
           id: 2,
-          question: "à trouver ici ",
-          answer: `${mostParticipant.data[0]?.user.name}`,
+          question: "Qui a proposé le plus de date d'event ?",
+          answer: `${mostActivities.data[0]?.user.name}`,
         },
         {
           id: 3,
@@ -69,11 +69,6 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
           id: 4,
           question: "Qui a le plus dépensé de tout les events ?",
           answer: `${mostExpences.data[0]?.user.name} with ${mostExpencesAmount.data[0]?.sum}€`,
-        },
-        {
-          id: 5,
-          question: "Qui a proposé le plus de date d'event ?",
-          answer: `${mostActivities.data[0]?.user.name}`,
         },
       ];
       setCards(initialCards.map((card) => ({ ...card, isFlipped: false })));
