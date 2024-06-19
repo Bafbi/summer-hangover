@@ -174,5 +174,21 @@ export const groupRouter = createTRPCRouter({
         .delete(groupsMembers)
         .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, ctx.session.user.id)));
     }),
+
+
+    // update userAdmin (admin permission)
+    UpdateUserAdmin: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(groups)
+        .set({ userAdmin: input.userId })
+        .where(eq(groups.id, input.groupId));
+    }),
         
 });

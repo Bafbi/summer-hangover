@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api } from "~/trpc/react"; // Assurez-vous que ce chemin est correct
+import { api } from "~/trpc/react";
 
 const LeaveGroup = ({ groupId }: { groupId: number }) => {
   const [error, setError] = useState<string | null>(null);
