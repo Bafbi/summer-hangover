@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -223,19 +223,4 @@ export const groupRouter = createTRPCRouter({
         .where(eq(groups.id, input.groupId));
     }),
     
-        
-  removeUserFromGroup: protectedProcedure
-    .input(
-      z.object({
-        groupId: z.number(),
-        userId: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      checkUndefinedParams([input.groupId, input.userId]);
-
-      await ctx.db
-        .delete(groupsMembers)
-        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, input.userId)));
-    }),
 });

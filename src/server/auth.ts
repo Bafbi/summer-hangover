@@ -1,5 +1,5 @@
 // src/server/auth.ts
-import NextAuth, { type NextAuthOptions, getServerSession } from 'next-auth';
+import NextAuth, { type NextAuthOptions, getServerSession, DefaultSession } from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -10,6 +10,7 @@ import { users, sessions, accounts, verificationTokens } from '~/server/db/schem
 import { createTable } from "~/server/db/schema";
 import { env } from '~/env.js';
 import { type GetServerSidePropsContext } from 'next';
+import { Adapter } from 'next-auth/adapters';
 
 /**
  * Module augmentation pour les types `next-auth`. Permet d'ajouter des propriétés personnalisées à l'objet `session` tout en conservant la sécurité des types.
@@ -87,7 +88,7 @@ export const authOptions: NextAuthOptions = {
             throw new Error('Invalid password');
           }
         } catch (error) {
-          throw new Error('Error logging in user: ' + error.message);
+          throw new Error('Error logging in user: ' + (error as Error).message);
         }
       },
     }),

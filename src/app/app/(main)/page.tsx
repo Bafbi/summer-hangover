@@ -3,7 +3,7 @@ import { AppHeader } from "~/app/_components/mainMenuHeader";
 import { api } from "~/trpc/server";
 
 export default async function GroupsPage() {
-  let groups = [];
+  let groups: any[] = [];
 
   try {
     const fetchedGroups = await api.group.getGroups();
@@ -89,7 +89,7 @@ export default async function GroupsPage() {
                     </span>
                     <span className="text-left text-sm text-on-surface-variant">
                       {group.members
-                        .map((member) => member.user.name)
+                        .map((member: { user: { name: any; }; }) => member.user.name)
                         .join(", ")}
                     </span>
                   </div>
