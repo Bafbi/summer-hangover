@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
 import { api } from "~/trpc/react";
 // import "~/styles/google-component.css";
@@ -44,16 +44,25 @@ function CreateActivity({
   }
 
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isPending, startTransition] = useTransition();
 
   const createActivity = api.activity.createActivity.useMutation({
     onSuccess: () => {
-      router.back();
-      setNewActivityName("");
-      setNewActivityDescription("");
-      setActivityLocation("");
+      startTransition(() =>
+        router.push(`/app/g/${params.groupId}/e/${params.eventId}/activities`),
+      );
+      startTransition(() => router.refresh());
     },
     onError: (error) => {
-      console.error(error);
+      if (!error.data?.zodError?.fieldErrors) return;
+      Object.keys(error.data?.zodError?.fieldErrors).forEach((field) => {
+        setInputsError((prev) => ({
+          ...prev,
+          // @ts-expect-error field is a key of the object
+          [field]: error.data?.zodError?.fieldErrors[field][0],
+        }));
+      });
     },
   });
 
@@ -71,7 +80,7 @@ function CreateActivity({
   return (
     <>
       <GoogleMapsAPILoader />
-      <NewFormHeader title="Propose an activity" backLink="" />
+      <NewFormHeader title="Propose an activity" />
       <div className="mb-4 flex justify-center">
         <span
           style={{ fontSize: 80 }}

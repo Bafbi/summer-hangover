@@ -1,6 +1,6 @@
+import { notFound } from "next/navigation";
 import QRCode from "react-qr-code";
 import { api } from "~/trpc/server";
-import { notFound } from "next/navigation";
 import { env } from "~/env";
 import { CopyToClipboard } from "~/app/app/(main)/_components/copy-to-clipboard";
 import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
@@ -36,8 +36,8 @@ export default async function GroupSettingsPage({
         Group settings
       </h1>
       <div className="flex flex-col">
-        <div className="flex flex-col space-y-4 text-center items-center">
-          <h2 className="text-xl space-y-6">Invite link</h2>
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <h2 className="space-y-6 text-xl">Invite link</h2>
           <QRCode value={inviteLink} size={128} />
           <span>Scan to join</span>
           <div className="w-11/12 flex items-center justify-center">
