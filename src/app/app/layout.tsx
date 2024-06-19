@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
 import NotifWrapper from "./(main)/_components/notifWrapper";
+import { headers, cookies } from "next/headers";
 
 export default async function AppLayout({
   children,
