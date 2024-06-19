@@ -42,19 +42,20 @@ export default function RootLayout({
           <TRPCReactProvider>
             <ToastContainer
               position="top-center"
-              autoClose={5000}
+              autoClose={6500}
               hideProgressBar={false}
               newestOnTop={false}
-              closeOnClick
+              closeOnClick={true}
               rtl={false}
               pauseOnFocusLoss
               draggable
+              draggablePercent={45}
               pauseOnHover
               limit={1}
               theme="light"
               style={{ marginTop: "5rem" }}
               toastStyle={{
-                backgroundColor: "#F9EBE1",
+                backgroundColor: "#DDE5D8",
                 marginLeft: "1rem",
                 marginRight: "1rem",
                 borderRadius: "0.5rem",
