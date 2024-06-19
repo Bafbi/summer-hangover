@@ -1,3 +1,4 @@
+import { and, eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -153,6 +154,76 @@ export const groupRouter = createTRPCRouter({
       await ctx.db.insert(groupsMembers).values(usersToInsert);
     }),
 
+  // remove one user from group (admin permission)
+
+  removeUserFromGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groupsMembers)
+        .where(
+          and(
+            eq(groupsMembers.groupId, input.groupId),
+            eq(groupsMembers.userId, input.userId),
+          ),
+        );
+    }),
+
+  // leave group (user permission)
+
+  leaveGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groupsMembers)
+        .where(
+          and(
+            eq(groupsMembers.groupId, input.groupId),
+            eq(groupsMembers.userId, ctx.session.user.id),
+          ),
+        );
+    }),
+
+
+    // update userAdmin (admin permission)
+    UpdateUserAdmin: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(groups)
+        .set({ userAdmin: input.userId })
+        .where(eq(groups.id, input.groupId));
+    }),
+
+    // delete group (admin permission)
+
+    deleteGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groups)
+        .where(eq(groups.id, input.groupId));
+    }),
+    
+        
   removeUserFromGroup: protectedProcedure
     .input(
       z.object({

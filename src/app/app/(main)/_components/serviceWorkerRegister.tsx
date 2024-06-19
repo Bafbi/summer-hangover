@@ -29,9 +29,10 @@ export function ServiceWorkerRegister() {
   };
 
   useEffect(() => {
-    async () => {
+    const request = async () => {
       await requestPermission();
     };
+    void request();
   }, []);
 
   return null;

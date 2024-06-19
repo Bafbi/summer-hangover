@@ -7,8 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { TRPCReactProvider } from "~/trpc/react";
 import SessionWrapper from "~/app/_components/session_wrapper";
 
-import NotifWrapper from "~/app/app/(main)/_components/notifWrapper";
-
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 
@@ -34,6 +32,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <link rel="manifest" href="/manifest.json" />
       </head>
 
       <body className="bg-surface">
@@ -42,19 +41,20 @@ export default function RootLayout({
           <TRPCReactProvider>
             <ToastContainer
               position="top-center"
-              autoClose={5000}
+              autoClose={6500}
               hideProgressBar={false}
               newestOnTop={false}
-              closeOnClick
+              closeOnClick={true}
               rtl={false}
               pauseOnFocusLoss
               draggable
+              draggablePercent={45}
               pauseOnHover
               limit={1}
               theme="light"
               style={{ marginTop: "5rem" }}
               toastStyle={{
-                backgroundColor: "#F9EBE1",
+                backgroundColor: "#DDE5D8",
                 marginLeft: "1rem",
                 marginRight: "1rem",
                 borderRadius: "0.5rem",
@@ -62,7 +62,6 @@ export default function RootLayout({
                 fontFamily: "var(--font-geist-sans)",
               }}
             />
-            <NotifWrapper />
             <NextSSRPlugin
               /**
                * The `extractRouterConfig` will extract **only** the route configs
