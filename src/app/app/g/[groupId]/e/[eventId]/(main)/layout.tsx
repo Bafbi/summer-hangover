@@ -8,12 +8,26 @@ import { getServerAuthSession } from "~/server/auth";
 export async function generateMetadata({
   params,
 }: {
-  params: { groupId: string };
+  params: { groupId: string; eventId: string };
 }): Promise<Metadata> {
-  const { groupId } = params;
+  const group = await api.group.getGroupById({ id: +params.groupId });
+  if (group === undefined) {
+    return {
+      title: "Group not found",
+    };
+  }
+  const event = await api.event.getEventById({
+    groupId: +params.groupId,
+    eventId: +params.eventId,
+  });
+  if (event === undefined) {
+    return {
+      title: "Event not found",
+    };
+  }
 
   return {
-    title: `Groupe ${groupId}`,
+    title: `Summer-Hangover | ${group.name} | ${event.name}`,
   };
 }
 

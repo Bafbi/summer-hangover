@@ -34,6 +34,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <link rel="manifest" href="/manifest.json" />
       </head>
 
       <body className="bg-surface">

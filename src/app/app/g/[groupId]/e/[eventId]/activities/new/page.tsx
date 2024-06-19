@@ -53,7 +53,14 @@ function CreateActivity({
       setActivityLocation("");
     },
     onError: (error) => {
-      console.error(error);
+      if (!error.data?.zodError?.fieldErrors) return;
+      Object.keys(error.data?.zodError?.fieldErrors).forEach((field) => {
+        setInputsError((prev) => ({
+          ...prev,
+          // @ts-expect-error field is a key of the object
+          [field]: error.data?.zodError?.fieldErrors[field][0],
+        }));
+      });
     },
   });
 
