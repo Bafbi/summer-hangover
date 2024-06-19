@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { is, relations, sql } from "drizzle-orm";
 import {
   index,
   int,
@@ -44,6 +44,7 @@ export const users = createTable("user", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
   image: text("image", { length: 255 }),
+  isAdmin: int("isAdmin", { mode: "boolean" }).default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

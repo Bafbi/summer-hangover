@@ -21,7 +21,6 @@ export default function NotifWrapper() {
 
   useEffect(() => {
     if (!session) return;
-
     const channel = pusher.subscribe(`notifications-${session.user.id}`);
 
     channel.bind(
