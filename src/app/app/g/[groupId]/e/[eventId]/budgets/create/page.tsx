@@ -83,7 +83,7 @@ const CreateTricount = ({
                 {createTricount.isPending ? "Submitting..." : "Submit"}
               </button>
               <Link
-                href="/app"
+                href="../budgets"
                 className="hover:bg-indigo-700 text-on h-15 w-35 surface bg-error ml-7 rounded-md px-6 py-3"
               >
                 Annuler
