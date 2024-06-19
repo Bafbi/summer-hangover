@@ -198,5 +198,20 @@ export const groupRouter = createTRPCRouter({
         .set({ userAdmin: input.userId })
         .where(eq(groups.id, input.groupId));
     }),
+
+    // delete group (admin permission)
+
+    deleteGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groups)
+        .where(eq(groups.id, input.groupId));
+    }),
+    
         
 });
