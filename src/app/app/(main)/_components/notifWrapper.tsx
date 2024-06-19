@@ -39,10 +39,11 @@ export default function NotifWrapper() {
             },
           });
         } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(async permission => {
+          Notification.requestPermission()
+            .then(async (permission) => {
               if (permission === "granted") {
                 const registration = await navigator.serviceWorker.ready;
-                registration.showNotification("New Notification", {
+                await registration.showNotification("New Notification", {
                   body: data.message,
                   icon: "/summer-hangover-icon.png",
                   data: {
@@ -50,8 +51,10 @@ export default function NotifWrapper() {
                   },
                 });
               }
-            }
-          );
+            })
+            .catch((err) => {
+              console.error("Notification request error: ", err);
+            });
         }
       },
     );

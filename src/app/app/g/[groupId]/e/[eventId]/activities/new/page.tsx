@@ -44,6 +44,7 @@ function CreateActivity({
   }
 
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_isPending, startTransition] = useTransition();
 
   const createActivity = api.activity.createActivity.useMutation({

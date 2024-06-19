@@ -32,7 +32,7 @@ export function ServiceWorkerRegister() {
     const request = async () => {
       await requestPermission();
     };
-    request();
+    void request();
   }, []);
 
   return null;
