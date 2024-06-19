@@ -92,4 +92,20 @@ export const allOfFameRouter = createTRPCRouter({
         .groupBy(users.id)
         .orderBy(desc(count(events.id)));
     }),
+
+  // avec qui l'utilisateur est le plus sorti
+
+  mostOutings: protectedProcedure
+    .input(z.object({ groupId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db
+        .select({ user: users, count: count(eventsParticipants.eventId) })
+        .from(users)
+        .innerJoin(eventsParticipants, eq(users.id, eventsParticipants.userId))
+        .where(eq(eventsParticipants.groupId, input.groupId))
+        .groupBy(users.id)
+        .orderBy(desc(count(eventsParticipants.eventId)));
+    }),
+
+  
 });
