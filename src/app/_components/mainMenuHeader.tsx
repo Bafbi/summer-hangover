@@ -9,6 +9,8 @@ export function AppHeader() {
   const { data: session } = useSession();
   const userIdNbr = session?.user?.id;
 
+
+  /* Notifications part */
   const [unreadNotifications, setUnreadNotifications] = useState<
     RouterOutputs["notification"]["getUnreadNotifications"]
   >([]);
@@ -41,14 +43,31 @@ export function AppHeader() {
     }
   };
 
+  /* Admin Part */
+  const { data: isAdmin } = api.admin.isUserAnAdmin.useQuery();
+
+
   return (
-    <div className="bg-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between border-inverse-surface px-4">
+    <div className="bg-surface fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between border-inverse-surface px-2">
       <div className="flex-1 justify-between text-on-surface">
         <p className="text-2xl font-semibold text-on-surface">
           Summer Hangover
         </p>
       </div>
-      <div className="flex justify-around space-x-4 pr-1 text-on-surface-variant">
+      <div className="flex justify-around space-x-3 text-on-surface-variant">
+        {/* Visible si le user est admin : */}
+        { isAdmin && (
+            <Link
+              href="/app/admin"
+              replace={true}
+              passHref
+              className="relative flex items-center justify-center"
+            >
+              <span style={{ fontSize: 42 }} className="material-icons">
+                bar_chart
+              </span>
+            </Link>
+          )}
         <Link
           href={"/app/notification"}
           replace={true}
@@ -63,7 +82,7 @@ export function AppHeader() {
           >
             <span
               style={{ fontSize: 36 }}
-              className="material-icons relative text-on-secondary-container"
+              className="material-icons relative"
             >
               notifications
             </span>
