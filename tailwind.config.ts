@@ -44,10 +44,6 @@ const config: Config = {
     },
   },
   plugins: [
-    require("@tailwindcss/forms"),
-    require("tailwind-scrollbar"),
-    require("@tailwindcss/typography"),
-    require("tailwindcss-filters"), // This plugin is needed for the filter utilities
   ],
 } satisfies Config;
 

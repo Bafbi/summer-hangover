@@ -172,7 +172,7 @@ export const eventRouter = createTRPCRouter({
           ),
           with: {user: true},
       });
-     return participant;
+    return participant;
     }),
 
   getInfo: protectedProcedure

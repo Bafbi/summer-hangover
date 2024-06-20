@@ -1,4 +1,5 @@
 "use client";
+
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Pusher from "pusher-js";
@@ -20,7 +21,8 @@ export default function NotifWrapper() {
   });
 
   useEffect(() => {
-    if (!session) return;
+    if (!session || !session.user) return;
+
     const channel = pusher.subscribe(`notifications-${session.user.id}`);
 
     channel.bind(

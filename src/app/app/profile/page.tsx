@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { UploadButton } from "~/utils/uploadthing";
 import { NewFormHeader } from "../(main)/_components/new-form-header";
+import Link from "next/link";
 
 export default function Profile() {
   const { data: profile, refetch: refetchProfile } =
@@ -131,6 +132,7 @@ export default function Profile() {
             </div>
           </form>
         </div>
+        <Link href={"/api/auth/signout"}>Signout</Link>
       </main>
     </>
   );

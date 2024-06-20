@@ -8,6 +8,7 @@ import LeaveGroup from "../(main)/_components/leave-group";
 import RemoveUser from "../(main)/_components/remove-user";
 import { getServerAuthSession } from "~/server/auth";
 import UpdateAdmin from "../(main)/_components/update-admin";
+import RemoveGroup from "../(main)/_components/delete-group";
 
 export default async function GroupSettingsPage({
   params,
@@ -47,18 +48,21 @@ export default async function GroupSettingsPage({
             </CopyToClipboard>
           </div>
         </div>
+        <div className="flex flex-col">
+          {isAdmin && <RemoveGroup groupId={+params.groupId} />}
+        </div>
         <div>
           <h2 className="bg-surface-variant text-xl mt-2 font-bold sortie flex flex-col w-full items-center justify-between">
             Members
           </h2>
-          <ul className="w-full flex flex-col items-center space-y-4">
+          <ul className="w-full flex flex-col items-center max-h-60 overflow-y-auto">
             {currentUser && (
-              <li key={currentUser.userId} className="flex justify-between items-center text-2xl font-bold p-4 border-b-2 w-full">
+              <li key={currentUser.userId} className="flex justify-between items-center text-xl p-4 w-full">
                 <span>{currentUser.user.name}</span>
               </li>
             )}
             {otherMembers.map((member) => (
-              <li key={member.userId} className="flex justify-between items-center text-2xl font-bold p-4 border-b-2 w-full">
+              <li key={member.userId} className="flex justify-between items-center text-xl p-4 border-t-2 w-full">
                 <span>{member.user.name}</span>
                 {isAdmin && (
                   <div className="flex space-x-4 ml-auto">

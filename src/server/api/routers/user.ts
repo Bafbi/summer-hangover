@@ -1,4 +1,12 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
+import { db } from "~/server/db";
+import { users } from "~/server/db/schema";
+import { z } from "zod";
+import bcrypt from "bcrypt";
 
 export const userRouter = createTRPCRouter({
   getContacts: protectedProcedure.query(async ({ ctx }) => {
@@ -49,4 +57,32 @@ export const userRouter = createTRPCRouter({
       groups: filteredGroups,
     };
   }),
+
+  registerUser: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(8),
+        name: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const user = await getUserByEmail(input.email);
+      if (user != null) {
+        throw new Error("User already exists");
+      }
+      return ctx.db.insert(users).values({
+        id: crypto.randomUUID(),
+        email: input.email,
+        password: await bcrypt.hash(input.password, 10),
+        name: input.name,
+      });
+    }),
 });
+
+export async function getUserByEmail(email: string) {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.email, email),
+  });
+  return user;
+}

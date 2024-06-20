@@ -1,9 +1,9 @@
-import { and, eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
+import { desc, eq, and } from "drizzle-orm";
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -78,6 +78,7 @@ export const groupRouter = createTRPCRouter({
         },
       },
     });
+
     if (groupsQuery == undefined) return null;
     return groupsQuery.groups.map((group) => group.group);
   }),
@@ -126,9 +127,6 @@ export const groupRouter = createTRPCRouter({
       return group;
     }),
 
-  // Pour inviter des utilisateurs à un groupe
-  // Exemple d'utilisation : api.group.inviteUsersToGroup.mutate({ groupId: 1, userIds: ["1", "2", "3"] });
-  // se déclenche lorsqu'ils acceptent l'invitation
   inviteUsersToGroup: protectedProcedure
     .input(
       z.object({
@@ -183,9 +181,8 @@ export const groupRouter = createTRPCRouter({
         );
     }),
 
-
-    // update userAdmin (admin permission)
-    UpdateUserAdmin: protectedProcedure
+  // update userAdmin (admin permission)
+  UpdateUserAdmin: protectedProcedure
     .input(
       z.object({
         groupId: z.number(),
@@ -198,5 +195,16 @@ export const groupRouter = createTRPCRouter({
         .set({ userAdmin: input.userId })
         .where(eq(groups.id, input.groupId));
     }),
-        
+
+  // delete group (admin permission)
+
+  deleteGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.delete(groups).where(eq(groups.id, input.groupId));
+    }),
 });

@@ -22,7 +22,7 @@ const LeaveGroup = ({ groupId }: { groupId: number }) => {
   };
 
   return (
-    <div className="fixed bottom-0 mb-10 flex w-full justify-center">
+    <div className="fixed bottom-0 mb-5 flex w-full justify-center">
       <div className="leave-group flex items-center justify-center rounded-3xl bg-negatif px-10 py-2 text-center text-xl font-semibold">
         {error && <p className="error">{error}</p>}
         <button onClick={handleLeaveGroup}>Leave group</button>
