@@ -46,14 +46,17 @@ export default function EventSettingsPage({
     <>
       {event?.createdBy.id !== session.data.user.id && (
         <>
-          <h1 className="sortie bg-surface-variant mt-2 flex w-full flex-col items-center justify-between text-xl font-bold">
-            Event infos
-          </h1>
-          <p>Description: {event?.description}</p>
-          <p>Date: {event?.date?.toLocaleString()}</p>
-          <p>Event Location: {event?.location}</p>
-          <p>End Vote Date: {event?.endVoteDate?.toLocaleString()}</p>
-          <p>Event Created By: {event?.createdBy.name}</p>
+          <h1 className="bg-surface-variant text-xl mt-2 font-bold sortie flex flex-col w-full items-center justify-between ">Event infos</h1>
+          <br />
+          <p className="font-semibold">Description: {event?.description}</p>
+          <br />
+          <p className="font-semibold">Date: {event?.date?.toLocaleString()}</p>
+          <br />
+          <p className="font-semibold">Event Location: {event?.location}</p>
+          <br />
+          <p className="font-semibold">End Vote Date: {event?.endVoteDate?.toLocaleString()}</p>
+          <br />  
+          <p className="font-semibold">Event Created By: {event?.createdBy.name}</p>
         </>
       )}
 
