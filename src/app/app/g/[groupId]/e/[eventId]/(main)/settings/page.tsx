@@ -23,7 +23,7 @@ export default function EventSettingsPage({
   const updateEvent = api.event.updateEvent.useMutation();
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
-  const [EndVoteDate, setEndVoteDate] = useState("");
+  const [endVoteDate, setEndVoteDate] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
 
@@ -62,20 +62,22 @@ export default function EventSettingsPage({
 
       {event?.createdBy.id === session.data.user.id && (
         <>
-          <h1 className="bg-surface-variant text-xl mt-2 font-bold sortie flex flex-col w-full items-center justify-between">Event Settings</h1>
-          <div className="flex flex-col gap-5 justify-center items-center">
+          <h1 className="sortie bg-surface-variant mt-2 flex w-full flex-col items-center justify-between text-xl font-bold">
+            Event Settings
+          </h1>
+          <div className="flex flex-col items-center justify-center gap-5">
             <form
               className="w-full max-w-lg"
               onSubmit={async (e) => {
                 e.preventDefault();
-                await updateEvent.mutate({
+                updateEvent.mutate({
                   name: name,
                   description: description,
                   date: date.concat(":00Z"),
                   location: location,
                   groupId: +params.groupId,
                   eventId: +params.eventId,
-                  endVoteDate: EndVoteDate.concat(":00Z"),
+                  endVoteDate: endVoteDate.concat(":00Z"),
                 });
               }}
             >
@@ -119,14 +121,19 @@ export default function EventSettingsPage({
                 <label className="font-semibold">End Vote Date:</label>
                 <input
                   type="datetime-local"
-                  value={EndVoteDate}
+                  value={endVoteDate}
                   onChange={(e) => setEndVoteDate(e.target.value)}
                   className="peer bg-surface-container w-full rounded-md border-outline transition focus:border-tertiary focus:ring-tertiary"
                 />
               </div>
-              <p className="font-semibold">Event Created By: {event?.createdBy.name}</p>
-              <div className="flex justify-center mt-4">
-                <button type="submit" className="rounded-3xl bg-secondary-container px-10 py-2 text-xl font-semibold text-center">
+              <p className="font-semibold">
+                Event Created By: {event?.createdBy.name}
+              </p>
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="submit"
+                  className="bg-secondary-container rounded-3xl px-10 py-2 text-center text-xl font-semibold"
+                >
                   Update
                 </button>
               </div>
@@ -135,8 +142,10 @@ export default function EventSettingsPage({
         </>
       )}
       <div>
-        <h2 className="bg-surface-variant text-xl mt-2 font-bold sortie flex flex-col w-full items-center justify-between">Members</h2>
-        <ul className="w-11/12 flex flex-col items-center">
+        <h2 className="sortie bg-surface-variant mt-2 flex w-full flex-col items-center justify-between text-xl font-bold">
+          Members
+        </h2>
+        <ul className="flex w-11/12 flex-col items-center">
           {participant?.map((participants, index) => (
             <li key={index}>{participants.user.name}</li>
           ))}

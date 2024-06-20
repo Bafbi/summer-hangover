@@ -19,16 +19,14 @@ type Event = {
 };
 
 export function EventCard({ event }: { event: Event }) {
-  const session = useSession();
-  const isCurrentUserParticipant =
-    event.participants.find(
-      (participant) => participant.userId === session.data?.user?.id,
-    ) !== undefined;
+  // const session = useSession();
+  // const isCurrentUserParticipant =
+  //   event.participants.find(
+  //     (participant) => participant.userId === session.data?.user?.id,
+  //   ) !== undefined;
 
     const [newInvitation, setNewInvitation] = useState(false)
 
-
-  
 
   const invitation = api.event.acceptOrDeclineEvent.useMutation({
     onSuccess: () => {
@@ -76,7 +74,6 @@ export function EventCard({ event }: { event: Event }) {
             </div>
           </>
         }
-       
       </div>
     </>
   );

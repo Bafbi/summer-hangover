@@ -90,6 +90,7 @@ export default function HofPage({ params }: { params: { groupId: string } }) {
     mostMessages.data,
     mostParticipant.data,
     topSpends.data,
+    mostOutings.data,
   ]);
 
   const handleFlip = (id: number) => {

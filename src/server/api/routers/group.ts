@@ -1,10 +1,11 @@
+
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
-import { desc, eq , and } from "drizzle-orm";
-import { get } from "http";
+import { desc, eq, and } from "drizzle-orm";
+import { checkUndefinedParams } from "~/utils/debug"; // Assurez-vous d'importer cette fonction
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -13,9 +14,11 @@ export const groupRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         members: z.string().array(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
+      checkUndefinedParams([ctx.session.user.id, input.name, input.members]);
+      
       const inviteId = uuidv4(); // Generate only the UUID part
 
       const id = await ctx.db
@@ -49,6 +52,8 @@ export const groupRouter = createTRPCRouter({
     }),
 
   getGroups: protectedProcedure.query(async ({ ctx }) => {
+    checkUndefinedParams([ctx.session.user.id]);
+
     const groupsQuery = await ctx.db.query.users.findFirst({
       columns: {},
       where: (users, { eq }) => eq(users.id, ctx.session.user.id),
@@ -79,6 +84,7 @@ export const groupRouter = createTRPCRouter({
         },
       },
     });
+
     if (groupsQuery == undefined) return null;
     return groupsQuery.groups.map((group) => group.group);
   }),
@@ -86,6 +92,8 @@ export const groupRouter = createTRPCRouter({
   getGroupById: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
+      checkUndefinedParams([input.id]);
+
       const group = await ctx.db.query.groups.findFirst({
         where: (groups, { eq }) => eq(groups.id, input.id),
         with: {
@@ -108,6 +116,8 @@ export const groupRouter = createTRPCRouter({
   getGroupByInviteLink: protectedProcedure
     .input(z.object({ inviteLink: z.string() }))
     .query(async ({ ctx, input }) => {
+      checkUndefinedParams([input.inviteLink]);
+
       const group = await ctx.db.query.groups.findFirst({
         where: (groups, { eq }) => eq(groups.inviteLink, input.inviteLink),
         with: {
@@ -127,18 +137,16 @@ export const groupRouter = createTRPCRouter({
       return group;
     }),
 
-  // Pour inviter des utilisateurs à un groupe
-  // Exemple d'utilisation : api.group.inviteUsersToGroup.mutate({ groupId: 1, userIds: ["1", "2", "3"] });
-  // se déclenche lorsqu'ils acceptent l'invitation
   inviteUsersToGroup: protectedProcedure
     .input(
       z.object({
         groupId: z.number(),
         userIds: z.string().array(),
-      }),
-
+      })
     )
     .mutation(async ({ ctx, input }) => {
+      checkUndefinedParams([input.groupId, input.userIds]);
+
       const usersToInsert = input.userIds.map((user) => ({
         userId: user,
         groupId: input.groupId,
@@ -146,7 +154,7 @@ export const groupRouter = createTRPCRouter({
       await ctx.db.insert(groupsMembers).values(usersToInsert);
     }),
 
-    // remove one user from group (admin permission)
+  // remove one user from group (admin permission)
 
   removeUserFromGroup: protectedProcedure
     .input(
@@ -158,10 +166,15 @@ export const groupRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .delete(groupsMembers)
-        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, input.userId)));
+        .where(
+          and(
+            eq(groupsMembers.groupId, input.groupId),
+            eq(groupsMembers.userId, input.userId),
+          ),
+        );
     }),
 
-    // leave group (user permission)
+  // leave group (user permission)
 
   leaveGroup: protectedProcedure
     .input(
@@ -172,7 +185,42 @@ export const groupRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .delete(groupsMembers)
-        .where(and(eq(groupsMembers.groupId, input.groupId), eq(groupsMembers.userId, ctx.session.user.id)));
+        .where(
+          and(
+            eq(groupsMembers.groupId, input.groupId),
+            eq(groupsMembers.userId, ctx.session.user.id),
+          ),
+        );
     }),
-        
+
+
+    // update userAdmin (admin permission)
+    UpdateUserAdmin: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(groups)
+        .set({ userAdmin: input.userId })
+        .where(eq(groups.id, input.groupId));
+    }),
+
+    // delete group (admin permission)
+
+    deleteGroup: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(groups)
+        .where(eq(groups.id, input.groupId));
+    }),
+    
 });

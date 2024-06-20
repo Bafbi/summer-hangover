@@ -28,7 +28,7 @@ export default async function Balance({
               Expenses
           </div>
           </Link>
-          <Link href="./budgets/balance" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
+          <Link href="../budgets/balance" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
             <span className="material-icons">price_change</span>
               <div>
                 Balance

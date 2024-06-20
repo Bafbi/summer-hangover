@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
 import { api } from "~/trpc/react";
 
@@ -15,10 +15,13 @@ export default function CreateActivity({
   const [newEventDate, setEventDate] = useState("");
   const [newEndVoteDate, setEndVoteDate] = useState("");
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isPending, startTransition] = useTransition();
 
   const createEvent = api.event.createEvent.useMutation({
     onSuccess: () => {
-      router.push(`/app/g/${params.groupId}/events`);
+      startTransition(() => router.push(`/app/g/${params.groupId}/events`));
+      startTransition(() => router.refresh());
     },
     onError: (error) => {
       if (!error.data?.zodError?.fieldErrors) return;
@@ -75,7 +78,7 @@ export default function CreateActivity({
 
   return (
     <>
-      <NewFormHeader title="Organize an event" backLink="activities" />
+      <NewFormHeader title="Organize an event" />
       <div className="mb-4 flex justify-center">
         <span
           style={{ fontSize: 80 }}
