@@ -1,21 +1,93 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getServerAuthSession } from "~/server/auth";
+"use client"; // Ajoutez ceci pour marquer le fichier comme un composant client
 
-export default async function Home() {
-  const session = await getServerAuthSession();
+import { type NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Utilisez next/navigation au lieu de next/router
+import { Popup } from "../app/_components/popup"; // Import the Popup component
+import styles from '../styles/customAuth.module.css';
 
-  if (session) redirect("/app");
+const Home: NextPage = () => {
+  const { data: sessionData } = useSession();
+  const router = useRouter();
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState<'success' | 'error'>('success');
+
+  useEffect(() => {
+    const showPopupFromStorage = localStorage.getItem('showPopup');
+    if (showPopupFromStorage) {
+      setPopupMessage(showPopupFromStorage);
+      setPopupType('success');
+      setShowPopup(true);
+      localStorage.removeItem('showPopup');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sessionData) {
+      void router.push("/app");
+    }
+  }, [sessionData, router]);
+
+  const handleSignIn = () => {
+    void router.push("/auth/signin");
+  };
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+  };
 
   return (
-    <main className=" flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">Welcome to Summer-Hangover</h1>
-      <Link
-        href={session ? "/api/auth/signout" : "/api/auth/signin"}
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-      >
-        {session ? "Sign out" : "Sign in"}
-      </Link>
-    </main>
+    <>
+      <Head>
+        <title>Summer Hangover</title>
+        <meta name="description" content="Summer TRIP" />
+      </Head>
+      <main className="flex min-h-screen flex-col items-center justify-center bg-[#1E5552]">
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+          <Image
+            className=""
+            src={"/logo.png"}
+            alt="User Logo"
+            width={400}
+            height={400}
+          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8"></div>
+          <div className="flex flex-col items-center gap-2">
+            <AuthShowcase onSignIn={handleSignIn} />
+          </div>
+        </div>
+      </main>
+      {showPopup && (
+        <Popup message={popupMessage} type={popupType} onClose={handlePopupClose} />
+      )}
+    </>
   );
-}
+};
+
+export default Home;
+
+type AuthShowcaseProps = {
+  onSignIn: () => void;
+};
+
+const AuthShowcase: React.FC<AuthShowcaseProps> = ({ onSignIn }) => {
+  const { data: sessionData } = useSession();
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <p className="text-center text-2xl text-white">
+        {sessionData && <span>Bienvenue {sessionData.user?.name}</span>}
+      </p>
+      <button
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        onClick={sessionData ? () => void signOut() : onSignIn}
+      >
+        {sessionData ? "Se déconnecter" : "Se connecter"}
+      </button>
+    </div>
+  );
+};

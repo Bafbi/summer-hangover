@@ -1,9 +1,11 @@
-import { and, eq } from "drizzle-orm";
+
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
+import { desc, eq, and } from "drizzle-orm";
+import { checkUndefinedParams } from "~/utils/debug"; // Assurez-vous d'importer cette fonction
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure
@@ -12,9 +14,11 @@ export const groupRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         members: z.string().array(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
+      checkUndefinedParams([ctx.session.user.id, input.name, input.members]);
+      
       const inviteId = uuidv4(); // Generate only the UUID part
 
       const id = await ctx.db
@@ -48,6 +52,8 @@ export const groupRouter = createTRPCRouter({
     }),
 
   getGroups: protectedProcedure.query(async ({ ctx }) => {
+    checkUndefinedParams([ctx.session.user.id]);
+
     const groupsQuery = await ctx.db.query.users.findFirst({
       columns: {},
       where: (users, { eq }) => eq(users.id, ctx.session.user.id),
@@ -78,6 +84,7 @@ export const groupRouter = createTRPCRouter({
         },
       },
     });
+
     if (groupsQuery == undefined) return null;
     return groupsQuery.groups.map((group) => group.group);
   }),
@@ -85,6 +92,8 @@ export const groupRouter = createTRPCRouter({
   getGroupById: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
+      checkUndefinedParams([input.id]);
+
       const group = await ctx.db.query.groups.findFirst({
         where: (groups, { eq }) => eq(groups.id, input.id),
         with: {
@@ -107,6 +116,8 @@ export const groupRouter = createTRPCRouter({
   getGroupByInviteLink: protectedProcedure
     .input(z.object({ inviteLink: z.string() }))
     .query(async ({ ctx, input }) => {
+      checkUndefinedParams([input.inviteLink]);
+
       const group = await ctx.db.query.groups.findFirst({
         where: (groups, { eq }) => eq(groups.inviteLink, input.inviteLink),
         with: {
@@ -126,17 +137,16 @@ export const groupRouter = createTRPCRouter({
       return group;
     }),
 
-  // Pour inviter des utilisateurs à un groupe
-  // Exemple d'utilisation : api.group.inviteUsersToGroup.mutate({ groupId: 1, userIds: ["1", "2", "3"] });
-  // se déclenche lorsqu'ils acceptent l'invitation
   inviteUsersToGroup: protectedProcedure
     .input(
       z.object({
         groupId: z.number(),
         userIds: z.string().array(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
+      checkUndefinedParams([input.groupId, input.userIds]);
+
       const usersToInsert = input.userIds.map((user) => ({
         userId: user,
         groupId: input.groupId,
@@ -213,5 +223,4 @@ export const groupRouter = createTRPCRouter({
         .where(eq(groups.id, input.groupId));
     }),
     
-        
 });
