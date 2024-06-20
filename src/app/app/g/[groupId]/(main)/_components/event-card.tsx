@@ -1,5 +1,6 @@
 "use client";
 import { format } from "date-fns";
+import { is } from "drizzle-orm";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -24,11 +25,8 @@ export function EventCard({ event }: { event: Event }) {
       (participant) => participant.userId === session.data?.user?.id,
     ) !== undefined;
 
-    const [newInvitation, setNewInvitation] = useState(() => {
-      // Get the initial state from local storage or default to true
-      const savedState = localStorage.getItem('newInvitation');
-      return savedState !== null ? savedState === 'true' : true;
-    });
+    const [newInvitation, setNewInvitation] = useState(false)
+
 
   
 
@@ -42,9 +40,10 @@ export function EventCard({ event }: { event: Event }) {
   });
 
   useEffect(() => {
-    // Save the state to local storage whenever it changes
-    localStorage.setItem('newInvitation', newInvitation.toString());
-  }, [newInvitation]);
+    if (isCurrentUserParticipant) {
+      setNewInvitation(isCurrentUserParticipant);
+    }
+  }, [isCurrentUserParticipant]);
 
 
   return (
@@ -61,18 +60,18 @@ export function EventCard({ event }: { event: Event }) {
         </Link>
         {
           <>
-            <div className={` my-4 w-1/4 max-w-xs flex-initial min-h-10 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${newInvitation ? 'bg-negatif' : 'bg-positif'}`}>
+            <div className={` my-4 w-1/4 max-w-xs flex-initial min-h-10 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${!newInvitation ? 'bg-negatif' : 'bg-positif'}`}>
               <button
                 onClick={() => {
                   setNewInvitation(!newInvitation);
                   invitation.mutate({
                     groupId: event.groupId,
                     eventId: event.id,
-                    accepted: newInvitation,
+                    accepted: !newInvitation,
                   });
                 }}
               >
-                <span className="px-5">{newInvitation ? 'Declined' : 'Accepted'}</span>
+                <span className="px-5">{!newInvitation ? 'Declined' : 'Accepted'}</span>
               </button>
             </div>
           </>
