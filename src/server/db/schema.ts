@@ -43,6 +43,7 @@ export const users = createTable("user", {
   emailVerified: int("emailVerified", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
+  createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
   image: text("image", { length: 255 }),
   isAdmin: int("isAdmin", { mode: "boolean" }).default(false),
 });
@@ -133,6 +134,7 @@ export const sessions = createTable(
       .notNull()
       .references(() => users.id),
     expires: int("expires", { mode: "timestamp" }).notNull(),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
   },
   (session) => ({
     userIdIdx: index("session_userId_idx").on(session.userId),
