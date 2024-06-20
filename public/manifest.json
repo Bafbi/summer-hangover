@@ -1,6 +1,6 @@
 {
-  "theme_color": "#8936FF",
-  "background_color": "#2EC6FE",
+  "theme_color": "#679c69",
+  "background_color": "#f8faf3",
   "icons": [
     {
       "purpose": "maskable",
@@ -20,7 +20,7 @@
   "dir": "auto",
   "lang": "fr-FR",
   "name": "Summer-Hangover",
-  "short_name": "SH",
+  "short_name": "Summer-Hangover",
   "start_url": "/app",
   "id": "https://summer-hangover.vercel.app/app"
 }
