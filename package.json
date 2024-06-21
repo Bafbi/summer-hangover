@@ -17,6 +17,7 @@
     "@auth/drizzle-adapter": "^0.7.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@faker-js/faker": "^8.4.1",
     "@googlemaps/extended-component-library": "^0.6.11",
     "@libsql/client": "^0.6.0",
     "@mui/material": "^5.15.19",
