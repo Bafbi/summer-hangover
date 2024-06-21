@@ -46,15 +46,11 @@ export async function sendNotificationToUsersFunction(input: {
   if (notifIds) {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     input.userIds.forEach(async (userId, index) => {
-      await pusher.trigger(
-        `notifications-${userId}`,
-        "new-notification",
-        {
-          notifId: notifIds[index]?.id,
-          message: input.message,
-          urlLink: input.urlLink,
-        },
-      );
+      await pusher.trigger(`notifications-${userId}`, "new-notification", {
+        notifId: notifIds[index]?.id,
+        message: input.message,
+        urlLink: input.urlLink,
+      });
     });
   }
 }
@@ -128,15 +124,11 @@ export const notificationRouter = createTRPCRouter({
       if (notifIds) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         input.userIds.forEach(async (userId, index) => {
-          await pusher.trigger(
-            `notifications-${userId}`,
-            "new-notification",
-            {
-              notifId: notifIds[index]?.id,
-              message: input.message,
-              urlLink: input.urlLink,
-            },
-          );
+          await pusher.trigger(`notifications-${userId}`, "new-notification", {
+            notifId: notifIds[index]?.id,
+            message: input.message,
+            urlLink: input.urlLink,
+          });
         });
       }
     }),
@@ -174,18 +166,11 @@ export const notificationRouter = createTRPCRouter({
 
   // Met toute les notifications d'un utilisateur en tant que lues
   // pour enlever le badge de notification sur la page d'accueil
-  setAllNotifAsReaded: protectedProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      console.log(`Maj notifications pour userId: ${input.userId}`);
-      await ctx.db
-        .update(notifications)
-        .set({ isRead: true })
-        .where(eq(notifications.userId, ctx.session.user.id));
-      console.log("Maj réussie");
-    }),
+  setAllNotifAsReaded: protectedProcedure.mutation(async ({ ctx }) => {
+    await ctx.db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.userId, ctx.session.user.id));
+    console.log("Maj réussie");
+  }),
 });

@@ -45,10 +45,13 @@ export const eventRouter = createTRPCRouter({
       // retrieve all users from the group
       const users = await ctx.db.query.groupsMembers.findMany({
         columns: { userId: true },
-        where: (groupsMembers, { eq }) => eq(groupsMembers.groupId, input.groupId),
+        where: (groupsMembers, { eq }) =>
+          eq(groupsMembers.groupId, input.groupId),
       });
 
-      const filteredUsers = users.filter((user) => user.userId !== ctx.session.user.id);
+      const filteredUsers = users.filter(
+        (user) => user.userId !== ctx.session.user.id,
+      );
 
       const message = `Un nouvel événement a été créé dans le groupe ${groupName?.name} ! Cliquez ici pour le voir.`;
       const urlLink = `/app/g/${input.groupId}/events`;
@@ -61,9 +64,23 @@ export const eventRouter = createTRPCRouter({
       });
     }),
 
+  getUserEvents: protectedProcedure.mutation(async ({ ctx }) => {
+    return ctx.db.query.eventsParticipants.findMany({
+      columns: { eventId: true },
+      where: (eventsParticipants, { eq }) =>
+        eq(eventsParticipants.userId, ctx.session.user.id),
+      with: {
+        event: {
+          with: {
+            group: true,
+          },
+        },
+      },
+    });
+  }),
 
-    //Update event
-    updateEvent: protectedProcedure
+  //Update event
+  updateEvent: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -76,7 +93,8 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.update(events)
+      await ctx.db
+        .update(events)
         .set({
           name: input.name,
           description: input.description,
@@ -85,14 +103,10 @@ export const eventRouter = createTRPCRouter({
           endVoteDate: new Date(input.endVoteDate),
         })
         .where(
-          and(
-            eq(events.id, input.eventId),
-            eq(events.groupId, input.groupId),
-          ),
+          and(eq(events.id, input.eventId), eq(events.groupId, input.groupId)),
         );
     }),
 
-    
   acceptOrDeclineEvent: protectedProcedure
     .input(
       z.object({
@@ -160,7 +174,7 @@ export const eventRouter = createTRPCRouter({
       return participation !== undefined;
     }),
 
-    getParticipant: protectedProcedure
+  getParticipant: protectedProcedure
     .input(z.object({ groupId: z.number(), eventId: z.number() }))
     .query(async ({ ctx, input }) => {
       const participant = await ctx.db.query.eventsParticipants.findMany({
@@ -170,9 +184,9 @@ export const eventRouter = createTRPCRouter({
             eq(eventParticipants.groupId, input.groupId),
             eq(eventParticipants.eventId, input.eventId),
           ),
-          with: {user: true},
+        with: { user: true },
       });
-    return participant;
+      return participant;
     }),
 
   getInfo: protectedProcedure
@@ -180,9 +194,8 @@ export const eventRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const event = await ctx.db.query.events.findFirst({
         where: (events, { eq, and }) =>
-          and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)
-          ),
-          with: {createdBy: true},
+          and(eq(events.groupId, input.groupId), eq(events.id, input.eventId)),
+        with: { createdBy: true },
       });
       return event;
     }),

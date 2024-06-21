@@ -76,3 +76,8 @@ body {
 ::view-transition-new(root) {
   animation: none;
 }
+
+a,
+form {
+  @apply relative z-20;
+}
