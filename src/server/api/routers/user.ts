@@ -78,6 +78,27 @@ export const userRouter = createTRPCRouter({
         name: input.name,
       });
     }),
+
+    createUser: protectedProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(8),
+        name: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const user = await getUserByEmail(input.email);
+      if (user != null) {
+        throw new Error("User already exists");
+      }
+      return ctx.db.insert(users).values({
+        id: crypto.randomUUID(),
+        email: input.email,
+        password: await bcrypt.hash(input.password, 10),
+        name: input.name,
+      });
+    }),
 });
 
 export async function getUserByEmail(email: string) {
