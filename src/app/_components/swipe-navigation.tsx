@@ -89,7 +89,7 @@ export function SwipeNavigation({
 
   return (
     <div
-      className="absolute bottom-0 left-0 right-0 top-0 flex h-full w-full items-center justify-between"
+      className=" absolute bottom-0 left-0 right-0 top-0 flex h-full w-full items-center justify-between"
       onTouchStart={(e) => {
         const touch = e.touches[0];
         if (touch === undefined) return;

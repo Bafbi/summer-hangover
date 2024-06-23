@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { NewFormHeader } from "~/app/app/(main)/_components/new-form-header";
 import { api } from "~/trpc/react";
+import { faker } from "@faker-js/faker";
 
 export default function CreateGroup() {
   const [newGroupName, setNewGroupName] = useState("");
@@ -93,32 +94,43 @@ export default function CreateGroup() {
           <input
             type="text"
             value={newGroupName}
-            placeholder="Name of the future activity."
+            placeholder={faker.company.name()}
             onChange={(e) => setNewGroupName(e.target.value)}
-            className="peer bg-surface-container w-full rounded-md border-outline transition focus:border-tertiary focus:ring-tertiary"
+            className="peer bg-surface-container w-full rounded-md border-outline pl-2 transition focus:border-tertiary focus:ring-tertiary"
           />
           <span className="text-sm text-error">{inputsError.name}</span>
           <label className=" font-semibold text-secondary peer-focus:underline">
-            Name of the event:
+            {"What's the name of the group:"}
           </label>
         </div>
         <div className="flex flex-col-reverse">
           <textarea
             value={newGroupDescription}
-            placeholder="Describe your idea of activity !"
+            placeholder={faker.company.catchPhrase()}
             onChange={(e) => setNewGroupDescription(e.target.value)}
             className="peer bg-surface-container w-full rounded-md border-outline transition focus:border-tertiary focus:ring-tertiary"
           />
           <span className="text-sm text-error">{inputsError.description}</span>
           <label className="font-semibold text-secondary peer-focus:underline">
-            Description*:
+            {"Tell us about the group*:"}
           </label>
         </div>
         <div className="flex flex-col">
           <label className="font-semibold text-secondary">
-            Contacts à ajouter*:
+            Contacts to add*:
           </label>
           <div className="bg-surface-container h-44 overflow-y-scroll rounded-md border border-outline p-2">
+            {!contactData?.groups?.[0]?.members.length && (
+              <div className="flex h-full flex-col items-center justify-center gap-4">
+                <span className="text-xl text-secondary">
+                  No contacts found
+                </span>
+                <span className="text-pretty text-center text-outline">
+                  Your contacts list fills with the members of the groups you
+                  are in
+                </span>
+              </div>
+            )}
             {contactData?.groups?.[0]?.members.map((member) => (
               <div
                 key={member.userId}

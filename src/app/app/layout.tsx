@@ -14,7 +14,7 @@ export default async function AppLayout({
   return (
     <>
       <NotifWrapper />
-      {children}
+      <div className="bg-surface flex min-h-screen flex-col">{children}</div>
     </>
   );
 }

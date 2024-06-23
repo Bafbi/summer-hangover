@@ -19,14 +19,13 @@ type Event = {
 };
 
 export function EventCard({ event }: { event: Event }) {
-  // const session = useSession();
-  // const isCurrentUserParticipant =
-  //   event.participants.find(
-  //     (participant) => participant.userId === session.data?.user?.id,
-  //   ) !== undefined;
+  const session = useSession();
+  const isCurrentUserParticipant =
+    event.participants.find(
+      (participant) => participant.userId === session.data?.user?.id,
+    ) !== undefined;
 
-    const [newInvitation, setNewInvitation] = useState(false)
-
+  const [newInvitation, setNewInvitation] = useState(false);
 
   const invitation = api.event.acceptOrDeclineEvent.useMutation({
     onSuccess: () => {
@@ -45,7 +44,6 @@ export function EventCard({ event }: { event: Event }) {
   }, [isCurrentUserParticipant]);
   */
 
-
   return (
     <>
       <div className="sortie flex w-full items-center justify-between">
@@ -60,7 +58,9 @@ export function EventCard({ event }: { event: Event }) {
         </Link>
         {
           <>
-            <div className={` my-4 w-1/4 max-w-xs flex-initial min-h-10 cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${!newInvitation ? 'bg-negatif' : 'bg-positif'}`}>
+            <div
+              className={` my-4 min-h-10 w-1/4 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2 transition-transform hover:scale-105 ${!newInvitation ? "bg-negatif" : "bg-positif"}`}
+            >
               <button
                 onClick={() => {
                   setNewInvitation(!newInvitation);
@@ -71,7 +71,9 @@ export function EventCard({ event }: { event: Event }) {
                   });
                 }}
               >
-                <span className="px-5">{!newInvitation ? 'Declined' : 'Accepted'}</span>
+                <span className="px-5">
+                  {!newInvitation ? "Declined" : "Accepted"}
+                </span>
               </button>
             </div>
           </>
