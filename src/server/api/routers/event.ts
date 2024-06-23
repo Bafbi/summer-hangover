@@ -50,7 +50,7 @@ export const eventRouter = createTRPCRouter({
 
       const filteredUsers = users.filter((user) => user.userId !== ctx.session.user.id);
 
-      const message = `Un nouvel événement a été créé dans le groupe ${groupName?.name} ! Cliquez ici pour le voir.`;
+      const message = `A new event has been created in the group ${groupName?.name} ! Click here to view it.`;
       const urlLink = `/app/g/${input.groupId}/events`;
 
       await sendNotificationToUsersFunction({

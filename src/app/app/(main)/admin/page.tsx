@@ -10,6 +10,7 @@ import CardHeader from "@mui/material/CardHeader";
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
 import { JSX, ClassAttributes, HTMLAttributes, useState, useEffect } from "react";
+import { colors } from "@mui/material";
 
 export default function AdminPanel() {
 
@@ -64,6 +65,14 @@ export default function AdminPanel() {
             setEvents(eventsCount.count);
         }
     }, [eventsCount]);
+
+    const generateSampleData = api.data.generateData.useMutation({
+        onSuccess: () => console.log("Sample data generated successfully"),
+    });
+
+    const handleGenerateData = () => {
+        generateSampleData.mutate();
+    };
 
 
   return (
@@ -167,31 +176,63 @@ export default function AdminPanel() {
                         </CardContent>
                     </Card>
                     {/* Total of Groups + Event LineChart Graph */}
-                    <Card>
+                    <Card className="pb-4">
                         <CardHeader title={<p className="text-center text-2xl font-semibold -mb-6 text-[#414940]">App Usage Activity</p>} />
                         <CardContent>
                             <DoubleLineChart className="aspect-[5/3]" color={["#06AA75", "#e11d48"] as string | (string & string[])}
-                                messagesData={messagesByMonth} notificationsData={notificationsByMonth} />
+                                firstData={groupsByMonth} secondData={eventsByMonth} />
                         </CardContent>
+                        <div className="flex items-center justify-evenly mt-4 ">
+                                <div className="flex items-center gap-2 pl-6">
+                                    <div style={ {backgroundColor: "#e11d48"}} className="w-4 h-4 rounded-full bg-error" />
+                                    <div className="flex-col flex">
+                                        <span className="text-sm">Number</span>
+                                        <span className="text-sm">of groups</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div style={ {backgroundColor: "#06AA75"}} className="w-4 h-4 rounded-full flex-col" />
+                                    <div className="flex flex-col">
+                                        <span className="text-sm">Number</span>
+                                        <span className="text-sm">of event</span>
+                                    </div>
+                                </div>
+                            </div>
                     </Card>
                     {/* Pusher Activity (chat + notif) LineChart Graph */}
-                    <Card>
+                    <Card className="pb-0">
                         <CardHeader title={<p className="text-center text-2xl font-semibold -mb-6 text-[#414940]">Pusher Metrics</p>} />
                         <CardContent>
                             <DoubleLineChart className="aspect-[5/3]" color={["#2563EB", "#FF3040"] as string | (string & string[])} 
-                                messagesData={messagesByMonth} notificationsData={notificationsByMonth}/>
-                            <div className="flex items-center justify-center gap-4 mt-4">
+                                firstData={messagesByMonth} secondData={notificationsByMonth}/>
+                            <div className="flex items-center justify-evenly mt-4">
                                 <div className="flex items-center gap-2 pl-6">
-                                    <div className="w-5 h-4 rounded-full bg-error" />
-                                    <span className="text-sm">Number of Messages</span>
+                                    <div style={ {backgroundColor: "#FF3040"}} className="w-4 h-4 rounded-full bg-error" />
+                                    <div className="flex-col flex">
+                                        <span className="text-sm">Number</span>
+                                        <span className="text-sm">of notifications</span>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-5 h-4 rounded-full bg-tertiary" />
-                                    <span className="text-sm">Number of Notifications</span>
+                                    <div style={ {backgroundColor: "#2563EB"}} className="w-4 h-4 rounded-full" />
+                                    <div className="flex-col flex">
+                                        <span className="text-sm">Number</span>
+                                        <span className="text-sm">of messages</span>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* Add sample data button */}
+                <div className="flex justify-center p-4 mt-10">
+                    <button
+                        onClick={handleGenerateData}
+                        className="bg-primary text-on-primary px-4 py-2 rounded-md"
+                    >
+                        Add Sample Data
+                    </button>
                 </div>
             </div>
         </div>
@@ -220,10 +261,11 @@ function BarChart(
     props: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement> 
     & HTMLAttributes<HTMLDivElement> & { color: string, data?: { month: string, count: number }[]}) {
 
-    // On inclus que les 6 derniers mois (pour pas avoir trop de barrer sur le graphique)
+    // On inclus que les 6 derniers mois (pour pas avoir trop de barres sur le graphique)
     const filteredData = props.data
-        ?.sort(sortByDate)
-        ?.slice(-6)
+        ?.filter(item => item.month !== null && item.month !== undefined)
+        ?.sort(sortByDate) // trier par date
+        ?.slice(-6) // prendre les 6 derniers mois (=> les 6 plus récents)
         ?.map(item => ({
             name: getDateString(item.month),
             count: item.count,
@@ -242,7 +284,7 @@ function BarChart(
             data={filteredData}
             keys={["count"]} // count par name => x : name (date), y : count
             indexBy="name"
-            margin={{ top: 10, right: -10, bottom: 60, left: 30 }}
+            margin={{ top: 10, right: -5, bottom: 60, left: 40 }}
             padding={0.3}
             colors={[props.color]}
             axisBottom={{
@@ -285,18 +327,22 @@ function BarChart(
 
 function DoubleLineChart(props: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement>
     & HTMLAttributes<HTMLDivElement> & { color: string | string[], 
-    messagesData?: { month: string, count: number }[], 
-    notificationsData?: { month: string, count: number }[],}) {
+    firstData?: { month: string, count: number }[], 
+    secondData?: { month: string, count: number }[],}) {
 
     // Pour s'assurer que color est un tableau :
     const colors = Array.isArray(props.color) ? props.color : [props.color];
 
-    const messagesFormattedData = props.messagesData?.map(item => ({
+    const firstFormattedData = props.firstData
+    ?.filter(item => item.month !== null && item.month !== undefined)
+    ?.sort(sortByDate)?.slice(-6)?.map(item => ({
         x: item.month,
         y: item.count,
     })) ?? [];
     
-    const notificationsFormattedData = props.notificationsData?.map(item => ({
+    const secondFormattedData = props.secondData
+    ?.filter(item => item.month !== null && item.month !== undefined)
+    ?.sort(sortByDate)?.slice(-6)?.map(item => ({
         x: item.month,
         y: item.count,
     })) ?? [];
@@ -306,21 +352,22 @@ function DoubleLineChart(props: JSX.IntrinsicAttributes & ClassAttributes<HTMLDi
             <ResponsiveLine
                 data={[
                     {
-                        id: "Messages",
-                        data: messagesFormattedData,
+                        id: "first",
+                        data: firstFormattedData,
                     },
                     {
-                        id: "Notifications",
-                        data: notificationsFormattedData,
+                        id: "second",
+                        data: secondFormattedData,
                     },
                 ]}
-                margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
+                margin={{ top: 10, right: 20, bottom: 30, left: 42 }}
                 xScale={{
                     type: "point",
                 }}
                 yScale={{
                     type: "linear",
                 }}
+                curve="natural"
                 axisTop={null}
                 axisRight={null}
                 axisBottom={{

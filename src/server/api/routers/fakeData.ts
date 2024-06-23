@@ -20,6 +20,9 @@ import { notificationType } from "~/server/db/schema";
     npx ts-node fakeData.ts
 */
 
+const NUMBER_TO_GENERATE = 250;
+
+
 async function generateUsers(count: number) {
   const userData = Array.from({ length: count }, () => ({
     id: faker.string.uuid(),
@@ -27,22 +30,17 @@ async function generateUsers(count: number) {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     age: faker.number.int({ min: 15, max: 80 }),
-    description: faker.lorem.sentence(),
+    description:  faker.lorem.paragraph(),
     email: faker.internet.email(),
     password: faker.internet.password(),
-    emailVerified: new Date(faker.date.past().getTime()),
-    createdAt: new Date(
-      faker.date
-        .between({
-          from: "2023-01-01T00:00:00.000Z",
-          to: "2023-06-06T00:00:00.000Z",
-        })
-        .getTime(),
-    ),
+    emailVerified: faker.date.recent(),
+    createdAt: 
+      faker.date.past({years: 1 }),
     image: faker.image.avatar(),
-    isAdmin: faker.datatype.boolean(),
+    isAdmin: false,
   }));
 
+  console.log("userData date : ", userData[0]?.createdAt);
   await db.insert(users).values(userData);
   return userData;
 }
@@ -52,25 +50,11 @@ async function generateSessions(users: any[], count: number) {
   const sessionData = Array.from({ length: count }, () => ({
     sessionToken: faker.string.uuid(),
     userId: users[Math.floor(Math.random() * users.length)].id,
-    expires: new Date(faker.date.soon().getTime()),
-    createdAt: new Date(faker.date.past().getTime()),
+    expires: faker.date.soon({ days: 7}),
+    createdAt: faker.date.past({years: 2}),
   }));
 
   await db.insert(sessions).values(sessionData);
-}
-
-// Fonction pour générer des notifications factices
-async function generateNotifications(users: any[], count: number) {
-  const notificationData = Array.from({ length: count }, () => ({
-    userId: users[Math.floor(Math.random() * users.length)].id,
-    message: faker.lorem.sentence(),
-    createdAt: new Date(faker.date.past().getTime()),
-    isRead: faker.datatype.boolean(),
-    notifType: notificationType[0],
-    urlLink: faker.internet.url(),
-  }));
-
-  await db.insert(notifications).values(notificationData);
 }
 
 // Fonction pour générer des groupes factices
@@ -81,42 +65,57 @@ async function generateGroups(users: any[], count: number) {
     description: faker.lorem.paragraph(),
     userAdmin: users[Math.floor(Math.random() * users.length)].id,
     createdBy: users[Math.floor(Math.random() * users.length)].id,
-    createdAt: new Date(faker.date.past().getTime()),
+    createdAt: faker.date.past(),
   }));
 
   const groupsCreated = await db.insert(groups).values(groupData).returning();
+
   return groupsCreated;
 }
 
 // Fonction pour générer des membres de groupes factices
-async function generateGroupMembers(
-  groups: any[],
-  users: any[],
-  count: number,
-) {
-  const groupMemberData = Array.from({ length: count }, () => ({
-    groupId: groups[Math.floor(Math.random() * groups.length)].id,
-    userId: users[Math.floor(Math.random() * users.length)].id,
-  }));
+async function generateGroupMembers(groups: any[], users: any[], count: number) {
 
-  await db.insert(groupsMembers).values(groupMemberData);
+  const groupMemberData = [];
+  const existingPairs = new Set();
+
+  for (let i = 0; i < count; i++) {
+    const groupId = groups[Math.floor(Math.random() * groups.length)].id;
+    const userId = users[Math.floor(Math.random() * users.length)].id;
+    const pair = `${groupId}-${userId}`;
+
+    // On vérifie que le groupeMember (i.e le combo groupId + userId) n'existe pas déjà
+    // Permet d'éviter des erreurs du type "foreign key constraint" à cause de doublons
+    if (!existingPairs.has(pair)) {
+      groupMemberData.push({ groupId, userId });
+      existingPairs.add(pair);
+    }
+  }
+
+  if (groupMemberData.length > 0) {
+    await db.insert(groupsMembers).values(groupMemberData);
+  } else {
+    console.warn("Aucun membre généré (pas de groupeMember unique trouvé).");
+  }
 }
 
 // Fonction pour générer des événements factices
 async function generateEvents(groups: any[], users: any[], count: number) {
   const eventData = Array.from({ length: count }, () => ({
-    id: groups[Math.floor(Math.random() * groups.length * 100000)].id,
+    id: faker.number.int({ min: 1, max: 100000 }),
     groupId: groups[Math.floor(Math.random() * groups.length)].id,
     name: faker.lorem.words(),
     description: faker.lorem.paragraph(),
     createdBy: users[Math.floor(Math.random() * users.length)].id,
-    createdAt: new Date(faker.date.past().getTime()),
-    date: new Date(faker.date.future().getTime()),
+    createdAt: faker.date.past(),
+    date: faker.date.future(),
     location: faker.location.streetAddress().toString(),
-    endVoteDate: new Date(faker.date.soon().getTime()),
+    endVoteDate: faker.date.soon(),
   }));
 
-  await db.insert(events).values(eventData);
+  
+  console.log("eventData : ", eventData);
+  return await db.insert(events).values(eventData);
 }
 
 // Fonction pour générer des messages factices
@@ -126,20 +125,34 @@ async function generateMessages(groups: any[], users: any[], count: number) {
     eventId: null,
     userId: users[Math.floor(Math.random() * users.length)].id,
     content: faker.lorem.sentences(),
-    createdAt: new Date(faker.date.past().getTime()),
+    createdAt: faker.date.past(),
   }));
 
-  await db.insert(messages).values(messageData);
+  await db.insert(messages).values(messageData).returning();
 }
 
-// Exécution de la génération de données factices
+// Fonction pour générer des notifications factices
+async function generateNotifications(users: any[], count: number) {
+  const notificationData = Array.from({ length: count }, () => ({
+    userId: users[Math.floor(Math.random() * users.length)].id,
+    message: "Vous avez été invité à rejoindre un nouveau groupe ! Cliquer ici pour voir le détail.",
+    createdAt: faker.date.past(),
+    isRead: faker.datatype.boolean(),
+    notifType: notificationType[0],
+    urlLink: faker.internet.url(),
+  }));
+
+  await db.insert(notifications).values(notificationData);
+}
+
+// Appel général pour générer toutes les fausses données
 export async function generateFakeData(numberOfUsers: number) {
   const userCount = numberOfUsers;
-  const sessionCount = numberOfUsers * 2;
-  const notificationCount = numberOfUsers * 2;
-  const groupCount = Math.floor(numberOfUsers / 2);
-  const groupMemberCount = numberOfUsers * 3;
-  const eventCount = numberOfUsers;
+  const sessionCount = Math.floor(numberOfUsers * 0.35);
+  const notificationCount = Math.floor(numberOfUsers * 2.4);
+  const groupCount = Math.floor(numberOfUsers * 0.25);
+  const groupMemberCount = numberOfUsers * 3.2;
+  const eventCount = numberOfUsers * 0.6;
   const messageCount = numberOfUsers * 5;
 
   const users = await generateUsers(userCount);
@@ -153,7 +166,12 @@ export async function generateFakeData(numberOfUsers: number) {
   console.log("Fake data générés correctement");
 }
 
-generateFakeData(100).catch(console.error);
-
 // Pour importer cette fonction dans un autre fichier, il faut mettre cet import :
 // import { generateFakeData } from "../../server/api/routers/fakeData";
+
+export const dataRouter = createTRPCRouter({
+    generateData: protectedProcedure.mutation(async ({ ctx }) => {
+      generateFakeData(NUMBER_TO_GENERATE).catch(console.error);
+      return "Fake data générés correctement";
+    }),
+});

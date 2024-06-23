@@ -104,27 +104,6 @@ export default function Notifications() {
   // have the formatNotifications always up to date
   const formattedNotifications = formatNotifications(notifications);
 
-  const notify = () =>
-    toast.success(
-      `TESTING : Julien vous a ajouté à un groupe ! \n` +
-        " Cliquez ici pour le rejoindre.",
-      {
-        position: "top-center",
-        autoClose: 6500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        closeButton: false,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        icon: ({ theme, type }) => (
-          <span className="material-icons text-on-surface-variant">report</span>
-        ),
-      },
-    );
-
   return (
     <div className="bg-surface flex h-screen flex-col">
       {/* Header de la page notif */}
@@ -196,10 +175,6 @@ export default function Notifications() {
                 </div>
               </div>
             )}
-
-          <button className="mt-12" onClick={notify}>
-            Notify !
-          </button>
 
           {/* Section des notifications */}
           {/* Aujourd'hui */}

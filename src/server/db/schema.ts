@@ -81,7 +81,7 @@ export const notifications = createTable(
       .notNull()
       .references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
     isRead: int("isRead", { mode: "boolean" }).default(false),
     notifType: text("notifType", { enum: notificationType }).notNull(),
     urlLink: text("url", { length: 255 }),

@@ -32,7 +32,7 @@ export const adminRouter = createTRPCRouter({
       .select({ count: count() })
       .from(sessions)
       // la date dans la db est en millisecondes, il faut donc comparer la date actuelle moins 7 jours en millisecondes
-      .where(sql`expires > ${Date.now() - 7 * 24 * 60 * 60 }`);
+      .where(sql`expires > ${Math.floor((Date.now() - 7 * 24 * 60 * 60 * 1000) / 1000) }`);
     if (result && result.length > 0) {
       return { count: result[0]?.count ?? 0 };
     }
@@ -61,12 +61,12 @@ export const adminRouter = createTRPCRouter({
   getUsersByMonth: protectedProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
       .select({
-        month: sql`strftime('%Y-%m', createdAt)`,
+        month: sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`,
         count: count()
       })
       .from(users)
-      .groupBy(sql`strftime('%Y-%m', createdAt)`)
-      .orderBy(sql`strftime('%Y-%m', createdAt)`);
+      .groupBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`)
+      .orderBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`);
 
     return result.map(row => ({
       month: String(row.month),
@@ -78,13 +78,13 @@ export const adminRouter = createTRPCRouter({
   getActiveUsersByMonth: protectedProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
       .select({
-        month: sql`strftime('%Y-%m', createdAt)`,
+        month: sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`,
         count: count()
       })
       .from(sessions)
-      .where(sql`expires > ${Date.now() - 7 * 24 * 60 * 60 }`)
-      .groupBy(sql`strftime('%Y-%m', createdAt)`)
-      .orderBy(sql`strftime('%Y-%m', createdAt)`);
+      .where(sql`expires > ${Math.floor((Date.now() - 7 * 24 * 60 * 60 * 1000) / 1000) }`)
+      .groupBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`)
+      .orderBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`);
 
     return result.map(row => ({
       month: String(row.month),
@@ -96,12 +96,12 @@ export const adminRouter = createTRPCRouter({
   getGroupsByMonth: protectedProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
       .select({
-        month: sql`strftime('%Y-%m', createdAt)`,
+        month: sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`,
         count: count()
       })
       .from(groups)
-      .groupBy(sql`strftime('%Y-%m', createdAt)`)
-      .orderBy(sql`strftime('%Y-%m', createdAt)`);
+      .groupBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`)
+      .orderBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`);
 
     return result.map(row => ({
       month: String(row.month),
@@ -113,12 +113,12 @@ export const adminRouter = createTRPCRouter({
   getEventsByMonth: protectedProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
       .select({
-        month: sql`strftime('%Y-%m', createdAt)`,
+        month: sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`,
         count: count()
       })
       .from(events)
-      .groupBy(sql`strftime('%Y-%m', createdAt)`)
-      .orderBy(sql`strftime('%Y-%m', createdAt)`);
+      .groupBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`)
+      .orderBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`);
 
     return result.map(row => ({
       month: String(row.month),
@@ -130,12 +130,12 @@ export const adminRouter = createTRPCRouter({
   getMessagesByMonth: protectedProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
       .select({
-        month: sql`strftime('%Y-%m', createdAt)`,
+        month: sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`,
         count: count()
       })
       .from(messages)
-      .groupBy(sql`strftime('%Y-%m', createdAt)`)
-      .orderBy(sql`strftime('%Y-%m', createdAt)`);
+      .groupBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`)
+      .orderBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`);
     
     return result.map(row => ({
       month: String(row.month),
@@ -147,12 +147,12 @@ export const adminRouter = createTRPCRouter({
   getNotificationsByMonth: protectedProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
       .select({
-        month: sql`strftime('%Y-%m', createdAt)`,
+        month: sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`,
         count: count()
       })
       .from(notifications)
-      .groupBy(sql`strftime('%Y-%m', createdAt)`)
-      .orderBy(sql`strftime('%Y-%m', createdAt)`);
+      .groupBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`)
+      .orderBy(sql`strftime('%Y-%m', datetime(createdAt, 'unixepoch'))`);
     
     return result.map(row => ({
       month: String(row.month),

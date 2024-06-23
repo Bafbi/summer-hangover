@@ -37,11 +37,13 @@ export function EventCard({ event }: { event: Event }) {
     },
   });
 
+  /*
   useEffect(() => {
     if (isCurrentUserParticipant) {
       setNewInvitation(isCurrentUserParticipant);
     }
   }, [isCurrentUserParticipant]);
+  */
 
 
   return (

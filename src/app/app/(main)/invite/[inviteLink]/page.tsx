@@ -115,7 +115,7 @@ export default function InvitePageClient({
             </span>
           </div>
           <div className="bg-surface-variant mb-4 mt-0 h-12 rounded-md px-5">
-            <h1 className="pt-2 text-2xl font-bold">Rejoindre un groupe</h1>
+            <h1 className="pt-2 text-2xl font-bold">Join a new group</h1>
           </div>
         </div>
 
@@ -130,23 +130,23 @@ export default function InvitePageClient({
               <p className="text-wrap text-center text-lg font-semibold">
                 {groupInfo && (
                   <>
-                    {`L'utilisateur `}
+                    {`The user `}
                     <span className="font-bold">
                       {groupInfo.createdBy.name}
                     </span>
-                    {` vous a invité à rejoindre le groupe `}
+                    {` has invited you to the group `}
                     <span className="font-bold underline">
                       {groupInfo.name}
                     </span>
                     {` !`}
                     <br />
                     <br />
-                    <span className="text-xl font-bold">{`Que voulez-vous faire ?`}</span>
+                    <span className="text-xl font-bold">{`What would you like to do?`}</span>
                   </>
                 )}
               </p>
-              <p className="mt-1 text-wrap px-6 text-center text-xs">
-                {`Il sera toujours possible de changer d'avis plus tard en consultant vos notifications.`}
+              <p className="mt-1 text-wrap px-10 text-center text-xs">
+                {`You can always change your mind later by consulting your notification center.`}
               </p>
             </div>
 
@@ -211,7 +211,7 @@ export default function InvitePageClient({
                 space-x-0 rounded-l-xl p-4 transition-transform hover:scale-105`}
               >
                 <span className="material-icons ">groups</span>
-                <span className="text-md font-semibold">Acceder au groupe</span>
+                <span className="text-md font-semibold">Access to the groupe</span>
               </Link>
               <Link
                 href={"/app"}
@@ -219,7 +219,7 @@ export default function InvitePageClient({
                 className={`bg-error-container my-4 mt-8 flex w-5/6 cursor-pointer items-center justify-between
                 space-x-0 rounded-r-xl p-4 transition-transform hover:scale-105`}
               >
-                <span className="text-md font-semibold">Retour au menu</span>
+                <span className="text-md font-semibold">Back to menu</span>
                 <span className="material-icons ">arrow_back</span>
               </Link>
             </div>

@@ -37,7 +37,7 @@ export const groupRouter = createTRPCRouter({
       });
 
       console.log("INVITE LINK : " + inviteId);
-      const message = `Vous avez été invité à rejoindre le groupe ${input.name} ! Cliquez ici pour le rejoindre.`;
+      const message = `You have benn invited to the group ${input.name}. Click here to join it !`;
       const urlLink = "/app/invite/" + inviteId;
       await sendNotificationToUsersFunction({
         message,
