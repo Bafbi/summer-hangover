@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AppHeader } from "~/app/_components/mainMenuHeader";
 import { api } from "~/trpc/server";
 
 export default async function GroupsPage() {

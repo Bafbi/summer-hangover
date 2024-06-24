@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { env } from "~/env";
 import { type notificationType } from "~/server/api/routers/notifications";
@@ -74,12 +73,6 @@ export default function Notifications() {
     notifId: notificationId,
   });
 
-  const setAsRead = api.notification.setAllNotifAsReaded.useMutation();
-
-  useEffect(() => {
-    setAsRead.mutate();
-  }, []);
-
   useEffect(() => {
     if (notificationsData) {
       setNotifications(notificationsData);
@@ -109,27 +102,6 @@ export default function Notifications() {
 
   // have the formatNotifications always up to date
   const formattedNotifications = formatNotifications(notifications);
-
-  const notify = () =>
-    toast.success(
-      `TESTING : Julien vous a ajouté à un groupe ! \n` +
-        " Cliquez ici pour le rejoindre.",
-      {
-        position: "top-center",
-        autoClose: 6500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        closeButton: false,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        icon: ({ theme, type }) => (
-          <span className="material-icons text-on-surface-variant">report</span>
-        ),
-      },
-    );
 
   return (
     <div className="notifContent">

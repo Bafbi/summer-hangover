@@ -1,9 +1,9 @@
+import { and, eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { groups, groupsMembers } from "~/server/db/schema";
 import { sendNotificationToUsersFunction } from "./notifications";
-import { desc, eq, and } from "drizzle-orm";
 
 export const groupRouter = createTRPCRouter({
   createGroup: protectedProcedure

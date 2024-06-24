@@ -1,8 +1,5 @@
-import Link from "next/link";
-import { AppFooter } from "./_components/app-footer";
-import { api } from "~/trpc/server";
-import { Badge } from "@mui/material";
 import { AppHeader } from "~/app/app/(main)/_components/header";
+import { AppFooter } from "./_components/app-footer";
 import { NotifivationSection } from "./_components/notif-section";
 
 export default async function AppLayout({

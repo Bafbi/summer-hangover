@@ -20,4 +20,7 @@ export const client =
   });
 if (env.NODE_ENV !== "production") globalForDb.client = client;
 
-export const db = drizzle(client, { schema, logger: true });
+export const db = drizzle(client, {
+  schema,
+  logger: env.NODE_ENV === "development",
+});

@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { env } from "~/env";
 import { type notificationType } from "~/server/api/routers/notifications";

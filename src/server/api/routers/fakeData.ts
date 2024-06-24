@@ -1,17 +1,19 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { count, sql, eq } from "drizzle-orm";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { faker } from "@faker-js/faker";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import {
-  users,
-  sessions,
-  notifications,
-  groups,
   events,
-  messages,
+  groups,
   groupsMembers,
+  messages,
+  notifications,
+  notificationType,
+  sessions,
+  users,
 } from "~/server/db/schema";
-import { notificationType } from "~/server/db/schema";
 
 /*
     Permet de générer des données factices pour les test, en particulier pour le dashboard admin
@@ -22,7 +24,6 @@ import { notificationType } from "~/server/db/schema";
 
 const NUMBER_TO_GENERATE = 250;
 
-
 async function generateUsers(count: number) {
   const userData = Array.from({ length: count }, () => ({
     id: faker.string.uuid(),
@@ -30,12 +31,11 @@ async function generateUsers(count: number) {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     age: faker.number.int({ min: 15, max: 80 }),
-    description:  faker.lorem.paragraph(),
+    description: faker.lorem.paragraph(),
     email: faker.internet.email(),
     password: faker.internet.password(),
     emailVerified: faker.date.recent(),
-    createdAt: 
-      faker.date.past({years: 1 }),
+    createdAt: faker.date.past({ years: 1 }),
     image: faker.image.avatar(),
     isAdmin: false,
   }));
@@ -50,8 +50,8 @@ async function generateSessions(users: any[], count: number) {
   const sessionData = Array.from({ length: count }, () => ({
     sessionToken: faker.string.uuid(),
     userId: users[Math.floor(Math.random() * users.length)].id,
-    expires: faker.date.soon({ days: 7}),
-    createdAt: faker.date.past({years: 2}),
+    expires: faker.date.soon({ days: 7 }),
+    createdAt: faker.date.past({ years: 2 }),
   }));
 
   await db.insert(sessions).values(sessionData);
@@ -74,8 +74,11 @@ async function generateGroups(users: any[], count: number) {
 }
 
 // Fonction pour générer des membres de groupes factices
-async function generateGroupMembers(groups: any[], users: any[], count: number) {
-
+async function generateGroupMembers(
+  groups: any[],
+  users: any[],
+  count: number,
+) {
   const groupMemberData = [];
   const existingPairs = new Set();
 
@@ -113,7 +116,6 @@ async function generateEvents(groups: any[], users: any[], count: number) {
     endVoteDate: faker.date.soon(),
   }));
 
-  
   console.log("eventData : ", eventData);
   return await db.insert(events).values(eventData);
 }
@@ -135,7 +137,8 @@ async function generateMessages(groups: any[], users: any[], count: number) {
 async function generateNotifications(users: any[], count: number) {
   const notificationData = Array.from({ length: count }, () => ({
     userId: users[Math.floor(Math.random() * users.length)].id,
-    message: "Vous avez été invité à rejoindre un nouveau groupe ! Cliquer ici pour voir le détail.",
+    message:
+      "Vous avez été invité à rejoindre un nouveau groupe ! Cliquer ici pour voir le détail.",
     createdAt: faker.date.past(),
     isRead: faker.datatype.boolean(),
     notifType: notificationType[0],
@@ -170,8 +173,8 @@ export async function generateFakeData(numberOfUsers: number) {
 // import { generateFakeData } from "../../server/api/routers/fakeData";
 
 export const dataRouter = createTRPCRouter({
-    generateData: protectedProcedure.mutation(async ({ ctx }) => {
-      generateFakeData(NUMBER_TO_GENERATE).catch(console.error);
-      return "Fake data générés correctement";
-    }),
+  generateData: protectedProcedure.mutation(async () => {
+    generateFakeData(NUMBER_TO_GENERATE).catch(console.error);
+    return "Fake data générés correctement";
+  }),
 });

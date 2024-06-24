@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/trpc/react";
 
 const LeaveGroup = ({ groupId }: { groupId: number }) => {
@@ -7,7 +7,7 @@ const LeaveGroup = ({ groupId }: { groupId: number }) => {
 
   // Utilisation de useMutation pour appeler la mutation leaveGroup
   const leaveGroupMutation = api.group.leaveGroup.useMutation({
-    onError: (_) => {
+    onError: () => {
       setError("An error occurred while leaving the group.");
     },
     onSuccess: () => {

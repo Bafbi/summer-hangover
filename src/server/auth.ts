@@ -1,19 +1,15 @@
 // src/server/auth.ts
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import bcrypt from "bcrypt";
-import { NextApiRequest, NextApiResponse } from "next";
 import {
   type DefaultSession,
   getServerSession,
   type NextAuthOptions,
-  SessionOptions,
+  type SessionOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import { decode, encode } from "next-auth/jwt";
-import CredentialsProvider from "next-auth/providers/credentials";
 import DiscordProvider from "next-auth/providers/discord";
-import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import { env } from "~/env.js";
 import { db } from "~/server/db";
 import { createTable } from "~/server/db/schema";
@@ -43,7 +39,7 @@ const session: Partial<SessionOptions> = {
   strategy: "database",
   maxAge: 30 * 24 * 60 * 60, // 30 days
   updateAge: 24 * 60 * 60, // 24 hours
-}
+};
 
 const adapter = DrizzleAdapter(db, createTable) as Adapter;
 
@@ -53,7 +49,6 @@ const adapter = DrizzleAdapter(db, createTable) as Adapter;
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -180,9 +175,9 @@ export const authOptions: NextAuthOptions = {
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
 
-async function getUserByEmail(email: string) {
-  const user = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.email, email),
-  });
-  return user;
-}
+// async function getUserByEmail(email: string) {
+//   const user = await db.query.users.findFirst({
+//     where: (users, { eq }) => eq(users.email, email),
+//   });
+//   return user;
+// }

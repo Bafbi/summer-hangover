@@ -1,3 +1,6 @@
+/** eslint-disable @typescript-eslint/no-unsafe-call */
+/** eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -16,13 +19,18 @@ export function SwipeNavigation({
   function handleSwipe(direction: "left" | "right") {
     if (direction === "left") {
       if (pageIndex < pages.length - 1) {
+        // @ts-expect-error This use the new experimental API
         if (!document.startViewTransition) {
+          // @ts-expect-error This use the new experimental API
           router.push(pages[pageIndex + 1]);
         }
+        // @ts-expect-error This use the new experimental API
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         const transition = document.startViewTransition(() =>
-          router.push(pages[pageIndex + 1]),
+          router.push(pages[pageIndex + 1] ?? "/"),
         );
         // Wait for the pseudo-elements to be created:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         transition.ready.then(() => {
           // Animate the root’s new view
           document.documentElement.animate(
@@ -51,13 +59,17 @@ export function SwipeNavigation({
       }
     } else {
       if (pageIndex > 0) {
+        // @ts-expect-error This use the new experimental API
         if (!document.startViewTransition) {
+          // @ts-expect-error This use the new experimental API
           router.push(pages[pageIndex - 1]);
         }
+        // @ts-expect-error This use the new experimental API
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         const transition = document.startViewTransition(() =>
-          router.push(pages[pageIndex - 1]),
+          router.push(pages[pageIndex - 1] ?? "/"),
         );
-        // Wait for the pseudo-elements to be created:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         transition.ready.then(() => {
           // Animate the root’s new view
           document.documentElement.animate(

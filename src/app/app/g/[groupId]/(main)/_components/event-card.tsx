@@ -1,6 +1,5 @@
 "use client";
 import { format } from "date-fns";
-import { is } from "drizzle-orm";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -36,13 +35,11 @@ export function EventCard({ event }: { event: Event }) {
     },
   });
 
-  /*
   useEffect(() => {
     if (isCurrentUserParticipant) {
       setNewInvitation(isCurrentUserParticipant);
     }
   }, [isCurrentUserParticipant]);
-  */
 
   return (
     <>

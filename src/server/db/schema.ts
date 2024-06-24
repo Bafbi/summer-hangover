@@ -1,4 +1,4 @@
-import { is, relations, sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   index,
   int,
@@ -43,7 +43,9 @@ export const users = createTable("user", {
   emailVerified: int("emailVerified", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
-  createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+  createdAt: int("createdAt", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
   image: text("image", { length: 255 }),
   isAdmin: int("isAdmin", { mode: "boolean" }).default(false),
 });
@@ -81,7 +83,9 @@ export const notifications = createTable(
       .notNull()
       .references(() => users.id),
     message: text("message", { length: 255 }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(
+      sql`CURRENT_TIMESTAMP`,
+    ),
     isRead: int("isRead", { mode: "boolean" }).default(false),
     notifType: text("notifType", { enum: notificationType }).notNull(),
     urlLink: text("url", { length: 255 }),
@@ -134,7 +138,9 @@ export const sessions = createTable(
       .notNull()
       .references(() => users.id),
     expires: int("expires", { mode: "timestamp" }).notNull(),
-    createdAt: int("createdAt", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
+    createdAt: int("createdAt", { mode: "timestamp" }).default(
+      sql`CURRENT_TIMESTAMP`,
+    ),
   },
   (session) => ({
     userIdIdx: index("session_userId_idx").on(session.userId),
