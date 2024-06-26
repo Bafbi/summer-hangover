@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "2dcc622a-6386-40aa-90ce-f4e541f0cb8a",
+  "id": "8a9ef915-3d82-4ae0-a278-355e75f3d2da",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "summer-hangover_account": {
@@ -750,7 +750,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         },
         "isRead": {
           "name": "isRead",
@@ -899,6 +900,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {
@@ -995,12 +1004,28 @@
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
         },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
         "image": {
           "name": "image",
           "type": "text(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "isAdmin": {
+          "name": "isAdmin",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {

@@ -19,7 +19,7 @@ export function AppFooter({
 
   return (
     <>
-      <SwipeNavigation pages={sections} pageIndex={pageIndex} />
+      {/* <SwipeNavigation pages={sections} pageIndex={pageIndex} /> */}
       <footer className="bg-surface sticky bottom-0 ">
         <div className="mx-2 flex h-16 flex-row items-center justify-around border-inverse-surface">
           {sections.map((section, index) => {

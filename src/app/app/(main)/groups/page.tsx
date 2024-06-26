@@ -86,9 +86,8 @@ export default async function GroupsPage() {
             ))}
       </div>
       <Link
-        href="/app/g/new/"
-        passHref
-        className="bg-primary fixed bottom-20 z-50 m-auto flex h-12 w-16 items-center justify-center rounded-e-3xl"
+        href="/app/groups/new/"
+        className="bg-primary fixed bottom-20 z-50 m-auto flex h-12 w-20 items-center justify-center rounded-e-3xl"
       >
         <span style={{ fontSize: 30 }} className="material-icons">
           group_add

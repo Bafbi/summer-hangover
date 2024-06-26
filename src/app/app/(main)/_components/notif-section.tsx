@@ -2,9 +2,13 @@
 
 import { Badge } from "@mui/material";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { api } from "~/trpc/react";
 
 export function NotifivationSection() {
+  const pathname = usePathname();
+  const isSelected = pathname.includes("notifications");
+
   const { data: notifications, refetch } =
     api.notification.getNotifications.useQuery();
 
@@ -33,7 +37,11 @@ export function NotifivationSection() {
         color="error"
         sx={{ fontSize: 36 }}
       >
-        <span className="material-icons relative">notifications</span>
+        <span
+          className={`material-icons relative ${isSelected ? "text-primary" : ""}`}
+        >
+          notifications
+        </span>
       </Badge>
     </Link>
   );

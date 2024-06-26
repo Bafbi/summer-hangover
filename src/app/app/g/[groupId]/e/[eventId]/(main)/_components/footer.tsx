@@ -13,7 +13,7 @@ export function EventFooter() {
 
   return (
     <>
-      <SwipeNavigation pages={eventSections} pageIndex={pageIndex} />
+      {/* <SwipeNavigation pages={eventSections} pageIndex={pageIndex} /> */}
       <footer className="bg-surface sticky bottom-0 ">
         <div className="mx-2 flex h-16 flex-row items-center justify-around border-inverse-surface">
           <Link href={`${eventSections[0]}`} replace={true}>

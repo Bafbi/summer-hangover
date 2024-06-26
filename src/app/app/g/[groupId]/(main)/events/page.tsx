@@ -11,10 +11,12 @@ export default async function EventsPage({
 
   return (
     <>
-      <main className="bg-surface flex flex-col">
-        {events.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
+      <main className="bg-surface flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          {events.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
 
         {/* <div className="sortie flex w-full items-center justify-between">
           <Link
@@ -40,7 +42,7 @@ export default async function EventsPage({
         </div> */}
         <Link
           href={"events/new"}
-          className={`bg-primary-container my-4 flex w-5/6 cursor-pointer flex-row-reverse items-center justify-between space-x-2 self-end rounded-l-xl p-3 `}
+          className={`bg-primary-container flex w-5/6 cursor-pointer flex-row-reverse items-center justify-between space-x-2 self-end rounded-l-xl p-3 `}
         >
           <span className="text-md font-semibold">Add an event</span>
           <span className="material-icons ">post_add</span>

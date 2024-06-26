@@ -108,7 +108,7 @@ CREATE TABLE `summer-hangover_notification` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`userId` text(255) NOT NULL,
 	`message` text(255) NOT NULL,
-	`createdAt` integer,
+	`createdAt` integer DEFAULT CURRENT_TIMESTAMP,
 	`isRead` integer DEFAULT false,
 	`notifType` text NOT NULL,
 	`url` text(255),
@@ -128,6 +128,7 @@ CREATE TABLE `summer-hangover_session` (
 	`sessionToken` text(255) PRIMARY KEY NOT NULL,
 	`userId` text(255) NOT NULL,
 	`expires` integer NOT NULL,
+	`createdAt` integer DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (`userId`) REFERENCES `summer-hangover_user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -141,7 +142,9 @@ CREATE TABLE `summer-hangover_user` (
 	`email` text(255) NOT NULL,
 	`password` text(255),
 	`emailVerified` integer DEFAULT CURRENT_TIMESTAMP,
-	`image` text(255)
+	`createdAt` integer DEFAULT CURRENT_TIMESTAMP,
+	`image` text(255),
+	`isAdmin` integer DEFAULT false
 );
 --> statement-breakpoint
 CREATE TABLE `summer-hangover_verificationToken` (

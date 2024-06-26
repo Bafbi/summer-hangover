@@ -38,6 +38,17 @@ export default function Home({
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
   const [canInteract, setCanInteract] = useState(false);
+  const [winner, setIsWinner] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (activities) {
+      // find the activity with the most votes
+      const winner = activities.activities.reduce((acc, curr) =>
+        curr.votes > acc.votes ? curr : acc,
+      );
+      setIsWinner(winner.id);
+    }
+  }, [activities]);
 
   useEffect(() => {
     if (activities?.vote?.activityId) setFavorite(activities?.vote?.activityId);
@@ -117,7 +128,7 @@ export default function Home({
               <ActivityCard
                 isFavorite={favorite === activity.id}
                 activity={activity}
-                isWinner={activities?.vote?.activityId === activity.id}
+                isWinner={winner === activity.id}
               />
             </div>
           ))}
