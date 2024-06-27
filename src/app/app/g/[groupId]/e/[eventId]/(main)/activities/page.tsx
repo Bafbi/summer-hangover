@@ -43,6 +43,7 @@ export default function Home({
   useEffect(() => {
     if (activities) {
       // find the activity with the most votes
+      if (activities.activities.length === 0) return;
       const winner = activities.activities.reduce((acc, curr) =>
         curr.votes > acc.votes ? curr : acc,
       );
