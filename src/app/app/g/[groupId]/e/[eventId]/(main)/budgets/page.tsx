@@ -14,36 +14,34 @@ export default async function BudgetPage({
 
   return (
     <>
-      <main className="bg-surface grid grid-cols-1 gap">
-      <div className="sortie flex justify-between items-center w-full">
-      <div className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-r-xl p-2" style={{ minHeight: '60px' }}>
-      <span className="material-icons">account_balance_wallet</span>
-      <div>
-          Expenses
-      </div>
-      </div>
-      <Link href="./budgets/balance" className="bg-primary-container flex-col max-w-40 my-4 flex-grow flex w-2/6 cursor-pointer items-center justify-center rounded-l-xl p-2 " style={{ minHeight: '60px' }} passHref>
-        <span className="material-icons">price_change</span>
-          <div>
-            Balance
+      <main className="gap bg-surface grid grid-cols-1">
+        <div className="sortie flex w-full items-center justify-between">
+          <div
+            className="bg-primary-container my-4 flex w-2/6 max-w-40 flex-grow cursor-pointer flex-col items-center justify-center rounded-r-xl p-2"
+            style={{ minHeight: "60px" }}
+          >
+            <span className="material-icons">account_balance_wallet</span>
+            <div>Expenses</div>
           </div>
-      </Link>
-      </div>
+          <Link
+            href="./budgets/balance"
+            className="bg-primary-container my-4 flex w-2/6 max-w-40 flex-grow cursor-pointer flex-col items-center justify-center rounded-l-xl p-2 "
+            style={{ minHeight: "60px" }}
+            passHref
+          >
+            <span className="material-icons">price_change</span>
+            <div>Balance</div>
+          </Link>
+        </div>
         {expenses.map((expense) => (
           <div
             className="sortie flex w-full items-center justify-between"
             key={expense.id}
           >
-            <Link
-              href="/other-content-1"
-              className="bg-surface-variant my-4 flex w-full max-w-60 cursor-pointer flex-col justify-start rounded-r-xl p-2 "
-              passHref
-            >
+            <div className="bg-surface-variant my-4 flex w-full max-w-60 cursor-pointer flex-col justify-start rounded-r-xl p-2 ">
               <div className="font-semibold">{expense.label}</div>
-              <div>
-                By : {expense.user.name} 
-              </div>
-            </Link>
+              <div>By : {expense.user.name}</div>
+            </div>
             <div
               className="bg-surface-variant my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-l-xl p-2"
               style={{
@@ -60,7 +58,7 @@ export default async function BudgetPage({
         ))}
         <div className="sortie flex w-full items-center justify-between">
           <Link
-            href="/other-content-2"
+            href="budgets/create"
             className="bg-primary-container my-4 w-1/6 max-w-xs flex-initial cursor-pointer items-center justify-center space-x-2 rounded-r-xl p-2"
             style={{
               minHeight: "60px",
@@ -72,7 +70,7 @@ export default async function BudgetPage({
             <span className="material-icons">add_circle</span>
           </Link>
           <Link
-            href="./budgets/create"
+            href="budgets/create"
             className="bg-primary-container my-4 flex w-full max-w-60 flex-grow cursor-pointer items-center justify-center space-x-2 space-x-reverse rounded-l-xl p-2"
             style={{ minHeight: "60px" }}
             passHref

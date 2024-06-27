@@ -61,7 +61,7 @@ export default async function GroupsPage() {
                 >
                   <span className="text-xl font-semibold">{group.name}</span>
                   <span className="text-right">
-                    Par{" "}
+                    By{" "}
                     <span className="font-semibold">
                       {group.createdBy.name}
                     </span>
